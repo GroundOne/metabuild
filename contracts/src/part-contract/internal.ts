@@ -233,3 +233,18 @@ export function internalTransfer(
   //return the previous token object that was transferred.
   return token
 }
+
+export function internalNextTokenId(contract: Contract) {
+  let currentTokenId = contract.currentTokenId + 1
+
+  if (contract.totalSupply < currentTokenId) return contract.currentTokenId
+
+  // while (contract.tokensById.containsKey(currentTokenId.toString())) {
+  //   if (contract.totalSupply < currentTokenId) break
+
+  //   currentTokenId += 1
+  // }
+
+  near.log(`New Current Token Id: ${currentTokenId}`)
+  return currentTokenId
+}

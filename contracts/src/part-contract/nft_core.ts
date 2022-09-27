@@ -6,7 +6,6 @@ import {
   internalAddTokenToOwner,
   internalRemoveTokenFromOwner,
   internalTransfer,
-  refundDeposit,
   refundApprovedAccountIds,
 } from "./internal"
 import { JsonToken, Token, TokenMetadata } from "./metadata"

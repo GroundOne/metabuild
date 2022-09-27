@@ -1,4 +1,5 @@
 import {
+  assert,
   near,
   NearContract,
   NearBindgen,
@@ -27,13 +28,13 @@ export const NFT_STANDARD_NAME = "nep171"
 export class Contract extends NearContract {
   owner_id: string
 
-  current_token_id: number = 0
+  currentTokenId: number = 1 // start token IDs with `1`
 
   // project related vars
   projectName: string
   totalSupply: number = 0 // maximum amount of PARTs
   price: number // deposit for each PART
-  reservedTokenIds: number[] = [] // stays in ownership of deployer
+  // reservedTokenIds: number[] = [] // stays in ownership of deployer
   prelaunchEnd: string // blockTimestamp when regular sales starts
   saleEnd: string // blockTimestamp when sale has finished
 
@@ -48,7 +49,7 @@ export class Contract extends NearContract {
     project_name,
     total_supply,
     price,
-    reserved_token_ids,
+    // reserved_token_ids,
     prelaunch_end,
     sale_end,
     metadata = {
@@ -63,7 +64,7 @@ export class Contract extends NearContract {
     this.projectName = project_name
     this.totalSupply = total_supply
     this.price = price
-    this.reservedTokenIds = reserved_token_ids
+    // this.reservedTokenIds = reserved_token_ids
     this.prelaunchEnd = prelaunch_end
     this.saleEnd = sale_end
 
@@ -71,29 +72,51 @@ export class Contract extends NearContract {
     this.tokensById = new LookupMap("tokensById")
     this.tokenMetadataById = new UnorderedMap("tokenMetadataById")
     this.metadata = metadata
+
+    // mint all reserved tokens to owner
+    // for (let reservedTokenId in this.reservedTokenIds) {
+    //   internalMint({
+    //     contract: this,
+    //     metadata: this.metadata,
+    //     receiverId: this.owner_id,
+    //   })
+    // }
   }
 
   default() {
     const tenMinutes = 60 * 10
     const oneHour = 60 * 60
 
+    const prelaunchEnd = +near.blockTimestamp().toString() + tenMinutes
+    const saleEnd = +near.blockTimestamp().toString() + oneHour
+
     return new Contract({
       owner_id: "",
       project_name: "PART Token",
-      total_supply: 1,
+      total_supply: 3,
       price: 0,
-      reserved_token_ids: [],
-      prelaunch_end: +near.blockTimestamp().toString() + tenMinutes,
-      sale_end: +near.blockTimestamp().toString() + oneHour,
+      // reserved_token_ids: [2],
+      prelaunch_end: prelaunchEnd.toString(),
+      sale_end: saleEnd.toString(),
     })
   }
 
   /* MINT */
   @call
+  // @call({ payableFunction: true })
   nft_mint({ metadata, receiver_id }) {
+    // const donationAmount = near.attachedDeposit() as bigint
+
+    // assert(
+    //   +donationAmount.toString() > this.price,
+    //   `Donation amount ${donationAmount.toString()} must be PART price ${
+    //     this.price
+    //   }`
+    // )
+
     return internalMint({
       contract: this,
-      metadata: metadata,
+      metadata,
       receiverId: receiver_id,
     })
   }
@@ -137,6 +160,20 @@ export class Contract extends NearContract {
   //Query for all the tokens for an owner
   nft_supply_for_owner({ account_id }) {
     return internalSupplyForOwner({ contract: this, accountId: account_id })
+  }
+
+  @view
+  nft_vars() {
+    return {
+      owner_id: this.owner_id,
+      currentTokenId: this.currentTokenId,
+      projectName: this.projectName,
+      totalSupply: this.totalSupply,
+      price: this.price,
+      // reservedTokenIds: this.reservedTokenIds,
+      prelaunchEnd: this.prelaunchEnd,
+      saleEnd: this.saleEnd,
+    }
   }
 
   /* METADATA */
