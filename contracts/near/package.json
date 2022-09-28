@@ -20,7 +20,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "lodash-es": "^4.17.21",
-    "near-sdk-js": "0.4.0-5"
+    "near-sdk-js": "0.5.0"
   },
   "devDependencies": {
     "ava": "^4.3.3",

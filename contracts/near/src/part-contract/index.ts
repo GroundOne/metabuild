@@ -1,7 +1,6 @@
 import {
   assert,
   near,
-  NearContract,
   NearBindgen,
   call,
   view,
@@ -24,8 +23,8 @@ export const NFT_METADATA_SPEC = "nft-1.0.0"
 /// This is the name of the NFT standard we're using
 export const NFT_STANDARD_NAME = "nep171"
 
-@NearBindgen
-export class Contract extends NearContract {
+@NearBindgen({})
+export class Contract {
   owner_id: string
 
   currentTokenId: number = 1 // start token IDs with `1`
@@ -58,7 +57,6 @@ export class Contract extends NearContract {
       symbol: "GOPART",
     },
   }) {
-    super()
     this.owner_id = owner_id
 
     this.projectName = project_name
@@ -102,7 +100,7 @@ export class Contract extends NearContract {
   }
 
   /* MINT */
-  @call
+  @call({ payableFunction: true })
   // @call({ payableFunction: true })
   nft_mint({ metadata, receiver_id }) {
     // const donationAmount = near.attachedDeposit() as bigint
@@ -122,20 +120,20 @@ export class Contract extends NearContract {
   }
 
   /* CORE */
-  @view
+  @view({})
   //get the information for a specific token ID
   nft_token({ token_id }) {
     return internalNftToken({ contract: this, tokenId: token_id })
   }
 
   /* ENUMERATION */
-  @view
+  @view({})
   //Query for the total supply of NFTs on the contract
   nft_total_supply() {
     return internalTotalSupply({ contract: this })
   }
 
-  @view
+  @view({})
   //Query for nft tokens on the contract regardless of the owner using pagination
   nft_tokens({ from_index, limit }) {
     return internalNftTokens({
@@ -145,7 +143,7 @@ export class Contract extends NearContract {
     })
   }
 
-  @view
+  @view({})
   //get the total supply of NFTs for a given owner
   nft_tokens_for_owner({ account_id, from_index, limit }) {
     return internalTokensForOwner({
@@ -156,13 +154,13 @@ export class Contract extends NearContract {
     })
   }
 
-  @view
+  @view({})
   //Query for all the tokens for an owner
   nft_supply_for_owner({ account_id }) {
     return internalSupplyForOwner({ contract: this, accountId: account_id })
   }
 
-  @view
+  @view({})
   nft_vars() {
     return {
       owner_id: this.owner_id,
@@ -177,7 +175,7 @@ export class Contract extends NearContract {
   }
 
   /* METADATA */
-  @view
+  @view({})
   //Query for all the tokens for an owner
   nft_metadata() {
     return internalNftMetadata({ contract: this })

@@ -10,7 +10,7 @@ export function internalTotalSupply({
   contract: Contract
 }): number {
   //return the length of the token metadata by ID
-  return contract.tokenMetadataById.len()
+  return contract.tokenMetadataById.length
 }
 
 //Query for nft tokens on the contract regardless of the owner using pagination
@@ -56,7 +56,7 @@ export function internalSupplyForOwner({
   }
 
   //if there is some set of tokens, we'll return the length
-  return tokens.len()
+  return tokens.length
 }
 
 //Query for all the tokens for an owner
