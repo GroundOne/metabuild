@@ -4,7 +4,16 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "hardhat test"
+    "deploy": "hardhat run scripts/deploy.ts",
+    "test": "hardhat test",
+    "test:staging": "yarn hardhat test --network aurora",
+    "compile": "hardhat compile",
+    "node": "hardhat node",
+    "verify": "hardhat verify",
+    "coverage": "yarn hardhat coverage",
+    "lint": "yarn solhint 'contracts/*.sol'",
+    "lint:fix": "yarn solhint 'contracts/**/*.sol' --fix",
+    "format": "yarn prettier --write ."
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
@@ -21,9 +30,11 @@
     "@types/mocha": "^9.1.0",
     "@types/node": ">=12.0.0",
     "chai": "^4.2.0",
+    "dotenv": "^16.0.2",
     "ethers": "^5.4.7",
     "hardhat": "^2.11.2",
     "hardhat-gas-reporter": "^1.0.8",
+    "solhint": "^3.3.7",
     "solidity-coverage": "^0.8.0",
     "ts-node": ">=8.0.0",
     "typechain": "^8.1.0",
