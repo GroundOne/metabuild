@@ -9,12 +9,13 @@
     "build": "yarn build:part",
     "build:part": "near-sdk-js build src/part-contract/index.ts build/part.wasm",
     "deploy:part": "source .env && near deploy --accountId $PART_CONTRACT_ID --wasmFile build/part.wasm",
-    "call:init": "source .env && near call $PART_CONTRACT_ID init '{\"owner_id\": \"'$PART_CONTRACT_ID'\", \"project_name\": \"GroundOne Part\", \"total_supply\": 3, \"price\": \"100\", \"reservedTokenIds\": \"[2]\", \"prelaunch_end\": \"9999999999999\", \"sale_end\": \"9999999999999999\"}' --accountId $PART_CONTRACT_ID",
+    "call:init": "source .env && near call $PART_CONTRACT_ID init '{\"owner_id\": \"'$PART_CONTRACT_ID'\", \"projectName\": \"GroundOne Part\", \"totalSupply\": 3, \"price\": \"100\", \"reservedTokenIds\": \"[2]\", \"prelaunchEnd\": \"9999999999999\", \"saleEnd\": \"9999999999999999\"}' --accountId $PART_CONTRACT_ID",
     "view:meta": "source .env && near view $PART_CONTRACT_ID nft_metadata",
     "view:vars": "source .env && near view $PART_CONTRACT_ID nft_vars",
     "call:mint": "source .env && near call $PART_CONTRACT_ID nft_mint '{\"metadata\": {\"title\": \"GroundOne PART Token\", \"description\": \"Token ID is your ranking.\", \"media\": \"https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif\"}, \"receiver_id\": \"'$MAIN_ACCOUNT'\"}' --accountId $MAIN_ACCOUNT --amount 0.1",
     "view:token": "source .env && near view $PART_CONTRACT_ID nft_token '{\"token_id\": 0}'",
-    "test": "ava"
+    "test": "ava",
+    "test:watch": "nodemon --exec 'yarn test' -w ./__tests__ -w ./src -e js,ts"
   },
   "author": "Tobias Leinss <caruso33@web.de>, Frangiskos Frangeskides <frangiskos@gmail.com>",
   "license": "UNLICENSED",

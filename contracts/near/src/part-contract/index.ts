@@ -6,6 +6,7 @@ import {
   view,
   LookupMap,
   UnorderedMap,
+  initialize,
 } from "near-sdk-js"
 import {
   internalNftTokens,
@@ -23,9 +24,9 @@ export const NFT_METADATA_SPEC = "nft-1.0.0"
 /// This is the name of the NFT standard we're using
 export const NFT_STANDARD_NAME = "nep171"
 
-@NearBindgen({})
+@NearBindgen({ requireInit: true })
 export class Contract {
-  owner_id: string
+  ownerId: string
 
   currentTokenId: number = 1 // start token IDs with `1`
 
@@ -43,32 +44,51 @@ export class Contract {
   tokenMetadataById: UnorderedMap
   metadata: NFTContractMetadata
 
-  constructor({
-    owner_id,
-    project_name,
-    total_supply,
+  constructor() {
+    const tenMinutes = 60 * 10
+    const oneHour = 60 * 60
+
+    const prelaunchEnd = +near.blockTimestamp().toString() + tenMinutes
+    const saleEnd = +near.blockTimestamp().toString() + oneHour
+
+    this.ownerId = ""
+    this.projectName = "PART Token"
+    this.totalSupply = 3
+    this.price = 0
+    this.prelaunchEnd = prelaunchEnd.toString() // reserved_token_ids= [2]
+    this.saleEnd = saleEnd.toString()
+  }
+
+  @initialize({})
+  init({
+    ownerId,
+    projectName,
+    totalSupply,
     price,
     // reserved_token_ids,
-    prelaunch_end,
-    sale_end,
+    prelaunchEnd,
+    saleEnd,
     metadata = {
       spec: NFT_METADATA_SPEC,
       name: "GroundOne PART",
       symbol: "GOPART",
     },
   }) {
-    this.owner_id = owner_id
-
-    this.projectName = project_name
-    this.totalSupply = total_supply
+    this.ownerId = ownerId
+    this.projectName = projectName
+    this.totalSupply = totalSupply
     this.price = price
     // this.reservedTokenIds = reserved_token_ids
-    this.prelaunchEnd = prelaunch_end
-    this.saleEnd = sale_end
+
+    if (prelaunchEnd) this.prelaunchEnd = prelaunchEnd
+    if (saleEnd) this.saleEnd = saleEnd
 
     this.tokensPerOwner = new LookupMap("tokensPerOwner")
     this.tokensById = new LookupMap("tokensById")
     this.tokenMetadataById = new UnorderedMap("tokenMetadataById")
+
+    console.log(metadata)
+
     this.metadata = metadata
 
     // mint all reserved tokens to owner
@@ -81,36 +101,17 @@ export class Contract {
     // }
   }
 
-  default() {
-    const tenMinutes = 60 * 10
-    const oneHour = 60 * 60
-
-    const prelaunchEnd = +near.blockTimestamp().toString() + tenMinutes
-    const saleEnd = +near.blockTimestamp().toString() + oneHour
-
-    return new Contract({
-      owner_id: "",
-      project_name: "PART Token",
-      total_supply: 3,
-      price: 0,
-      // reserved_token_ids: [2],
-      prelaunch_end: prelaunchEnd.toString(),
-      sale_end: saleEnd.toString(),
-    })
-  }
-
   /* MINT */
   @call({ payableFunction: true })
-  // @call({ payableFunction: true })
   nft_mint({ metadata, receiver_id }) {
-    // const donationAmount = near.attachedDeposit() as bigint
+    const donationAmount = near.attachedDeposit() as bigint
 
-    // assert(
-    //   +donationAmount.toString() > this.price,
-    //   `Donation amount ${donationAmount.toString()} must be PART price ${
-    //     this.price
-    //   }`
-    // )
+    assert(
+      +donationAmount.toString() > this.price,
+      `Donation amount ${donationAmount.toString()} must be PART price ${
+        this.price
+      }`
+    )
 
     return internalMint({
       contract: this,
@@ -160,10 +161,15 @@ export class Contract {
     return internalSupplyForOwner({ contract: this, accountId: account_id })
   }
 
+  // @view({})
+  // nft_owner() {
+  //   return this.owner_id
+  // }
+
   @view({})
   nft_vars() {
     return {
-      owner_id: this.owner_id,
+      ownerId: this.ownerId,
       currentTokenId: this.currentTokenId,
       projectName: this.projectName,
       totalSupply: this.totalSupply,
