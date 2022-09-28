@@ -13,7 +13,7 @@ function getArgs(root) {
     projectName: "GroundOne PART",
     totalSupply: 3,
     price: "100",
-    // reserved_token_ids,
+    reserved_token_ids: [2],
     prelaunch_end: "9",
     sale_end: "99",
     metadata: meta_specification,

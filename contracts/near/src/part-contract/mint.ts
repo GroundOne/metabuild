@@ -32,20 +32,25 @@ export function internalMint({
   })
 
   const newTokenId = tokenId || contract.currentTokenId.toString()
+  near.log(`tokenId: ${tokenId}`)
+  assert(
+    contract.totalSupply >= +newTokenId,
+    `Total supply reached ${contract.totalSupply}`
+  )
 
   //insert the token ID and token struct and make sure that the token doesn't exist
-  assert(!contract.tokensById.containsKey(tokenId), "Token already exists")
-  contract.tokensById.set(tokenId, token)
+  assert(!contract.tokensById.containsKey(newTokenId), "Token already exists")
+  contract.tokensById.set(newTokenId, token)
 
   //insert the token ID and metadata
-  contract.tokenMetadataById.set(tokenId, metadata)
+  contract.tokenMetadataById.set(newTokenId, metadata)
 
   //call the internal method for adding the token to the owner
   internalAddTokenToOwner(contract, token.owner_id, newTokenId)
 
   // increase currentTokenId
   if (!tokenId) {
-    const newCurrentTokenId = internalNextTokenId(contract)
+    const newCurrentTokenId = internalNextTokenId({ contract })
     contract.currentTokenId = newCurrentTokenId
   }
 
@@ -54,7 +59,7 @@ export function internalMint({
     standard: NFT_STANDARD_NAME,
     version: NFT_METADATA_SPEC,
     event: "nft_mint",
-    data: [{ owner_id: token.owner_id, token_ids: [tokenId] }],
+    data: [{ owner_id: token.owner_id, token_ids: [newTokenId] }],
   }
 
   near.log(`EVENT_JSON:${JSON.stringify(nftMintLog)}`)

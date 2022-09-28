@@ -2,6 +2,7 @@ import { Contract } from "."
 import { restoreOwners } from "./internal"
 import { JsonToken } from "./metadata"
 import { internalNftToken } from "./nft_core"
+import { near } from "near-sdk-js"
 
 //Query for the total supply of NFTs on the contract
 export function internalTotalSupply({
@@ -31,6 +32,7 @@ export function internalNftTokens({
   let max = limit ? limit : 50
 
   let keys = contract.tokenMetadataById.toArray()
+
   // Paginate through the keys using the fromIndex and limit
   for (let i = start; i < keys.length && i < start + max; i++) {
     // get the token object from the keys

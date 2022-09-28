@@ -33,7 +33,7 @@ export function internalNftToken({
 
   //we return the JsonToken
   let jsonToken = new JsonToken({
-    tokenId: tokenId,
+    tokenId,
     ownerId: token.owner_id,
     metadata,
     approvedAccountIds: token.approved_account_ids,

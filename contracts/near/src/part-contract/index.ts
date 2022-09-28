@@ -7,6 +7,7 @@ import {
   LookupMap,
   UnorderedMap,
   initialize,
+  Vector,
 } from "near-sdk-js"
 import {
   internalNftTokens,
@@ -34,11 +35,12 @@ export class Contract {
   projectName: string
   totalSupply: number = 0 // maximum amount of PARTs
   price: number // deposit for each PART
-  // reservedTokenIds: number[] = [] // stays in ownership of deployer
   prelaunchEnd: string // blockTimestamp when regular sales starts
   saleEnd: string // blockTimestamp when sale has finished
 
+  reservedTokenIds: Vector // stays in ownership of deployer
   // complex types
+
   tokensPerOwner: LookupMap
   tokensById: LookupMap
   tokenMetadataById: UnorderedMap
@@ -55,8 +57,14 @@ export class Contract {
     this.projectName = "PART Token"
     this.totalSupply = 3
     this.price = 0
-    this.prelaunchEnd = prelaunchEnd.toString() // reserved_token_ids= [2]
+
+    this.prelaunchEnd = prelaunchEnd.toString()
     this.saleEnd = saleEnd.toString()
+
+    this.reservedTokenIds = new Vector("reservedTokenIds")
+    this.tokensPerOwner = new LookupMap("tokensPerOwner")
+    this.tokensById = new LookupMap("tokensById")
+    this.tokenMetadataById = new UnorderedMap("tokenMetadataById")
   }
 
   @initialize({})
@@ -65,7 +73,7 @@ export class Contract {
     projectName,
     totalSupply,
     price,
-    // reserved_token_ids,
+    reservedTokenIds,
     prelaunchEnd,
     saleEnd,
     metadata = {
@@ -78,37 +86,58 @@ export class Contract {
     this.projectName = projectName
     this.totalSupply = totalSupply
     this.price = price
-    // this.reservedTokenIds = reserved_token_ids
 
     if (prelaunchEnd) this.prelaunchEnd = prelaunchEnd
     if (saleEnd) this.saleEnd = saleEnd
 
-    this.tokensPerOwner = new LookupMap("tokensPerOwner")
-    this.tokensById = new LookupMap("tokensById")
-    this.tokenMetadataById = new UnorderedMap("tokenMetadataById")
-
-    console.log(metadata)
-
     this.metadata = metadata
 
     // mint all reserved tokens to owner
-    // for (let reservedTokenId in this.reservedTokenIds) {
+    near.log(
+      `Following Tokens will be reserved: ${JSON.stringify(reservedTokenIds)}`
+    )
+
+    reservedTokenIds.forEach((reservedTokenId) => {
+      this.reservedTokenIds.push(reservedTokenId.toString())
+
+      near.log(`Minting Reserved Token with Id ${reservedTokenId}`)
+
+      internalMint({
+        contract: this,
+        metadata: this.metadata,
+        receiverId: this.ownerId,
+        tokenId: reservedTokenId.toString(),
+      })
+    })
+
+    // for (const reservedTokenId in reservedTokenIds) {
+    //   this.reservedTokenIds.push(reservedTokenId.toString())
+
+    //   near.log(`Minting Reserved Token with Id ${reservedTokenId}`)
+
     //   internalMint({
     //     contract: this,
     //     metadata: this.metadata,
-    //     receiverId: this.owner_id,
+    //     receiverId: this.ownerId,
+    //     tokenId: reservedTokenId.toString(),
     //   })
     // }
   }
 
   /* MINT */
   @call({ payableFunction: true })
-  nft_mint({ metadata, receiver_id }) {
-    const donationAmount = near.attachedDeposit() as bigint
+  nft_mint({
+    metadata,
+    receiver_id,
+  }: {
+    metadata: Record<string, any>
+    receiver_id: string
+  }) {
+    const depositAmount = near.attachedDeposit() as bigint
 
     assert(
-      +donationAmount.toString() > this.price,
-      `Donation amount ${donationAmount.toString()} must be PART price ${
+      +depositAmount.toString() >= this.price,
+      `Deposit amount ${depositAmount.toString()} must be PART price ${
         this.price
       }`
     )
@@ -123,7 +152,7 @@ export class Contract {
   /* CORE */
   @view({})
   //get the information for a specific token ID
-  nft_token({ token_id }) {
+  nft_token({ token_id }: { token_id: string }) {
     return internalNftToken({ contract: this, tokenId: token_id })
   }
 
@@ -136,7 +165,7 @@ export class Contract {
 
   @view({})
   //Query for nft tokens on the contract regardless of the owner using pagination
-  nft_tokens({ from_index, limit }) {
+  nft_tokens({ from_index, limit }: { from_index?: string; limit?: number }) {
     return internalNftTokens({
       contract: this,
       fromIndex: from_index,
@@ -146,7 +175,15 @@ export class Contract {
 
   @view({})
   //get the total supply of NFTs for a given owner
-  nft_tokens_for_owner({ account_id, from_index, limit }) {
+  nft_tokens_for_owner({
+    account_id,
+    from_index,
+    limit,
+  }: {
+    account_id: string
+    from_index?: string
+    limit?: number
+  }) {
     return internalTokensForOwner({
       contract: this,
       accountId: account_id,
@@ -161,11 +198,6 @@ export class Contract {
     return internalSupplyForOwner({ contract: this, accountId: account_id })
   }
 
-  // @view({})
-  // nft_owner() {
-  //   return this.owner_id
-  // }
-
   @view({})
   nft_vars() {
     return {
@@ -174,7 +206,7 @@ export class Contract {
       projectName: this.projectName,
       totalSupply: this.totalSupply,
       price: this.price,
-      // reservedTokenIds: this.reservedTokenIds,
+      reservedTokenIds: this.reservedTokenIds,
       prelaunchEnd: this.prelaunchEnd,
       saleEnd: this.saleEnd,
     }
