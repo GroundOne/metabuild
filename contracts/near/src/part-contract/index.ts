@@ -65,6 +65,12 @@ export class Contract {
     this.tokensPerOwner = new LookupMap("tokensPerOwner")
     this.tokensById = new LookupMap("tokensById")
     this.tokenMetadataById = new UnorderedMap("tokenMetadataById")
+
+    this.metadata = {
+      spec: NFT_METADATA_SPEC,
+      name: "GroundOne PART",
+      symbol: "GOPART",
+    }
   }
 
   @initialize({})
@@ -76,11 +82,16 @@ export class Contract {
     reservedTokenIds,
     prelaunchEnd,
     saleEnd,
-    metadata = {
-      spec: NFT_METADATA_SPEC,
-      name: "GroundOne PART",
-      symbol: "GOPART",
-    },
+    metadata,
+  }: {
+    ownerId: string
+    projectName: string
+    totalSupply: number
+    price: number
+    reservedTokenIds?: string[]
+    prelaunchEnd?: string
+    saleEnd?: string
+    metadata?: NFTContractMetadata
   }) {
     this.ownerId = ownerId
     this.projectName = projectName
@@ -89,26 +100,27 @@ export class Contract {
 
     if (prelaunchEnd) this.prelaunchEnd = prelaunchEnd
     if (saleEnd) this.saleEnd = saleEnd
-
-    this.metadata = metadata
+    if (metadata) this.metadata = metadata
 
     // mint all reserved tokens to owner
     near.log(
       `Following Tokens will be reserved: ${JSON.stringify(reservedTokenIds)}`
     )
 
-    reservedTokenIds.forEach((reservedTokenId) => {
-      this.reservedTokenIds.push(reservedTokenId.toString())
+    if (reservedTokenIds) {
+      reservedTokenIds.forEach((reservedTokenId) => {
+        this.reservedTokenIds.push(reservedTokenId.toString())
 
-      near.log(`Minting Reserved Token with Id ${reservedTokenId}`)
+        near.log(`Minting Reserved Token with Id ${reservedTokenId}`)
 
-      internalMint({
-        contract: this,
-        metadata: this.metadata,
-        receiverId: this.ownerId,
-        tokenId: reservedTokenId.toString(),
+        internalMint({
+          contract: this,
+          metadata: this.metadata,
+          receiverId: this.ownerId,
+          tokenId: reservedTokenId.toString(),
+        })
       })
-    })
+    }
 
     // for (const reservedTokenId in reservedTokenIds) {
     //   this.reservedTokenIds.push(reservedTokenId.toString())
@@ -216,7 +228,6 @@ export class Contract {
   @view({})
   //Query for all the tokens for an owner
   nft_metadata() {
-    near.log(`nft_metadata called`)
     return internalNftMetadata({ contract: this })
   }
 }

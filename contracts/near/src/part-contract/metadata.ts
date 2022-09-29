@@ -1,5 +1,4 @@
 import { Contract } from "."
-
 export class NFTContractMetadata {
   spec: string
   name: string

@@ -32,7 +32,6 @@ export function internalMint({
   })
 
   const newTokenId = tokenId || contract.currentTokenId.toString()
-  near.log(`tokenId: ${tokenId}`)
   assert(
     contract.totalSupply >= +newTokenId,
     `Total supply reached ${contract.totalSupply}`

@@ -22,7 +22,8 @@
     "view:token": "source .env && near view $PART_CONTRACT_ID nft_token '{\"token_id\": \"1\"}'",
     "view:tokens": "source .env && near view $PART_CONTRACT_ID nft_tokens",
     "test": "ava",
-    "test:watch": "nodemon --exec 'yarn test' -w ./__tests__ -w ./src -e js,ts"
+    "test:watch": "nodemon --exec 'yarn test' -w ./__tests__ -w ./src -e js,ts",
+    "build:test": "yarn build && yarn test"
   },
   "author": "Tobias Leinss <caruso33@web.de>, Frangiskos Frangeskides <frangiskos@gmail.com>",
   "license": "UNLICENSED",
@@ -31,6 +32,7 @@
     "near-sdk-js": "0.5.0"
   },
   "devDependencies": {
+    "@types/node": "^18.7.23",
     "ava": "^4.3.3",
     "near-cli": "^3.4.2",
     "near-workspaces": "^3.2.2",
