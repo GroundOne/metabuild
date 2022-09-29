@@ -133,13 +133,16 @@ export class JsonToken {
     approvedAccountIds: { [accountId: string]: number }
   }) {
     //token ID
-    ;(this.token_id = tokenId),
-      //owner of the token
-      (this.owner_id = ownerId),
-      //token metadata
-      (this.metadata = metadata),
-      //list of approved account IDs that have access to transfer the token. This maps an account ID to an approval ID
-      (this.approved_account_ids = approvedAccountIds)
+    this.token_id = tokenId
+
+    //owner of the token
+    this.owner_id = ownerId
+
+    //token metadata
+    this.metadata = metadata
+
+    //list of approved account IDs that have access to transfer the token. This maps an account ID to an approval ID
+    this.approved_account_ids = approvedAccountIds
   }
 }
 

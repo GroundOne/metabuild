@@ -98,8 +98,6 @@ test("View the correct total supply", async (t) => {
 
   const result = await contract.view("nft_total_supply", {})
 
-  console.log(`result ${JSON.stringify(result)}`)
-
   t.is(result, constructor_args.reservedTokenIds.length)
 })
 
@@ -107,8 +105,6 @@ test("View all tokens", async (t) => {
   const { contract } = t.context.accounts
 
   const result = await contract.view("nft_tokens", {})
-
-  console.log(`result ${JSON.stringify(result)}`)
 
   const allTokens = [
     {
@@ -146,6 +142,66 @@ test("View supply of owner", async (t) => {
   const result = await contract.view("nft_supply_for_owner", { account_id })
 
   const tokenSupply = 1
-  
+
+  t.is(result, tokenSupply)
+})
+
+test.only("Call mint new token", async (t) => {
+  const { contract } = t.context.accounts
+
+  const account_id = "test.near"
+  const token_id = "1"
+
+  const token = {
+    metadata: {
+      title: "GroundOne PART Token",
+      description: "Token ID is your ranking.",
+      media:
+        "https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif",
+    },
+    receiver_id: account_id,
+  }
+
+  const attachedDeposit = NEAR.parse("1 N").toString()
+
+  await contract.call(contract, "nft_mint", token, {
+    attachedDeposit,
+  })
+
+  let result = await contract.view("nft_vars", {})
+
+  t.is(result.currentTokenId, 3)
+  t.is(result.ownerId, token.receiver_id)
+  t.is(result.projectName, constructor_args.projectName)
+  t.is(result.totalSupply, constructor_args.totalSupply)
+  t.is(result.price, constructor_args.price)
+  t.deepEqual(result.reservedTokenIds, {
+    length: 1,
+    prefix: "reservedTokenIds",
+  })
+  t.is(result.prelaunchEnd, constructor_args.prelaunchEnd)
+  t.is(result.saleEnd, constructor_args.saleEnd)
+
+  result = await contract.view("nft_token", { token_id })
+
+  const { receiver_id, ...tokenWithoutReceiver } = token
+  t.deepEqual(result, {
+    ...tokenWithoutReceiver,
+    approved_account_ids: {},
+    owner_id: account_id,
+    token_id,
+  })
+
+  result = await contract.view("nft_total_supply", {})
+  t.is(result, constructor_args.reservedTokenIds.length + 1)
+
+  result = await contract.view("nft_tokens", {})
+  t.is(result.length, 2)
+
+  result = await contract.view("nft_tokens_for_owner", { account_id })
+  t.deepEqual(result.length, 2)
+
+  result = await contract.view("nft_supply_for_owner", { account_id })
+  const tokenSupply = 2
   t.is(result, tokenSupply)
 })
