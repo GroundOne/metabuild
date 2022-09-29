@@ -216,6 +216,7 @@ export class Contract {
   @view({})
   //Query for all the tokens for an owner
   nft_metadata() {
+    near.log(`nft_metadata called`)
     return internalNftMetadata({ contract: this })
   }
 }
