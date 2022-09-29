@@ -51,7 +51,7 @@ test.afterEach(async (t) => {
   })
 })
 
-test("Show the correct metadata", async (t) => {
+test("View the correct metadata", async (t) => {
   const { contract } = t.context.accounts
 
   const result = await contract.view("nft_metadata", {})
@@ -59,7 +59,7 @@ test("Show the correct metadata", async (t) => {
   t.deepEqual(result, meta_specification)
 })
 
-test("Show the correct variables", async (t) => {
+test("View the correct variables", async (t) => {
   const { contract } = t.context.accounts
 
   const result = await contract.view("nft_vars", {})
@@ -75,4 +75,77 @@ test("Show the correct variables", async (t) => {
   })
   t.is(result.prelaunchEnd, constructor_args.prelaunchEnd)
   t.is(result.saleEnd, constructor_args.saleEnd)
+})
+
+test("View the correct reserved token", async (t) => {
+  const { contract } = t.context.accounts
+
+  const token_id = constructor_args.reservedTokenIds[0]
+  const result = await contract.view("nft_token", { token_id })
+
+  const reservedToken = {
+    token_id: "2",
+    owner_id: "test.near",
+    metadata: { spec: "nft-1.0.0", name: "GroundOne PART", symbol: "GOPART" },
+    approved_account_ids: {},
+  }
+
+  t.deepEqual(result, reservedToken)
+})
+
+test("View the correct total supply", async (t) => {
+  const { contract } = t.context.accounts
+
+  const result = await contract.view("nft_total_supply", {})
+
+  console.log(`result ${JSON.stringify(result)}`)
+
+  t.is(result, constructor_args.reservedTokenIds.length)
+})
+
+test("View all tokens", async (t) => {
+  const { contract } = t.context.accounts
+
+  const result = await contract.view("nft_tokens", {})
+
+  console.log(`result ${JSON.stringify(result)}`)
+
+  const allTokens = [
+    {
+      token_id: "2",
+      owner_id: "test.near",
+      metadata: { spec: "nft-1.0.0", name: "GroundOne PART", symbol: "GOPART" },
+      approved_account_ids: {},
+    },
+  ]
+  t.deepEqual(result, allTokens)
+})
+
+test("View tokens of owner", async (t) => {
+  const { contract } = t.context.accounts
+
+  const account_id = "test.near"
+  const result = await contract.view("nft_tokens_for_owner", { account_id })
+
+  const ownerTokens = [
+    {
+      token_id: "2",
+      owner_id: "test.near",
+      metadata: { spec: "nft-1.0.0", name: "GroundOne PART", symbol: "GOPART" },
+      approved_account_ids: {},
+    },
+  ]
+
+  t.deepEqual(result, ownerTokens)
+})
+
+test("View supply of owner", async (t) => {
+  const { contract } = t.context.accounts
+
+  const account_id = "test.near"
+  const result = await contract.view("nft_supply_for_owner", { account_id })
+
+  const tokenSupply = 1
+  
+  t.is(result, tokenSupply)
 })

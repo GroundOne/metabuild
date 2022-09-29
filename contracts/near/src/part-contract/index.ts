@@ -186,7 +186,7 @@ export class Contract {
   }
 
   @view({})
-  //get the total supply of NFTs for a given owner
+  //Query for all the tokens for an owner
   nft_tokens_for_owner({
     account_id,
     from_index,
@@ -205,7 +205,7 @@ export class Contract {
   }
 
   @view({})
-  //Query for all the tokens for an owner
+  //get the total supply of NFTs for a given owner
   nft_supply_for_owner({ account_id }) {
     return internalSupplyForOwner({ contract: this, accountId: account_id })
   }
