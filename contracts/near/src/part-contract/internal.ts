@@ -1,4 +1,4 @@
-import { assert, near, UnorderedSet } from "near-sdk-js"
+import { assert, near, UnorderedSet, Vector } from "near-sdk-js"
 import { Contract, NFT_METADATA_SPEC, NFT_STANDARD_NAME } from "."
 import { Token } from "./metadata"
 
@@ -238,11 +238,28 @@ export function internalNextTokenId({ contract }: { contract: Contract }) {
   let currentTokenId = contract.currentTokenId + 1
 
   while (contract.tokensById.containsKey(currentTokenId.toString())) {
-    if (contract.totalSupply < currentTokenId) break
-
     currentTokenId += 1
+
+    if (contract.totalSupply < currentTokenId) break
   }
 
   near.log(`New Current Token Id: ${currentTokenId}`)
   return currentTokenId
+}
+
+export function internalIsValueInVector(
+  value: string | number,
+  vector: Vector
+) {
+  return internalGetValuesInVector(vector).some((v) => v === value)
+}
+
+export function internalGetValuesInVector(vector: Vector) {
+  const values = []
+
+  for (const value of vector) {
+    values.push(value)
+  }
+
+  return values
 }

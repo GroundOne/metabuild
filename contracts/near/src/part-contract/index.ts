@@ -15,6 +15,7 @@ import {
   internalTokensForOwner,
   internalTotalSupply,
 } from "./enumeration"
+import { internalGetValuesInVector, internalIsValueInVector } from "./internal"
 import { NFTContractMetadata, internalNftMetadata } from "./metadata"
 import { internalMint } from "./mint"
 import { internalNftToken } from "./nft_core"
@@ -35,11 +36,12 @@ export class Contract {
   projectName: string
   totalSupply: number = 0 // maximum amount of PARTs
   price: number // deposit for each PART
-  prelaunchEnd: string // blockTimestamp when regular sales starts
+  prelaunchEnd: number // blockTimestamp when regular sales starts
   saleEnd: string // blockTimestamp when sale has finished
 
-  reservedTokenIds: Vector // stays in ownership of deployer
   // complex types
+  reservedTokenIds: Vector // stays in ownership of deployer
+  presaleParticipants: Vector // candidates which buy into the presale
 
   tokensPerOwner: LookupMap
   tokensById: LookupMap
@@ -47,8 +49,8 @@ export class Contract {
   metadata: NFTContractMetadata
 
   constructor() {
-    const tenMinutes = 60 * 10
-    const oneHour = 60 * 60
+    const tenMinutes = 60 * 10 * 1e6 // nanosecods
+    const oneHour = 60 * 60 * 1e6
 
     const prelaunchEnd = +near.blockTimestamp().toString() + tenMinutes
     const saleEnd = +near.blockTimestamp().toString() + oneHour
@@ -58,10 +60,11 @@ export class Contract {
     this.totalSupply = 3
     this.price = 0
 
-    this.prelaunchEnd = prelaunchEnd.toString()
+    this.prelaunchEnd = prelaunchEnd
     this.saleEnd = saleEnd.toString()
 
     this.reservedTokenIds = new Vector("reservedTokenIds")
+    this.presaleParticipants = new Vector("presaleParticipants")
     this.tokensPerOwner = new LookupMap("tokensPerOwner")
     this.tokensById = new LookupMap("tokensById")
     this.tokenMetadataById = new UnorderedMap("tokenMetadataById")
@@ -89,7 +92,7 @@ export class Contract {
     totalSupply: number
     price: number
     reservedTokenIds?: string[]
-    prelaunchEnd?: string
+    prelaunchEnd?: number
     saleEnd?: string
     metadata?: NFTContractMetadata
   }) {
@@ -121,22 +124,38 @@ export class Contract {
         })
       })
     }
-
-    // for (const reservedTokenId in reservedTokenIds) {
-    //   this.reservedTokenIds.push(reservedTokenId.toString())
-
-    //   near.log(`Minting Reserved Token with Id ${reservedTokenId}`)
-
-    //   internalMint({
-    //     contract: this,
-    //     metadata: this.metadata,
-    //     receiverId: this.ownerId,
-    //     tokenId: reservedTokenId.toString(),
-    //   })
-    // }
   }
 
-  /* MINT */
+  @call({ payableFunction: true })
+  nft_participate_presale() {
+    assert(
+      !this.nft_isPresaleDone(),
+      `Presale is already finished is ${near.blockTimestamp()} ended ${
+        this.prelaunchEnd
+      }`
+    )
+
+    const isAlreadyParticipant = internalIsValueInVector(
+      near.signerAccountId(),
+      this.presaleParticipants
+    )
+
+    assert(!isAlreadyParticipant, `Sender already participants in the presale`)
+
+    const depositAmount = near.attachedDeposit() as bigint
+
+    assert(
+      +depositAmount.toString() >= this.price,
+      `Deposit amount ${depositAmount.toString()} must be PART price ${
+        this.price
+      }`
+    )
+
+    this.presaleParticipants.push(near.signerAccountId())
+
+    near.log(`Added ${near.signerAccountId()} to participants`)
+  }
+
   @call({ payableFunction: true })
   nft_mint({
     metadata,
@@ -145,6 +164,18 @@ export class Contract {
     metadata: Record<string, any>
     receiver_id: string
   }) {
+    assert(
+      this.nft_isPresaleDone(),
+      `Please wait until the presale is finished ${this.prelaunchEnd}`
+    )
+
+    assert(!this.nft_isSaleDone(), `The sale is finished ${this.saleEnd}`)
+
+    assert(
+      this.currentTokenId <= this.totalSupply,
+      `Total amount of tokens already minted ${this.totalSupply}`
+    )
+
     const depositAmount = near.attachedDeposit() as bigint
 
     assert(
@@ -160,6 +191,9 @@ export class Contract {
       receiverId: receiver_id,
     })
   }
+
+  @call({})
+  nft_payout_owner() {}
 
   /* CORE */
   @view({})
@@ -222,6 +256,21 @@ export class Contract {
       prelaunchEnd: this.prelaunchEnd,
       saleEnd: this.saleEnd,
     }
+  }
+
+  @view({})
+  nft_presale_participants() {
+    return internalGetValuesInVector(this.presaleParticipants)
+  }
+
+  @view({})
+  nft_isPresaleDone() {
+    return +this.prelaunchEnd < near.blockTimestamp()
+  }
+
+  @view({})
+  nft_isSaleDone() {
+    return +this.saleEnd < near.blockTimestamp()
   }
 
   /* METADATA */
