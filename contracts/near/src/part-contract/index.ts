@@ -34,6 +34,7 @@ export const NFT_METADATA_SPEC = "nft-1.0.0"
 export const NFT_STANDARD_NAME = "nep171"
 
 export enum SaleStatusEnum {
+  UNDEFINED,
   PRESALE,
   PRESALEDISTRIBUTION,
   PRESALECASHOUT,
@@ -80,7 +81,7 @@ export class Contract {
     this.prelaunchEnd = prelaunchEnd
     this.saleEnd = saleEnd
 
-    this.saleStatus = 9
+    this.saleStatus = SaleStatusEnum.UNDEFINED
 
     this.reservedTokenIds = new Vector("reservedTokenIds")
     this.presaleParticipants = new Vector("presaleParticipants")
