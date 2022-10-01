@@ -1,6 +1,6 @@
 import test from "ava"
 import { NEAR, Worker } from "near-workspaces"
-import { SaleStatusEnum } from "./utils"
+import { SaleStatusEnum } from "./utils.js"
 
 const meta_specification = {
   spec: "nft-1.0.0",
@@ -48,7 +48,7 @@ test.afterEach(async (t) => {
   })
 })
 
-test.only("View the correct variables", async (t) => {
+test("View the correct variables", async (t) => {
   const { contract } = t.context.accounts
 
   const result = await contract.view("nft_vars", {})

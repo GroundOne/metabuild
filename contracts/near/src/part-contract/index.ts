@@ -1,29 +1,31 @@
-import { TokenMetadata } from "../part-contract/metadata"
 import {
-  assert,
+  call,
+  initialize,
+  LookupMap,
   near,
   NearBindgen,
-  call,
-  view,
-  LookupMap,
   UnorderedMap,
-  initialize,
   Vector,
+  view,
 } from "near-sdk-js"
+import { TokenMetadata } from "../part-contract/metadata"
 import {
   internalNftTokens,
   internalSupplyForOwner,
   internalTokensForOwner,
   internalTotalSupply,
 } from "./enumeration"
-import {
-  internalGetValuesInVector,
-  internalIsValueInVector,
-  sumOfBytes,
-} from "./internal"
-import { NFTContractMetadata, internalNftMetadata } from "./metadata"
+import { internalNftMetadata, NFTContractMetadata } from "./metadata"
 import { internalMint } from "./mint"
 import { internalNftToken } from "./nft_core"
+import {
+  internalCashoutUnluckyPresaleParticipants,
+  internalDistributeAfterPresale,
+  internalMintForPresaleParticipants,
+  internalParticipatePresale,
+} from "./presale"
+import { internalMintSale } from "./sale"
+import { getValuesInVector } from "./utils"
 
 /// This spec can be treated like a version of the standard.
 export const NFT_METADATA_SPEC = "nft-1.0.0"
@@ -155,142 +157,22 @@ export class Contract {
 
   @call({ payableFunction: true })
   nft_participate_presale() {
-    assert(
-      !this.nft_isPresaleDone(),
-      `Presale is already finished is ${near.blockTimestamp()} ended ${
-        this.prelaunchEnd
-      }`
-    )
-
-    const isAlreadyParticipant = internalIsValueInVector(
-      near.signerAccountId(),
-      this.presaleParticipants
-    )
-
-    assert(!isAlreadyParticipant, `Sender already participants in the presale`)
-
-    const depositAmount = near.attachedDeposit() as bigint
-
-    assert(
-      +depositAmount.toString() >= this.price,
-      `Deposit amount ${depositAmount.toString()} must be PART price ${
-        this.price
-      }`
-    )
-
-    this.presaleParticipants.push(near.signerAccountId())
-
-    near.log(`Added ${near.signerAccountId()} to participants`)
+    return internalParticipatePresale({ contract: this })
   }
 
   @call({})
   nft_distribute_after_presale() {
-    assert(
-      near.currentAccountId() === this.ownerId,
-      `Only owner can distribute after presale`
-    )
-
-    // check that presale is finished
-    assert(
-      this.nft_isPresaleDone(),
-      `Please wait until the presale is finished ${this.prelaunchEnd}`
-    )
-
-    // check that it can only be called once
-    // assert(
-    //   this.saleStatus === SaleStatusEnum.PRESALE,
-    //   "Distribution was already initiated"
-    // )
-    this.saleStatus = SaleStatusEnum.PRESALEDISTRIBUTION
-
-    let presaleParticipants = internalGetValuesInVector(
-      this.presaleParticipants
-    )
-
-    let i = 0
-    while (i < this.presaleParticipants.length) {
-      const currentTotalSupply = this.reservedTokenIds.length + i
-
-      if (currentTotalSupply >= this.totalSupply) break
-
-      // random assign tokens to presale participants
-      const seed = near.randomSeed()
-      const sumOfSeed = sumOfBytes(seed)
-
-      const indexOfChosenParticipant =
-        sumOfSeed % this.presaleParticipants.length
-
-      const participant = this.presaleParticipants[indexOfChosenParticipant]
-      this.presaleDistribution.push(participant)
-
-      // remove participant from list
-      presaleParticipants.splice(indexOfChosenParticipant, 1)
-
-      i += 1
-    }
+    return internalDistributeAfterPresale({ contract: this })
   }
 
   @call({})
   nft_cashout_unlucky_presale_participants() {
-    assert(
-      near.currentAccountId() === this.ownerId,
-      `Only owner can cashout after presale`
-    )
-
-    // participants who were unlucky get cashed out
-    assert(
-      this.nft_isPresaleDone(),
-      `Please wait until the presale is finished ${this.prelaunchEnd}`
-    )
-
-    assert(
-      this.saleStatus === SaleStatusEnum.PRESALEDISTRIBUTION,
-      "Distribution was already initiated"
-    )
-    this.saleStatus = SaleStatusEnum.PRESALECASHOUT
-
-    const presaleParticipants = internalGetValuesInVector(
-      this.presaleParticipants
-    )
-    const presaleLuckyWinner = internalGetValuesInVector(
-      this.presaleDistribution
-    )
-
-    const unluckyParticipants = presaleParticipants.filter(
-      (x) => !presaleLuckyWinner.includes(x)
-    )
-
-    let i = 0
-    while (i < unluckyParticipants.length) {
-      const unluckyLoser = unluckyParticipants[i]
-
-      // TODO: Send participants token price back
-    }
+    return internalCashoutUnluckyPresaleParticipants({ contract: this })
   }
 
   @call({})
   nft_mint_for_presale_participants({ metadata }: { metadata: TokenMetadata }) {
-    assert(
-      near.currentAccountId() === this.ownerId,
-      `Only owner can mint for presale participants after presale`
-    )
-
-    assert(
-      this.saleStatus === SaleStatusEnum.PRESALECASHOUT,
-      "Distribution was already initiated"
-    )
-    this.saleStatus = SaleStatusEnum.SALE
-
-    let i = 0
-    while (i < this.presaleDistribution.length) {
-      const luckyWinner = this.presaleDistribution[i]
-
-      internalMint({
-        contract: this,
-        metadata,
-        receiverId: luckyWinner,
-      })
-    }
+    return internalMintForPresaleParticipants({ contract: this, metadata })
   }
 
   @call({ payableFunction: true })
@@ -301,32 +183,7 @@ export class Contract {
     metadata: TokenMetadata
     receiver_id: string
   }) {
-    assert(
-      this.nft_isPresaleDone(),
-      `Please wait until the presale is finished ${this.prelaunchEnd}`
-    )
-
-    assert(!this.nft_isSaleDone(), `The sale is finished ${this.saleEnd}`)
-
-    assert(
-      this.currentTokenId <= this.totalSupply,
-      `Total amount of tokens already minted ${this.totalSupply}`
-    )
-
-    const depositAmount = near.attachedDeposit() as bigint
-
-    assert(
-      +depositAmount.toString() >= this.price,
-      `Deposit amount ${depositAmount.toString()} must be PART price ${
-        this.price
-      }`
-    )
-
-    return internalMint({
-      contract: this,
-      metadata,
-      receiverId: receiver_id,
-    })
+    return internalMintSale({ contract: this, metadata, receiver_id })
   }
 
   // @call({})
@@ -400,12 +257,12 @@ export class Contract {
 
   @view({})
   nft_presale_participants() {
-    return internalGetValuesInVector(this.presaleParticipants)
+    return getValuesInVector(this.presaleParticipants)
   }
 
   @view({})
   nft_presale_distribution() {
-    return internalGetValuesInVector(this.presaleDistribution)
+    return getValuesInVector(this.presaleDistribution)
   }
 
   @view({})
