@@ -1,5 +1,6 @@
 import test from "ava"
 import { NEAR, Worker } from "near-workspaces"
+import { SaleStatusEnum } from "./utils"
 
 const meta_specification = {
   spec: "nft-1.0.0",
@@ -45,6 +46,25 @@ test.afterEach(async (t) => {
   await t.context.worker.tearDown().catch((error) => {
     console.log("Failed to tear down the worker:", error)
   })
+})
+
+test.only("View the correct variables", async (t) => {
+  const { contract } = t.context.accounts
+
+  const result = await contract.view("nft_vars", {})
+
+  t.is(result.currentTokenId, 1)
+  t.is(result.ownerId, "test.near")
+  t.is(result.projectName, constructor_args.projectName)
+  t.is(result.totalSupply, constructor_args.totalSupply)
+  t.is(result.price, constructor_args.price)
+  t.deepEqual(result.reservedTokenIds, {
+    length: 1,
+    prefix: "reservedTokenIds",
+  })
+  t.is(result.prelaunchEnd, constructor_args.prelaunchEnd)
+  t.is(result.saleEnd, constructor_args.saleEnd)
+  t.is(result.saleStatus, SaleStatusEnum.POSTSALE)
 })
 
 test("Call should fail minting when sale is already finished", async (t) => {

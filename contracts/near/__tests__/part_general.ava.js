@@ -1,5 +1,6 @@
 import test from "ava"
 import { NEAR, Worker } from "near-workspaces"
+import { SaleStatusEnum } from "./utils.js"
 
 const meta_specification = {
   spec: "nft-1.0.0",
@@ -71,6 +72,7 @@ test("View the correct variables", async (t) => {
   })
   t.is(result.prelaunchEnd, constructor_args.prelaunchEnd)
   t.is(result.saleEnd, constructor_args.saleEnd)
+  t.is(result.saleStatus, SaleStatusEnum.POSTSALE)
 })
 
 test("View the correct reserved token", async (t) => {

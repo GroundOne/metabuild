@@ -1,5 +1,6 @@
 import test from "ava"
 import { NEAR, Worker } from "near-workspaces"
+import { SaleStatusEnum } from "./utils"
 
 const meta_specification = {
   spec: "nft-1.0.0",
@@ -46,6 +47,52 @@ test.afterEach(async (t) => {
     console.log("Failed to tear down the worker:", error)
   })
 })
+
+test("View the correct variables", async (t) => {
+  const { contract } = t.context.accounts
+
+  const result = await contract.view("nft_vars", {})
+
+  t.is(result.currentTokenId, 1)
+  t.is(result.ownerId, "test.near")
+  t.is(result.projectName, constructor_args.projectName)
+  t.is(result.totalSupply, constructor_args.totalSupply)
+  t.is(result.price, constructor_args.price)
+  t.deepEqual(result.reservedTokenIds, {
+    length: 1,
+    prefix: "reservedTokenIds",
+  })
+  t.is(result.prelaunchEnd, constructor_args.prelaunchEnd)
+  t.is(result.saleEnd, constructor_args.saleEnd)
+  t.is(result.saleStatus, SaleStatusEnum.SALE)
+})
+
+test.only("Call distribute tokens after presale", async (t) => {
+  const { contract } = t.context.accounts
+
+  let result = await contract.view("nft_distribute_after_presale", {})
+
+  const bytes = string2Bin(result)
+  const sum = bytes.reduce((acc, inc) => {
+    acc += inc
+    return acc
+  }, 0)
+
+  console.log(`Seed ${result}`)
+  // console.log(`Seed ${result[0]}`)
+  // console.log(`Seed ${JSON.stringify(result)}`)
+
+  // const strBytes = new Uint8Array(result)
+  console.log(`Bytes ${sum}`)
+})
+
+function string2Bin(str) {
+  var result = []
+  for (var i = 0; i < str.length; i++) {
+    result.push(str.charCodeAt(i))
+  }
+  return result
+}
 
 test("Call mint new token", async (t) => {
   const { contract } = t.context.accounts
@@ -164,30 +211,3 @@ test("Call should fail minting after totalSupply of NFTs is reached", async (t) 
     })
   })
 })
-
-// test.only("Call distribute tokens after presale", async (t) => {
-//   const { contract } = t.context.accounts
-
-//   let result = await contract.view("nft_distribute_after_presale", {})
-
-//   const bytes = string2Bin(result)
-//   const sum = bytes.reduce((acc, inc) => {
-//     acc += inc
-//     return acc
-//   }, 0)
-
-//   console.log(`Seed ${result}`)
-//   // console.log(`Seed ${result[0]}`)
-//   // console.log(`Seed ${JSON.stringify(result)}`)
-
-//   // const strBytes = new Uint8Array(result)
-//   console.log(`Bytes ${sum}`)
-// })
-
-// function string2Bin(str) {
-//   var result = []
-//   for (var i = 0; i < str.length; i++) {
-//     result.push(str.charCodeAt(i))
-//   }
-//   return result
-// }

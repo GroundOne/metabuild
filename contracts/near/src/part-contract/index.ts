@@ -31,6 +31,14 @@ export const NFT_METADATA_SPEC = "nft-1.0.0"
 /// This is the name of the NFT standard we're using
 export const NFT_STANDARD_NAME = "nep171"
 
+export enum SaleStatusEnum {
+  PRESALE,
+  PRESALEDISTRIBUTION,
+  PRESALECASHOUT,
+  SALE,
+  POSTSALE,
+}
+
 @NearBindgen({ requireInit: true })
 export class Contract {
   ownerId: string
@@ -48,7 +56,7 @@ export class Contract {
   reservedTokenIds: Vector // stays in ownership of deployer
   presaleParticipants: Vector // candidates which buy into the presale
   presaleDistribution: Vector // tokens assigned to candidates
-  saleStatus: string
+  saleStatus: number
 
   tokensPerOwner: LookupMap
   tokensById: LookupMap
@@ -56,7 +64,7 @@ export class Contract {
   metadata: NFTContractMetadata
 
   constructor() {
-    const tenMinutes = 60 * 10 * 1e6 // nanosecods
+    const tenMinutes = 60 * 10 * 1e6 // nanoseconds
     const oneHour = 60 * 60 * 1e6
 
     const prelaunchEnd = +near.blockTimestamp().toString() + tenMinutes
@@ -69,6 +77,8 @@ export class Contract {
 
     this.prelaunchEnd = prelaunchEnd
     this.saleEnd = saleEnd
+
+    this.saleStatus = 9
 
     this.reservedTokenIds = new Vector("reservedTokenIds")
     this.presaleParticipants = new Vector("presaleParticipants")
@@ -114,12 +124,13 @@ export class Contract {
     if (metadata) this.metadata = metadata
 
     if (this.nft_isSaleDone()) {
-      this.saleStatus = "postsale"
+      this.saleStatus = SaleStatusEnum.POSTSALE
     } else if (this.nft_isPresaleDone()) {
-      this.saleStatus = "sale"
+      this.saleStatus = SaleStatusEnum.SALE
     } else {
-      this.saleStatus = "presale"
+      this.saleStatus = SaleStatusEnum.PRESALE
     }
+    near.log(`Sale status is ${SaleStatusEnum[this.saleStatus]}`)
 
     // mint all reserved tokens to owner
     near.log(
@@ -186,8 +197,11 @@ export class Contract {
     )
 
     // check that it can only be called once
-    assert(this.saleStatus === "presale", "Distribution was already initiated")
-    this.saleStatus = "presaleDistribution"
+    assert(
+      this.saleStatus === SaleStatusEnum.PRESALE,
+      "Distribution was already initiated"
+    )
+    this.saleStatus = SaleStatusEnum.PRESALEDISTRIBUTION
 
     let presaleParticipants = internalGetValuesInVector(
       this.presaleParticipants
@@ -230,10 +244,10 @@ export class Contract {
     )
 
     assert(
-      this.saleStatus === "presaleDistribution",
+      this.saleStatus === SaleStatusEnum.PRESALEDISTRIBUTION,
       "Distribution was already initiated"
     )
-    this.saleStatus = "presaleCashout"
+    this.saleStatus = SaleStatusEnum.PRESALECASHOUT
 
     const presaleParticipants = internalGetValuesInVector(
       this.presaleParticipants
@@ -262,10 +276,10 @@ export class Contract {
     )
 
     assert(
-      this.saleStatus === "presaleCashout",
+      this.saleStatus === SaleStatusEnum.PRESALECASHOUT,
       "Distribution was already initiated"
     )
-    this.saleStatus = "sale"
+    this.saleStatus = SaleStatusEnum.SALE
 
     let i = 0
     while (i < this.presaleDistribution.length) {
