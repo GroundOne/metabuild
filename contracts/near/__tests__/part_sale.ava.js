@@ -1,6 +1,6 @@
 import test from "ava"
 import { NEAR, Worker } from "near-workspaces"
-import { SaleStatusEnum } from "./utils"
+import { SaleStatusEnum } from "./utils.js"
 
 const meta_specification = {
   spec: "nft-1.0.0",
@@ -9,7 +9,7 @@ const meta_specification = {
 }
 
 const constructor_args = {
-  ownerId: "test.near",
+  ownerId: "part.test.near",
   projectName: "GroundOne PART",
   totalSupply: 3,
   price: "1000000000000000000000",
@@ -67,32 +67,15 @@ test("View the correct variables", async (t) => {
   t.is(result.saleStatus, SaleStatusEnum.SALE)
 })
 
-test.only("Call distribute tokens after presale", async (t) => {
-  const { contract } = t.context.accounts
+test.only("Call distribute tokens after presale when there are participants", async (t) => {
+  const { contract, root } = t.context.accounts
 
-  let result = await contract.view("nft_distribute_after_presale", {})
+  let r = await contract.view("nft_vars")
+  console.log(`RE ${JSON.stringify(r)}`)
 
-  const bytes = string2Bin(result)
-  const sum = bytes.reduce((acc, inc) => {
-    acc += inc
-    return acc
-  }, 0)
-
-  console.log(`Seed ${result}`)
-  // console.log(`Seed ${result[0]}`)
-  // console.log(`Seed ${JSON.stringify(result)}`)
-
-  // const strBytes = new Uint8Array(result)
-  console.log(`Bytes ${sum}`)
+  const attachedDeposit = NEAR.parse("1 N").toString()
+  let result = await contract.call(contract, "nft_distribute_after_presale", {})
 })
-
-function string2Bin(str) {
-  var result = []
-  for (var i = 0; i < str.length; i++) {
-    result.push(str.charCodeAt(i))
-  }
-  return result
-}
 
 test("Call mint new token", async (t) => {
   const { contract } = t.context.accounts

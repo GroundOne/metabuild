@@ -1,6 +1,6 @@
 import test from "ava"
 import { NEAR, Worker } from "near-workspaces"
-import { SaleStatusEnum } from "./utils"
+import { SaleStatusEnum } from "./utils.js"
 
 const meta_specification = {
   spec: "nft-1.0.0",
@@ -14,8 +14,8 @@ const constructor_args = {
   totalSupply: 3,
   price: "1000000000000000000000",
   reservedTokenIds: [`2`],
-  prelaunchEnd: Number(Date.now() + 1e8 + "000000"), // add 100 seconds, is prelaunch now
-  saleEnd: Number(Date.now() + 1e9 + "000000"), // add 1_000 seconds, not yet started
+  prelaunchEnd: Number(Date.now() + 1e6 + "000000"), // add 1 second, is prelaunch now
+  saleEnd: Number(Date.now() + 1e8 + "000000"), // add 100 seconds, not yet started
   metadata: meta_specification,
 }
 
@@ -122,3 +122,61 @@ test("Call should fail minting when presale not finished", async (t) => {
     return contract.call(contract, "nft_mint", token, { attachedDeposit })
   })
 })
+
+test("Call can't distribute tokens when presale not finished", async (t) => {
+  const { contract, root, ali, bob } = t.context.accounts
+
+  const attachedDeposit = NEAR.parse("1 N").toString()
+  await ali.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+  await bob.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+
+  let result = await root.call(contract, "nft_presale_participants", {})
+  t.is(result.length, 2)
+
+  await t.throwsAsync(async () => {
+    return await root.call(contract, "nft_distribute_after_presale", {})
+  })
+})
+
+test("Call can't distribute tokens when caller not owner", async (t) => {
+  const { contract, root, ali, bob } = t.context.accounts
+
+  const attachedDeposit = NEAR.parse("1 N").toString()
+  await ali.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+  await bob.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+
+  let result = await root.call(contract, "nft_presale_participants", {})
+  t.is(result.length, 2)
+
+  await t.throwsAsync(async () => {
+    return await contract.call(contract, "nft_distribute_after_presale", {})
+  })
+})
+
+// test.only("Call distribute tokens after presale when there are participants", async (t) => {
+//   const { contract, root, ali, bob } = t.context.accounts
+
+//   const attachedDeposit = NEAR.parse("1 N").toString()
+//   await ali.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+//   await bob.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+
+//   let result = await root.call(contract, "nft_presale_participants", {})
+//   t.is(result.length, 2)
+
+//   t.timeout(2000 * 1e3) // wait 2 seconds, FIXME how to advance blockchain time?
+//   await root.call(contract, "nft_distribute_after_presale", {})
+// })
+
+// test.only("Call can't distribute tokens after presale when there are no participants", async (t) => {
+//   const { contract, root, ali, bob } = t.context.accounts
+
+//   const attachedDeposit = NEAR.parse("1 N").toString()
+//   await ali.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+//   await bob.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+
+//   let result = await root.call(contract, "nft_presale_participants", {})
+//   t.is(result.length, 2)
+
+//   await root.call(contract, "nft_distribute_after_presale", {})
+//   // t.is(result.length, 2)
+// })

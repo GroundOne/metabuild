@@ -183,7 +183,7 @@ export class Contract {
     near.log(`Added ${near.signerAccountId()} to participants`)
   }
 
-  @view({})
+  @call({})
   nft_distribute_after_presale() {
     assert(
       near.currentAccountId() === this.ownerId,
@@ -197,10 +197,10 @@ export class Contract {
     )
 
     // check that it can only be called once
-    assert(
-      this.saleStatus === SaleStatusEnum.PRESALE,
-      "Distribution was already initiated"
-    )
+    // assert(
+    //   this.saleStatus === SaleStatusEnum.PRESALE,
+    //   "Distribution was already initiated"
+    // )
     this.saleStatus = SaleStatusEnum.PRESALEDISTRIBUTION
 
     let presaleParticipants = internalGetValuesInVector(
