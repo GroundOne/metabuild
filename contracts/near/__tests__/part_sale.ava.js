@@ -164,3 +164,30 @@ test("Call should fail minting after totalSupply of NFTs is reached", async (t) 
     })
   })
 })
+
+// test.only("Call distribute tokens after presale", async (t) => {
+//   const { contract } = t.context.accounts
+
+//   let result = await contract.view("nft_distribute_after_presale", {})
+
+//   const bytes = string2Bin(result)
+//   const sum = bytes.reduce((acc, inc) => {
+//     acc += inc
+//     return acc
+//   }, 0)
+
+//   console.log(`Seed ${result}`)
+//   // console.log(`Seed ${result[0]}`)
+//   // console.log(`Seed ${JSON.stringify(result)}`)
+
+//   // const strBytes = new Uint8Array(result)
+//   console.log(`Bytes ${sum}`)
+// })
+
+// function string2Bin(str) {
+//   var result = []
+//   for (var i = 0; i < str.length; i++) {
+//     result.push(str.charCodeAt(i))
+//   }
+//   return result
+// }

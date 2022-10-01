@@ -1,3 +1,4 @@
+import { TokenMetadata } from "../part-contract/metadata"
 import {
   assert,
   near,
@@ -15,7 +16,11 @@ import {
   internalTokensForOwner,
   internalTotalSupply,
 } from "./enumeration"
-import { internalGetValuesInVector, internalIsValueInVector } from "./internal"
+import {
+  internalGetValuesInVector,
+  internalIsValueInVector,
+  sumOfBytes,
+} from "./internal"
 import { NFTContractMetadata, internalNftMetadata } from "./metadata"
 import { internalMint } from "./mint"
 import { internalNftToken } from "./nft_core"
@@ -37,11 +42,13 @@ export class Contract {
   totalSupply: number = 0 // maximum amount of PARTs
   price: number // deposit for each PART
   prelaunchEnd: number // blockTimestamp when regular sales starts
-  saleEnd: string // blockTimestamp when sale has finished
+  saleEnd: number // blockTimestamp when sale has finished
 
   // complex types
   reservedTokenIds: Vector // stays in ownership of deployer
   presaleParticipants: Vector // candidates which buy into the presale
+  presaleDistribution: Vector // tokens assigned to candidates
+  saleStatus: string
 
   tokensPerOwner: LookupMap
   tokensById: LookupMap
@@ -61,10 +68,11 @@ export class Contract {
     this.price = 0
 
     this.prelaunchEnd = prelaunchEnd
-    this.saleEnd = saleEnd.toString()
+    this.saleEnd = saleEnd
 
     this.reservedTokenIds = new Vector("reservedTokenIds")
     this.presaleParticipants = new Vector("presaleParticipants")
+    this.presaleDistribution = new Vector("presaleDistribution")
     this.tokensPerOwner = new LookupMap("tokensPerOwner")
     this.tokensById = new LookupMap("tokensById")
     this.tokenMetadataById = new UnorderedMap("tokenMetadataById")
@@ -93,7 +101,7 @@ export class Contract {
     price: number
     reservedTokenIds?: string[]
     prelaunchEnd?: number
-    saleEnd?: string
+    saleEnd?: number
     metadata?: NFTContractMetadata
   }) {
     this.ownerId = ownerId
@@ -104,6 +112,14 @@ export class Contract {
     if (prelaunchEnd) this.prelaunchEnd = prelaunchEnd
     if (saleEnd) this.saleEnd = saleEnd
     if (metadata) this.metadata = metadata
+
+    if (this.nft_isSaleDone()) {
+      this.saleStatus = "postsale"
+    } else if (this.nft_isPresaleDone()) {
+      this.saleStatus = "sale"
+    } else {
+      this.saleStatus = "presale"
+    }
 
     // mint all reserved tokens to owner
     near.log(
@@ -156,12 +172,119 @@ export class Contract {
     near.log(`Added ${near.signerAccountId()} to participants`)
   }
 
+  @view({})
+  nft_distribute_after_presale() {
+    assert(
+      near.currentAccountId() === this.ownerId,
+      `Only owner can distribute after presale`
+    )
+
+    // check that presale is finished
+    assert(
+      this.nft_isPresaleDone(),
+      `Please wait until the presale is finished ${this.prelaunchEnd}`
+    )
+
+    // check that it can only be called once
+    assert(this.saleStatus === "presale", "Distribution was already initiated")
+    this.saleStatus = "presaleDistribution"
+
+    let presaleParticipants = internalGetValuesInVector(
+      this.presaleParticipants
+    )
+
+    let i = 0
+    while (i < this.presaleParticipants.length) {
+      const currentTotalSupply = this.reservedTokenIds.length + i
+
+      if (currentTotalSupply >= this.totalSupply) break
+
+      // random assign tokens to presale participants
+      const seed = near.randomSeed()
+      const sumOfSeed = sumOfBytes(seed)
+
+      const indexOfChosenParticipant =
+        sumOfSeed % this.presaleParticipants.length
+
+      const participant = this.presaleParticipants[indexOfChosenParticipant]
+      this.presaleDistribution.push(participant)
+
+      // remove participant from list
+      presaleParticipants.splice(indexOfChosenParticipant, 1)
+
+      i += 1
+    }
+  }
+
+  @call({})
+  nft_cashout_unlucky_presale_participants() {
+    assert(
+      near.currentAccountId() === this.ownerId,
+      `Only owner can cashout after presale`
+    )
+
+    // participants who were unlucky get cashed out
+    assert(
+      this.nft_isPresaleDone(),
+      `Please wait until the presale is finished ${this.prelaunchEnd}`
+    )
+
+    assert(
+      this.saleStatus === "presaleDistribution",
+      "Distribution was already initiated"
+    )
+    this.saleStatus = "presaleCashout"
+
+    const presaleParticipants = internalGetValuesInVector(
+      this.presaleParticipants
+    )
+    const presaleLuckyWinner = internalGetValuesInVector(
+      this.presaleDistribution
+    )
+
+    const unluckyParticipants = presaleParticipants.filter(
+      (x) => !presaleLuckyWinner.includes(x)
+    )
+
+    let i = 0
+    while (i < unluckyParticipants.length) {
+      const unluckyLoser = unluckyParticipants[i]
+
+      // TODO: Send participants token price back
+    }
+  }
+
+  @call({})
+  nft_mint_for_presale_participants({ metadata }: { metadata: TokenMetadata }) {
+    assert(
+      near.currentAccountId() === this.ownerId,
+      `Only owner can mint for presale participants after presale`
+    )
+
+    assert(
+      this.saleStatus === "presaleCashout",
+      "Distribution was already initiated"
+    )
+    this.saleStatus = "sale"
+
+    let i = 0
+    while (i < this.presaleDistribution.length) {
+      const luckyWinner = this.presaleDistribution[i]
+
+      internalMint({
+        contract: this,
+        metadata,
+        receiverId: luckyWinner,
+      })
+    }
+  }
+
   @call({ payableFunction: true })
   nft_mint({
     metadata,
     receiver_id,
   }: {
-    metadata: Record<string, any>
+    metadata: TokenMetadata
     receiver_id: string
   }) {
     assert(
@@ -192,8 +315,10 @@ export class Contract {
     })
   }
 
-  @call({})
-  nft_payout_owner() {}
+  // @call({})
+  // nft_payout_owner() {
+  //   // TODO
+  // }
 
   /* CORE */
   @view({})
@@ -255,6 +380,7 @@ export class Contract {
       reservedTokenIds: this.reservedTokenIds,
       prelaunchEnd: this.prelaunchEnd,
       saleEnd: this.saleEnd,
+      saleStatus: this.saleStatus,
     }
   }
 
@@ -264,13 +390,18 @@ export class Contract {
   }
 
   @view({})
+  nft_presale_distribution() {
+    return internalGetValuesInVector(this.presaleDistribution)
+  }
+
+  @view({})
   nft_isPresaleDone() {
-    return +this.prelaunchEnd < near.blockTimestamp()
+    return this.prelaunchEnd < near.blockTimestamp()
   }
 
   @view({})
   nft_isSaleDone() {
-    return +this.saleEnd < near.blockTimestamp()
+    return this.saleEnd < near.blockTimestamp()
   }
 
   /* METADATA */

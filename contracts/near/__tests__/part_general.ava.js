@@ -165,3 +165,11 @@ test("View presale participants", async (t) => {
 
   t.is(result.length, 0)
 })
+
+test("View presale distribution", async (t) => {
+  const { contract } = t.context.accounts
+
+  const result = await contract.view("nft_presale_distribution", {})
+
+  t.is(result.length, 0)
+})

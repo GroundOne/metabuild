@@ -263,3 +263,22 @@ export function internalGetValuesInVector(vector: Vector) {
 
   return values
 }
+
+export function sumOfBytes(seed: String) {
+  const bytes = string2Bin(seed)
+
+  const sum = bytes.reduce((acc, inc) => {
+    acc += inc
+    return acc
+  }, 0)
+
+  return sum
+}
+
+function string2Bin(str: String) {
+  var result = []
+  for (var i = 0; i < str.length; i++) {
+    result.push(str.charCodeAt(i))
+  }
+  return result
+}
