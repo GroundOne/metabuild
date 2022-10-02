@@ -11,7 +11,7 @@ const meta_specification = {
 const constructor_args = {
   ownerId: "part.test.near",
   projectName: "GroundOne PART",
-  totalSupply: 3,
+  totalSupply: 4,
   price: "1000000000000000000000",
   reservedTokenIds: [`2`],
   prelaunchEnd: Number(Date.now() - 1e6 + "000000"), // presale has finished
@@ -67,14 +67,70 @@ test("View the correct variables", async (t) => {
   t.is(result.saleStatus, SaleStatusEnum.SALE)
 })
 
-test.only("Call distribute tokens after presale when there are participants", async (t) => {
-  const { contract, root } = t.context.accounts
-
-  let r = await contract.view("nft_vars")
-  console.log(`RE ${JSON.stringify(r)}`)
+test("Call distribute tokens after presale when there are participants", async (t) => {
+  const { contract, root, ali, bob } = t.context.accounts
 
   const attachedDeposit = NEAR.parse("1 N").toString()
-  let result = await contract.call(contract, "nft_distribute_after_presale", {})
+  await root.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+  await contract.call(
+    contract,
+    "nft_participate_presale",
+    {},
+    { attachedDeposit }
+  )
+  await ali.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+  await bob.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+
+  let result = await root.call(contract, "nft_presale_participants", {})
+  t.is(result.length, 4)
+
+  // t.timeout(2000 * 1e3) // wait 2 seconds, FIXME how to advance blockchain time?
+  await root.call(contract, "nft_distribute_after_presale", {})
+
+  result = await contract.view("nft_presale_distribution", {})
+  t.is(result.length, 3)
+})
+
+test("Call distribute tokens after presale when there are no participants", async (t) => {
+  const { contract, root, ali, bob } = t.context.accounts
+
+  let result = await root.call(contract, "nft_presale_participants", {})
+  t.is(result.length, 0)
+
+  // t.timeout(2000 * 1e3) // wait 2 seconds, FIXME how to advance blockchain time?
+  await root.call(contract, "nft_distribute_after_presale", {})
+
+  result = await contract.view("nft_presale_distribution", {})
+  t.is(result.length, 0)
+})
+
+test.only("Call cashout unlucky participants after presale", async (t) => {
+  // const { contract, root, ali, bob } = t.context.accounts
+  const { worker } = t.context
+
+  console.log(`Result ${JSON.stringify(near)}`)
+  // let result = await contract.accountBalance()
+  t.pass()
+
+  // const attachedDeposit = NEAR.parse("1 N").toString()
+  // await root.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+  // await contract.call(
+  //   contract,
+  //   "nft_participate_presale",
+  //   {},
+  //   { attachedDeposit }
+  // )
+  // await ali.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+  // await bob.call(contract, "nft_participate_presale", {}, { attachedDeposit })
+
+  // let result = await root.call(contract, "nft_presale_participants", {})
+  // t.is(result.length, 4)
+
+  // // t.timeout(2000 * 1e3) // wait 2 seconds, FIXME how to advance blockchain time?
+  // await root.call(contract, "nft_distribute_after_presale", {})
+
+  // result = await contract.view("nft_presale_distribution", {})
+  // t.is(result.length, 3)
 })
 
 test("Call mint new token", async (t) => {

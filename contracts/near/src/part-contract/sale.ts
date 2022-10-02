@@ -1,5 +1,5 @@
 import { assert, near } from "near-sdk-js"
-import { Contract } from "./index"
+import { Contract, SaleStatusEnum } from "./index"
 import { TokenMetadata } from "./metadata"
 import { internalMint } from "./mint"
 
@@ -22,6 +22,11 @@ export function internalMintSale({
   assert(
     contract.currentTokenId <= contract.totalSupply,
     `Total amount of tokens already minted ${contract.totalSupply}`
+  )
+
+  assert(
+    SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.SALE,
+    "Can only be called when prelaunchEnd, distribution, cashout and presale minting finished and status `sale`"
   )
 
   const depositAmount = near.attachedDeposit() as bigint

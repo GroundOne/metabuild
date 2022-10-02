@@ -1,8 +1,8 @@
 export const SaleStatusEnum = {
-  UNDEFINED: 0,
-  PRESALE: 1,
-  PRESALEDISTRIBUTION: 2,
-  PRESALECASHOUT: 3,
-  SALE: 4,
-  POSTSALE: 5,
+  UNDEFINED: "unset",
+  PRESALE: "presale",
+  PRESALEDISTRIBUTION: "presaledistribution",
+  PRESALECASHOUT: "presalecashout",
+  SALE: "sale",
+  POSTSALE: "postsale",
 }

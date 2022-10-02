@@ -18,6 +18,8 @@
 
 - call methods on behave of other account?
 
+- how to check balances in testing
+
 ### General
 
 - is the randomize logic with `seed` sound or can be improved?
@@ -28,3 +30,5 @@
 
   - for testing `near-workspaces` there's { NEAR } has some utility functions.
   - Does the near-sdk-js have equivalent functionality?
+
+- how to transfer NEAR in the contract

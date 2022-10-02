@@ -1,4 +1,5 @@
 import {
+  assert,
   call,
   initialize,
   LookupMap,
@@ -35,12 +36,12 @@ export const NFT_METADATA_SPEC = "nft-1.0.0"
 export const NFT_STANDARD_NAME = "nep171"
 
 export enum SaleStatusEnum {
-  UNDEFINED,
-  PRESALE,
-  PRESALEDISTRIBUTION,
-  PRESALECASHOUT,
-  SALE,
-  POSTSALE,
+  UNDEFINED = "unset",
+  PRESALE = "presale",
+  PRESALEDISTRIBUTION = "presaledistribution",
+  PRESALECASHOUT = "presalecashout",
+  SALE = "sale",
+  POSTSALE = "postsale",
 }
 
 @NearBindgen({ requireInit: true })
@@ -60,7 +61,7 @@ export class Contract {
   reservedTokenIds: Vector // stays in ownership of deployer
   presaleParticipants: Vector // candidates which buy into the presale
   presaleDistribution: Vector // tokens assigned to candidates
-  saleStatus: number
+  saleStatus: string
 
   tokensPerOwner: LookupMap
   tokensById: LookupMap
@@ -68,11 +69,11 @@ export class Contract {
   metadata: NFTContractMetadata
 
   constructor() {
-    const tenMinutes = 60 * 10 * 1e6 // nanoseconds
-    const oneHour = 60 * 60 * 1e6
+    const threeMinutes = 3 * 60 * 1e9 // nanoseconds
+    const fifteenMinutes = 15 * 60 * 1e9
 
-    const prelaunchEnd = +near.blockTimestamp().toString() + tenMinutes
-    const saleEnd = +near.blockTimestamp().toString() + oneHour
+    const prelaunchEnd = +near.blockTimestamp().toString() + threeMinutes
+    const saleEnd = +near.blockTimestamp().toString() + fifteenMinutes
 
     this.ownerId = ""
     this.projectName = "PART Token"
@@ -104,9 +105,22 @@ export class Contract {
     this.projectName = initArgs.projectName
     this.totalSupply = initArgs.totalSupply
     this.price = initArgs.price
+
     if (initArgs.prelaunchEnd) this.prelaunchEnd = initArgs.prelaunchEnd
-    if (initArgs.saleEnd) this.saleEnd = initArgs.saleEnd
+
+    if (initArgs.saleEnd) {
+      if (initArgs.prelaunchEnd) {
+        assert(
+          initArgs.prelaunchEnd < initArgs.saleEnd,
+          "PresaleEnd must be smaller than SaleEnd"
+        )
+      }
+
+      this.saleEnd = initArgs.saleEnd
+    }
+
     if (initArgs.metadata) this.metadata = initArgs.metadata
+
     if (this.nft_isSaleDone()) {
       this.saleStatus = SaleStatusEnum.POSTSALE
     } else if (this.nft_isPresaleDone()) {
@@ -166,6 +180,10 @@ export class Contract {
   //   // TODO
   // }
 
+  /* 
+    VIEWS 
+  */
+
   /* CORE */
   @view({})
   //get the information for a specific token ID
@@ -211,6 +229,7 @@ export class Contract {
     return internalSupplyForOwner({ contract: this, accountId: account_id })
   }
 
+  /* GENERAL */
   @view({})
   nft_vars() {
     return {
@@ -227,15 +246,24 @@ export class Contract {
   }
 
   @view({})
+  //Query for all the tokens for an owner
+  nft_metadata() {
+    return internalNftMetadata({ contract: this })
+  }
+
+  /* PRESALE */
+  @view({})
   nft_presale_participants() {
     return getValuesInVector(this.presaleParticipants)
   }
 
   @view({})
   nft_presale_distribution() {
+    // return this.presaleDistribution
     return getValuesInVector(this.presaleDistribution)
   }
 
+  /* SALE STATUS */
   @view({})
   nft_isPresaleDone() {
     return this.prelaunchEnd < near.blockTimestamp()
@@ -246,10 +274,8 @@ export class Contract {
     return this.saleEnd < near.blockTimestamp()
   }
 
-  /* METADATA */
   @view({})
-  //Query for all the tokens for an owner
-  nft_metadata() {
-    return internalNftMetadata({ contract: this })
+  nft_current_block_time() {
+    return near.blockTimestamp().toString()
   }
 }

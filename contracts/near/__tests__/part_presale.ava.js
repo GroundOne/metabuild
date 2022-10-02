@@ -152,31 +152,3 @@ test("Call can't distribute tokens when caller not owner", async (t) => {
     return await contract.call(contract, "nft_distribute_after_presale", {})
   })
 })
-
-// test.only("Call distribute tokens after presale when there are participants", async (t) => {
-//   const { contract, root, ali, bob } = t.context.accounts
-
-//   const attachedDeposit = NEAR.parse("1 N").toString()
-//   await ali.call(contract, "nft_participate_presale", {}, { attachedDeposit })
-//   await bob.call(contract, "nft_participate_presale", {}, { attachedDeposit })
-
-//   let result = await root.call(contract, "nft_presale_participants", {})
-//   t.is(result.length, 2)
-
-//   t.timeout(2000 * 1e3) // wait 2 seconds, FIXME how to advance blockchain time?
-//   await root.call(contract, "nft_distribute_after_presale", {})
-// })
-
-// test.only("Call can't distribute tokens after presale when there are no participants", async (t) => {
-//   const { contract, root, ali, bob } = t.context.accounts
-
-//   const attachedDeposit = NEAR.parse("1 N").toString()
-//   await ali.call(contract, "nft_participate_presale", {}, { attachedDeposit })
-//   await bob.call(contract, "nft_participate_presale", {}, { attachedDeposit })
-
-//   let result = await root.call(contract, "nft_presale_participants", {})
-//   t.is(result.length, 2)
-
-//   await root.call(contract, "nft_distribute_after_presale", {})
-//   // t.is(result.length, 2)
-// })

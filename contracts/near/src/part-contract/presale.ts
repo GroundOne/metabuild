@@ -5,12 +5,12 @@ import { internalMint } from "./mint"
 import { getValuesInVector, internalSumOfBytes, isValueInVector } from "./utils"
 
 export function internalParticipatePresale({ contract }) {
-  assert(
-    !contract.nft_isPresaleDone(),
-    `Presale is already finished is ${near.blockTimestamp()} ended ${
-      contract.prelaunchEnd
-    }`
-  )
+  // assert(
+  //   !contract.nft_isPresaleDone(),
+  //   `Presale is already finished is ${near.blockTimestamp()} ended ${
+  //     contract.prelaunchEnd
+  //   }`
+  // )
 
   const isAlreadyParticipant = isValueInVector(
     near.signerAccountId(),
@@ -44,15 +44,15 @@ export function internalDistributeAfterPresale({
   )
 
   // check that presale is finished
-  assert(
-    contract.nft_isPresaleDone(),
-    `Please wait until the presale is finished ${contract.prelaunchEnd}`
-  )
+  // assert(
+  //   contract.nft_isPresaleDone(),
+  //   `Please wait until the presale is finished ${contract.prelaunchEnd}`
+  // )
 
   // check that it can only be called once
   // assert(
-  //   contract.saleStatus === SaleStatusEnum.PRESALE,
-  //   "Distribution was already initiated"
+  //   SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALE,
+  //   "Can only be called when prelaunchEnd finished and status `presale`"
   // )
   contract.saleStatus = SaleStatusEnum.PRESALEDISTRIBUTION
 
@@ -68,10 +68,9 @@ export function internalDistributeAfterPresale({
     const seed = near.randomSeed()
     const sumOfSeed = internalSumOfBytes(seed)
 
-    const indexOfChosenParticipant =
-      sumOfSeed % contract.presaleParticipants.length
+    const indexOfChosenParticipant = sumOfSeed % presaleParticipants.length
 
-    const participant = contract.presaleParticipants[indexOfChosenParticipant]
+    const participant = presaleParticipants[indexOfChosenParticipant]
     contract.presaleDistribution.push(participant)
 
     // remove participant from list
@@ -92,14 +91,14 @@ export function internalCashoutUnluckyPresaleParticipants({
   )
 
   // participants who were unlucky get cashed out
-  assert(
-    contract.nft_isPresaleDone(),
-    `Please wait until the presale is finished ${contract.prelaunchEnd}`
-  )
+  // assert(
+  //   contract.nft_isPresaleDone(),
+  //   `Please wait until the presale is finished ${contract.prelaunchEnd}`
+  // )
 
   assert(
-    contract.saleStatus === SaleStatusEnum.PRESALEDISTRIBUTION,
-    "Distribution was already initiated"
+    SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALEDISTRIBUTION,
+    "Can only be called when prelaunchEnd and distribution finished and status `presaledistribution`"
   )
   contract.saleStatus = SaleStatusEnum.PRESALECASHOUT
 
@@ -114,7 +113,7 @@ export function internalCashoutUnluckyPresaleParticipants({
   while (i < unluckyParticipants.length) {
     const unluckyLoser = unluckyParticipants[i]
 
-    // TODO: Send participants token price back
+    this.transfer(unluckyLoser, this.price)
   }
 }
 
@@ -131,8 +130,8 @@ export function internalMintForPresaleParticipants({
   )
 
   assert(
-    contract.saleStatus === SaleStatusEnum.PRESALECASHOUT,
-    "Distribution was already initiated"
+    SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALECASHOUT,
+    "Can only be called when prelaunchEnd, distribution and cashout finished and status `presalecashout`"
   )
   contract.saleStatus = SaleStatusEnum.SALE
 
