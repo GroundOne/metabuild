@@ -1,5 +1,5 @@
 import { assert, near } from "near-sdk-js"
-import { SaleStatusEnum } from "./index"
+import { Contract, SaleStatusEnum } from "./index"
 import { TokenMetadata } from "./metadata"
 import { internalMint } from "./mint"
 import { getValuesInVector, internalSumOfBytes, isValueInVector } from "./utils"
@@ -33,7 +33,11 @@ export function internalParticipatePresale({ contract }) {
   near.log(`Added ${near.signerAccountId()} to participants`)
 }
 
-export function internalDistributeAfterPresale({ contract }) {
+export function internalDistributeAfterPresale({
+  contract,
+}: {
+  contract: Contract
+}) {
   assert(
     near.currentAccountId() === contract.ownerId,
     `Only owner can distribute after presale`
@@ -77,7 +81,11 @@ export function internalDistributeAfterPresale({ contract }) {
   }
 }
 
-export function internalCashoutUnluckyPresaleParticipants({ contract }) {
+export function internalCashoutUnluckyPresaleParticipants({
+  contract,
+}: {
+  contract: Contract
+}) {
   assert(
     near.currentAccountId() === contract.ownerId,
     `Only owner can cashout after presale`
@@ -114,7 +122,7 @@ export function internalMintForPresaleParticipants({
   contract,
   metadata,
 }: {
-  contract
+  contract: Contract
   metadata: TokenMetadata
 }) {
   assert(

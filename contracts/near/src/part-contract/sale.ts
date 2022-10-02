@@ -1,4 +1,5 @@
 import { assert, near } from "near-sdk-js"
+import { Contract } from "./index"
 import { TokenMetadata } from "./metadata"
 import { internalMint } from "./mint"
 
@@ -7,7 +8,7 @@ export function internalMintSale({
   metadata,
   receiver_id,
 }: {
-  contract
+  contract: Contract
   metadata: TokenMetadata
   receiver_id: string
 }) {

@@ -106,11 +106,13 @@ export class Token {
     nextApprovalId: number
   }) {
     //owner of the token
-    ;(this.owner_id = ownerId),
-      //list of approved account IDs that have access to transfer the token. This maps an account ID to an approval ID
-      (this.approved_account_ids = approvedAccountIds),
-      //the next approval ID to give out.
-      (this.next_approval_id = nextApprovalId)
+    this.owner_id = ownerId
+
+    //list of approved account IDs that have access to transfer the token. This maps an account ID to an approval ID
+    this.approved_account_ids = approvedAccountIds
+
+    //the next approval ID to give out.
+    this.next_approval_id = nextApprovalId
   }
 }
 

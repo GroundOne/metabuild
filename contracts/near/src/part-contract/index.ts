@@ -25,6 +25,7 @@ import {
   internalParticipatePresale,
 } from "./presale"
 import { internalMintSale } from "./sale"
+import { InitializeArgs } from "./types"
 import { getValuesInVector } from "./utils"
 
 /// This spec can be treated like a version of the standard.
@@ -98,34 +99,14 @@ export class Contract {
   }
 
   @initialize({})
-  init({
-    ownerId,
-    projectName,
-    totalSupply,
-    price,
-    reservedTokenIds,
-    prelaunchEnd,
-    saleEnd,
-    metadata,
-  }: {
-    ownerId: string
-    projectName: string
-    totalSupply: number
-    price: number
-    reservedTokenIds?: string[]
-    prelaunchEnd?: number
-    saleEnd?: number
-    metadata?: NFTContractMetadata
-  }) {
-    this.ownerId = ownerId
-    this.projectName = projectName
-    this.totalSupply = totalSupply
-    this.price = price
-
-    if (prelaunchEnd) this.prelaunchEnd = prelaunchEnd
-    if (saleEnd) this.saleEnd = saleEnd
-    if (metadata) this.metadata = metadata
-
+  init(initArgs: InitializeArgs) {
+    this.ownerId = initArgs.ownerId
+    this.projectName = initArgs.projectName
+    this.totalSupply = initArgs.totalSupply
+    this.price = initArgs.price
+    if (initArgs.prelaunchEnd) this.prelaunchEnd = initArgs.prelaunchEnd
+    if (initArgs.saleEnd) this.saleEnd = initArgs.saleEnd
+    if (initArgs.metadata) this.metadata = initArgs.metadata
     if (this.nft_isSaleDone()) {
       this.saleStatus = SaleStatusEnum.POSTSALE
     } else if (this.nft_isPresaleDone()) {
@@ -136,16 +117,15 @@ export class Contract {
     near.log(`Sale status is ${SaleStatusEnum[this.saleStatus]}`)
 
     // mint all reserved tokens to owner
-    near.log(
-      `Following Tokens will be reserved: ${JSON.stringify(reservedTokenIds)}`
-    )
+    if (initArgs.reservedTokenIds) {
+      const reservedTokenIds = initArgs.reservedTokenIds
+      near.log(
+        `Following Tokens will be reserved: ${JSON.stringify(reservedTokenIds)}`
+      )
 
-    if (reservedTokenIds) {
       reservedTokenIds.forEach((reservedTokenId) => {
         this.reservedTokenIds.push(reservedTokenId.toString())
-
         near.log(`Minting Reserved Token with Id ${reservedTokenId}`)
-
         internalMint({
           contract: this,
           metadata: this.metadata,
@@ -177,14 +157,8 @@ export class Contract {
   }
 
   @call({ payableFunction: true })
-  nft_mint({
-    metadata,
-    receiver_id,
-  }: {
-    metadata: TokenMetadata
-    receiver_id: string
-  }) {
-    return internalMintSale({ contract: this, metadata, receiver_id })
+  nft_mint(mintArgs: { metadata: TokenMetadata; receiver_id: string }) {
+    return internalMintSale({ contract: this, ...mintArgs })
   }
 
   // @call({})
@@ -208,12 +182,8 @@ export class Contract {
 
   @view({})
   //Query for nft tokens on the contract regardless of the owner using pagination
-  nft_tokens({ from_index, limit }: { from_index?: string; limit?: number }) {
-    return internalNftTokens({
-      contract: this,
-      fromIndex: from_index,
-      limit: limit,
-    })
+  nft_tokens(nftArgs: { from_index?: string; limit?: number }) {
+    return internalNftTokens({ contract: this, ...nftArgs })
   }
 
   @view({})
