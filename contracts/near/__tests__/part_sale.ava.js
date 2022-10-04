@@ -112,7 +112,6 @@ test.only("Call cashout unlucky participants after presale", async (t) => {
   // let result = await contract.accountBalance()
 
   const attachedDeposit = NEAR.parse("1 N").toString()
-  contract.transfer(attachedDeposit)
 
   // await root.call(contract, "nft_participate_presale", {}, { attachedDeposit })
   // await contract.call(
