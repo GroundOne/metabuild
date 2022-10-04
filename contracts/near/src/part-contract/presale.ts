@@ -43,7 +43,7 @@ export function internalDistributeAfterPresale({
   contract: Contract
 }) {
   assert(
-    near.currentAccountId() === contract.ownerId,
+    near.signerAccountId() === contract.ownerId,
     `Only owner can distribute after presale`
   )
 
@@ -90,8 +90,8 @@ export function internalCashoutUnluckyPresaleParticipants({
   contract: Contract
 }) {
   assert(
-    near.currentAccountId() === contract.ownerId,
-    `Only owner can cashout after presale`
+    near.signerAccountId() === contract.ownerId,
+    `Only owner can cashout unlucky participants after presale`
   )
 
   // participants who were unlucky get cashed out
@@ -130,7 +130,7 @@ export function internalMintForPresaleParticipants({
   metadata: TokenMetadata
 }) {
   assert(
-    near.currentAccountId() === contract.ownerId,
+    near.signerAccountId() === contract.ownerId,
     `Only owner can mint for presale participants after presale`
   )
 

@@ -22,6 +22,8 @@ an architect/property developer.
 
 ## General
 
+- Does the contract can pay for gas fees? -> Owner can payout some near
+
 ### Wallet
 
 - what does it take that NFTs are displayed in a wallet?

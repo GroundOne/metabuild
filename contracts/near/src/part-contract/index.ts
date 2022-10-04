@@ -19,6 +19,7 @@ import {
   internalTokensForOwner,
   internalTotalSupply,
 } from "./enumeration"
+import { internalPayoutNear } from "./internal"
 import { internalNftMetadata, NFTContractMetadata } from "./metadata"
 import { internalMint, internalPVTMint } from "./mint"
 import { internalNftPVTToken, internalNftToken } from "./nft_core"
@@ -28,6 +29,7 @@ import {
   internalMintForPresaleParticipants,
   internalParticipatePresale,
 } from "./presale"
+import { internalInitPVT } from "./pvt"
 import { internalMintSale } from "./sale"
 import { InitializeArgs, InitializePVTArgs, MintPVTArgs } from "./types"
 import { getValuesInVector } from "./utils"
@@ -83,10 +85,10 @@ export class Contract {
   pvtMetadata: NFTContractMetadata
 
   constructor() {
-    const threeMinutes = 3 * 60 * 1e9 // nanoseconds
+    const twoMinutes = 2 * 60 * 1e9 // nanoseconds
 
-    const prelaunchEnd = +near.blockTimestamp().toString() + threeMinutes
-    const saleEnd = +near.blockTimestamp().toString() + 2 * threeMinutes
+    const prelaunchEnd = +near.blockTimestamp().toString() + twoMinutes
+    const saleEnd = +near.blockTimestamp().toString() + 2 * twoMinutes
 
     this.ownerId = ""
     this.projectName = "PART Token"
@@ -118,8 +120,8 @@ export class Contract {
     this.pvts = new UnorderedMap("pvts")
     this.pvtTotalSupply = 0
     this.reservedPvts = new Vector("reservedPvts")
-    this.pvtPreferenceChoiceEnd = saleEnd + threeMinutes
-    this.pvtDistributionEnd = this.saleEnd + 2 * threeMinutes
+    this.pvtPreferenceChoiceEnd = saleEnd + twoMinutes
+    this.pvtDistributionEnd = this.saleEnd + 2 * twoMinutes
 
     this.pvtTokensPerOwner = new LookupMap("pvtTokensPerOwner")
     this.pvtTokensById = new LookupMap("pvtTokensById")
@@ -208,42 +210,30 @@ export class Contract {
     return internalMintSale({ contract: this, ...mintArgs })
   }
 
-  // @call({})
-  // nft_payout_owner() {
-  //   // TODO
-  // }
+  @call({})
+  nft_payout_near({
+    amount,
+    receivingAccountId,
+  }: {
+    amount: number
+    receivingAccountId?: string
+  }) {
+    return internalPayoutNear({ amount, receivingAccountId, contract: this })
+  }
 
   @call({})
   nft_init_pvt(initArgs: InitializePVTArgs) {
-    assert(
-      near.currentAccountId() === this.ownerId,
-      `Only owner can distribute after presale`
-    )
-
-    this.pvtTotalSupply = initArgs.totalSupply
-
-    if (this.pvtPreferenceChoiceEnd)
-      this.pvtPreferenceChoiceEnd = initArgs.preferenceEnd
-    if (this.pvtDistributionEnd)
-      this.pvtDistributionEnd = initArgs.distributionEnd
-
-    if (initArgs.reservedTokenIds) {
-      const reservedTokenIds = initArgs.reservedTokenIds
-      near.log(
-        `Following PVT Tokens will be reserved: ${JSON.stringify(
-          reservedTokenIds
-        )}`
-      )
-
-      reservedTokenIds.forEach((reservedTokenId) => {
-        this.reservedPvts.push(reservedTokenId.toString())
-      })
-    }
+    internalInitPVT({ contract: this, ...initArgs })
   }
 
   @call({ payableFunction: true })
   nft_mint_pvt(mintArgs: MintPVTArgs) {
     return internalPVTMint({ contract: this, ...mintArgs })
+  }
+
+  @call({})
+  nft_set_preferences(pvtPreferenceIds) {
+    return
   }
 
   /* 

@@ -279,3 +279,41 @@ export function internalNextPVTTokenId({ contract }: { contract: Contract }) {
   near.log(`New Current Token Id: ${currentTokenId}`)
   return currentTokenId
 }
+
+export function internalPayoutNear({
+  amount,
+  receivingAccountId,
+  contract,
+}: {
+  amount: number
+  receivingAccountId?: string
+  contract: Contract
+}) {
+  assert(
+    near.signerAccountId() === contract.ownerId,
+    `Only owner can payout near`
+  )
+
+  const amountBigInt = BigInt(amount)
+  assert(amountBigInt > BigInt("0"), "The amount should be a positive number")
+  assert(
+    amountBigInt < near.accountBalance(),
+    `Not enough balance ${near.accountBalance()} to cover transfer of ${amountBigInt} yoctoNEAR`
+  )
+
+  assert(
+    receivingAccountId != near.currentAccountId(),
+    "Can't transfer to the contract itself"
+  )
+  assert(
+    amountBigInt < near.accountBalance(),
+    `Not enough balance ${near.accountBalance()} to cover transfer of ${amountBigInt} yoctoNEAR`
+  )
+
+  const receiver = receivingAccountId ? receivingAccountId : contract.ownerId
+
+  const transferPromiseId = near.promiseBatchCreate(receiver)
+
+  near.promiseBatchActionTransfer(transferPromiseId, amountBigInt)
+  return near.promiseReturn(transferPromiseId)
+}
