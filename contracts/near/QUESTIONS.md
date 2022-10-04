@@ -6,7 +6,7 @@
 
 - what does it take that NFTs are displayed in a wallet?
 
-- how can I display the NFTs in my contract in the wallet? (own marketplace?)
+  - which functions / fields have to be exposed?
 
 - does it make sense to have 2 different NFT Tokens in one contract?
 
@@ -15,16 +15,17 @@
 **Token Transfer**
 
 - how to transfer NEAR in the contract?
+  - `this.transfer(receiver, amount)`??
 
 **Testing**
 
 - Is it possible to get the environment infos inside the ava integration tests (maybe from near-workspaces?)
 
-- advance time in js tests?
-
-- changing tests to TS, node consumption explodes
+- advance time in js tests? Other option to test that time has passed (`presale` / `sale` states i n contract)
 
 - how to check balances in testing (where to find the functions?)
+-
+- changing tests to TS, node process consumption explodes
 
 **Randomization**
 

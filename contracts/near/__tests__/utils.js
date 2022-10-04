@@ -1,5 +1,5 @@
 export const SaleStatusEnum = {
-  UNDEFINED: "unset",
+  UNSET: "unset",
   PRESALE: "presale",
   PRESALEDISTRIBUTION: "presaledistribution",
   PRESALECASHOUT: "presalecashout",

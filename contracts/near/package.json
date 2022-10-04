@@ -23,6 +23,8 @@
     "call:presale:participate": "source .env && near call $PART_CONTRACT_ID nft_participate_presale --accountId $PART_CONTRACT_ID --depositYocto 8880000000000000000000",
     "call:presale:participate2": "source .env && near call $PART_CONTRACT_ID nft_participate_presale --accountId $MAIN_ACCOUNT --depositYocto 8880000000000000000000",
     "call:presale:distribute": "source .env && near call $PART_CONTRACT_ID nft_distribute_after_presale --accountId $PART_CONTRACT_ID",
+    "call:presale:cashout": "source .env && near call $PART_CONTRACT_ID nft_cashout_unlucky_presale_participants --accountId $PART_CONTRACT_ID",
+    "call:presale:mint": "source .env && near call $PART_CONTRACT_ID nft_mint_for_presale_participants '{\"metadata\": {\"title\": \"GroundOne PART Token\", \"description\": \"Token ID is your ranking.\", \"media\": \"https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif\"}}' --accountId $PART_CONTRACT_ID",
     "view:presale:participants": "source .env && near view $PART_CONTRACT_ID nft_presale_participants",
     "view:presale:distribution": "source .env && near view $PART_CONTRACT_ID nft_presale_distribution",
     "view:meta": "source .env && near view $PART_CONTRACT_ID nft_metadata",
@@ -31,12 +33,12 @@
     "view:done:presale": "source .env && near view $PART_CONTRACT_ID nft_isPresaleDone",
     "view:done:sale": "source .env && near view $PART_CONTRACT_ID nft_isSaleDone",
     "call:mint": "source .env && near call $PART_CONTRACT_ID nft_mint '{\"metadata\": {\"title\": \"GroundOne PART Token\", \"description\": \"Token ID is your ranking.\", \"media\": \"https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif\"}, \"receiver_id\": \"'$MAIN_ACCOUNT'\"}' --accountId $MAIN_ACCOUNT --amount 0.018",
+    "call:mint:buyer": "source .env && near call $PART_CONTRACT_ID nft_mint '{\"metadata\": {\"title\": \"GroundOne PART Token\", \"description\": \"Token ID is your ranking.\", \"media\": \"https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif\"}, \"receiver_id\": \"'$BUYER_ACCOUNT'\"}' --accountId $BUYER_ACCOUNT --amount 0.018",
     "view:token": "source .env && near view $PART_CONTRACT_ID nft_token '{\"token_id\": \"1\"}'",
     "view:tokens": "source .env && near view $PART_CONTRACT_ID nft_tokens",
     "test": "ava",
     "test:watch": "nodemon --exec 'yarn test' -w ./__tests__ -w ./src -e js,ts",
-    "build:test": "yarn build && yarn test",
-    "echo": "echo $(date +%s) | python -c 'import sys; t=sys.stdin.read(); print(\"{}{}\".format(int(t) + 10 * 60, \"000\"))'"
+    "build:test": "yarn build && yarn test"
   },
   "author": "Tobias Leinss <caruso33@web.de>, Frangiskos Frangeskides <frangiskos@gmail.com>",
   "license": "UNLICENSED",

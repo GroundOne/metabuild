@@ -52,7 +52,7 @@ export function internalDistributeAfterPresale({
   // check that it can only be called once
   // assert(
   //   SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALE,
-  //   "Can only be called when prelaunchEnd finished and status `presale`"
+  //   `Can only be called when prelaunchEnd finished and status \`presale\`, is ${SaleStatusEnum[contract.saleStatus]}`
   // )
   contract.saleStatus = SaleStatusEnum.PRESALEDISTRIBUTION
 
@@ -96,10 +96,12 @@ export function internalCashoutUnluckyPresaleParticipants({
   //   `Please wait until the presale is finished ${contract.prelaunchEnd}`
   // )
 
-  assert(
-    SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALEDISTRIBUTION,
-    "Can only be called when prelaunchEnd and distribution finished and status `presaledistribution`"
-  )
+  // assert(
+  //   SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALEDISTRIBUTION,
+  //   `Can only be called when prelaunchEnd and distribution finished and status \`presaledistribution\` is ${
+  //     SaleStatusEnum[contract.saleStatus]
+  //   }`
+  // )
   contract.saleStatus = SaleStatusEnum.PRESALECASHOUT
 
   const presaleParticipants = getValuesInVector(contract.presaleParticipants)
@@ -113,7 +115,8 @@ export function internalCashoutUnluckyPresaleParticipants({
   while (i < unluckyParticipants.length) {
     const unluckyLoser = unluckyParticipants[i]
 
-    this.transfer(unluckyLoser, this.price)
+    // TODO
+    // contract.transfer(unluckyLoser, this.price)
   }
 }
 
@@ -129,10 +132,12 @@ export function internalMintForPresaleParticipants({
     `Only owner can mint for presale participants after presale`
   )
 
-  assert(
-    SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALECASHOUT,
-    "Can only be called when prelaunchEnd, distribution and cashout finished and status `presalecashout`"
-  )
+  // assert(
+  //   SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALECASHOUT,
+  //   `Can only be called when prelaunchEnd, distribution and cashout finished and status \`presalecashout\`, is ${
+  //     SaleStatusEnum[contract.saleStatus]
+  //   }`
+  // )
   contract.saleStatus = SaleStatusEnum.SALE
 
   let i = 0
@@ -140,7 +145,7 @@ export function internalMintForPresaleParticipants({
     const luckyWinner = contract.presaleDistribution[i]
 
     internalMint({
-      contract: this,
+      contract,
       metadata,
       receiverId: luckyWinner,
     })

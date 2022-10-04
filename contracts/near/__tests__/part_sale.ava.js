@@ -106,13 +106,14 @@ test("Call distribute tokens after presale when there are no participants", asyn
 
 test.only("Call cashout unlucky participants after presale", async (t) => {
   // const { contract, root, ali, bob } = t.context.accounts
-  const { worker } = t.context
+  const { worker, contract } = t.context
 
-  console.log(`Result ${JSON.stringify(near)}`)
+  console.log(`Result ${JSON.stringify(worker.provider)}`)
   // let result = await contract.accountBalance()
-  t.pass()
 
-  // const attachedDeposit = NEAR.parse("1 N").toString()
+  const attachedDeposit = NEAR.parse("1 N").toString()
+  contract.transfer(attachedDeposit)
+
   // await root.call(contract, "nft_participate_presale", {}, { attachedDeposit })
   // await contract.call(
   //   contract,
@@ -131,6 +132,8 @@ test.only("Call cashout unlucky participants after presale", async (t) => {
 
   // result = await contract.view("nft_presale_distribution", {})
   // t.is(result.length, 3)
+
+  t.pass()
 })
 
 test("Call mint new token", async (t) => {

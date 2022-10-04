@@ -24,10 +24,12 @@ export function internalMintSale({
     `Total amount of tokens already minted ${contract.totalSupply}`
   )
 
-  assert(
-    SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.SALE,
-    "Can only be called when prelaunchEnd, distribution, cashout and presale minting finished and status `sale`"
-  )
+  // assert(
+  //   SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.SALE,
+  //   `Can only be called when prelaunchEnd, distribution, cashout and presale minting finished and status \`sale\`, is ${
+  //     SaleStatusEnum[contract.saleStatus]
+  //   }`
+  // )
 
   const depositAmount = near.attachedDeposit() as bigint
 
@@ -39,7 +41,7 @@ export function internalMintSale({
   )
 
   return internalMint({
-    contract: this,
+    contract,
     metadata,
     receiverId: receiver_id,
   })
