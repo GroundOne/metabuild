@@ -9,12 +9,12 @@ export function internalParticipatePresale({
 }: {
   contract: Contract
 }) {
-  // assert(
-  //   !contract.nft_isPresaleDone(),
-  //   `Presale is already finished is ${near.blockTimestamp()} ended ${
-  //     contract.prelaunchEnd
-  //   }`
-  // )
+  assert(
+    !contract.nft_isPresaleDone(),
+    `Presale is already finished is ${near.blockTimestamp()} ended ${
+      contract.prelaunchEnd
+    }`
+  )
 
   const isAlreadyParticipant = isValueInVector(
     near.signerAccountId(),
@@ -48,16 +48,16 @@ export function internalDistributeAfterPresale({
   )
 
   // check that presale is finished
-  // assert(
-  //   contract.nft_isPresaleDone(),
-  //   `Please wait until the presale is finished ${contract.prelaunchEnd}`
-  // )
+  assert(
+    contract.nft_isPresaleDone(),
+    `Please wait until the presale is finished ${contract.prelaunchEnd}`
+  )
 
   // check that it can only be called once
-  // assert(
-  //   SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALE,
-  //   `Can only be called when prelaunchEnd finished and status \`presale\`, is ${SaleStatusEnum[contract.saleStatus]}`
-  // )
+  assert(
+    contract.saleStatus === SaleStatusEnum.PRESALE,
+    `Can only be called when prelaunchEnd finished and status \`presale\`, is ${contract.saleStatus}`
+  )
   contract.saleStatus = SaleStatusEnum.PRESALEDISTRIBUTION
 
   let presaleParticipants = getValuesInVector(contract.presaleParticipants)
@@ -100,12 +100,10 @@ export function internalCashoutUnluckyPresaleParticipants({
   //   `Please wait until the presale is finished ${contract.prelaunchEnd}`
   // )
 
-  // assert(
-  //   SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALEDISTRIBUTION,
-  //   `Can only be called when prelaunchEnd and distribution finished and status \`presaledistribution\` is ${
-  //     SaleStatusEnum[contract.saleStatus]
-  //   }`
-  // )
+  assert(
+    contract.saleStatus === SaleStatusEnum.PRESALEDISTRIBUTION,
+    `Can only be called when prelaunchEnd and distribution finished and status \`presaledistribution\` is ${contract.saleStatus}`
+  )
   contract.saleStatus = SaleStatusEnum.PRESALECASHOUT
 
   const presaleParticipants = getValuesInVector(contract.presaleParticipants)
@@ -136,12 +134,10 @@ export function internalMintForPresaleParticipants({
     `Only owner can mint for presale participants after presale`
   )
 
-  // assert(
-  //   SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.PRESALECASHOUT,
-  //   `Can only be called when prelaunchEnd, distribution and cashout finished and status \`presalecashout\`, is ${
-  //     SaleStatusEnum[contract.saleStatus]
-  //   }`
-  // )
+  assert(
+    contract.saleStatus === SaleStatusEnum.PRESALECASHOUT,
+    `Can only be called when prelaunchEnd, distribution and cashout finished and status \`presalecashout\`, is ${contract.saleStatus}`
+  )
   contract.saleStatus = SaleStatusEnum.SALE
 
   const luckyWinners = getValuesInVector(contract.presaleDistribution)
