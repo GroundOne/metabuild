@@ -43,6 +43,6 @@ export function internalMintSale({
   return internalMint({
     contract,
     metadata,
-    receiverId: receiver_id,
+    receiver_id,
   })
 }

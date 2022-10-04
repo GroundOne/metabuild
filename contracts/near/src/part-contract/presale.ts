@@ -4,7 +4,11 @@ import { TokenMetadata } from "./metadata"
 import { internalMint } from "./mint"
 import { getValuesInVector, internalSumOfBytes, isValueInVector } from "./utils"
 
-export function internalParticipatePresale({ contract }) {
+export function internalParticipatePresale({
+  contract,
+}: {
+  contract: Contract
+}) {
   // assert(
   //   !contract.nft_isPresaleDone(),
   //   `Presale is already finished is ${near.blockTimestamp()} ended ${
@@ -111,13 +115,13 @@ export function internalCashoutUnluckyPresaleParticipants({
     (x) => !presaleLuckyWinner.includes(x)
   )
 
-  let i = 0
-  while (i < unluckyParticipants.length) {
-    const unluckyLoser = unluckyParticipants[i]
+  unluckyParticipants.forEach((unluckyLoser) => {
+    near.log(`Refunding unlucky loser ${unluckyLoser}.`)
 
+    near.log(`NOT YET IMPLEMENTED`)
     // TODO
     // contract.transfer(unluckyLoser, this.price)
-  }
+  })
 }
 
 export function internalMintForPresaleParticipants({
@@ -140,14 +144,13 @@ export function internalMintForPresaleParticipants({
   // )
   contract.saleStatus = SaleStatusEnum.SALE
 
-  let i = 0
-  while (i < contract.presaleDistribution.length) {
-    const luckyWinner = contract.presaleDistribution[i]
+  const luckyWinners = getValuesInVector(contract.presaleDistribution)
 
+  luckyWinners.forEach((luckyWinner) => {
     internalMint({
       contract,
       metadata,
-      receiverId: luckyWinner,
+      receiver_id: luckyWinner,
     })
-  }
+  })
 }

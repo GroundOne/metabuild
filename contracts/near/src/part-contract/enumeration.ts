@@ -1,7 +1,7 @@
 import { Contract } from "."
 import { restoreOwners } from "./internal"
 import { JsonToken } from "./metadata"
-import { internalNftToken } from "./nft_core"
+import { internalNftPVTToken, internalNftToken } from "./nft_core"
 import { near } from "near-sdk-js"
 
 //Query for the total supply of NFTs on the contract
@@ -42,6 +42,34 @@ export function internalNftTokens({
   return tokens
 }
 
+//Query for nft tokens on the contract regardless of the owner using pagination
+export function internalNftPVTTokens({
+  contract,
+  fromIndex,
+  limit,
+}: {
+  contract: Contract
+  fromIndex?: string
+  limit?: number
+}): JsonToken[] {
+  let tokens = []
+
+  //where to start pagination - if we have a fromIndex, we'll use that - otherwise start from 0 index
+  let start = fromIndex ? parseInt(fromIndex) : 0
+  //take the first "limit" elements in the array. If we didn't specify a limit, use 50
+  let max = limit ? limit : 50
+
+  let keys = contract.pvtTokenMetadataById.toArray()
+
+  // Paginate through the keys using the fromIndex and limit
+  for (let i = start; i < keys.length && i < start + max; i++) {
+    // get the token object from the keys
+    let jsonToken = internalNftPVTToken({ contract, tokenId: keys[i][0] })
+    tokens.push(jsonToken)
+  }
+  return tokens
+}
+
 //get the total supply of NFTs for a given owner
 export function internalSupplyForOwner({
   contract,
@@ -52,6 +80,25 @@ export function internalSupplyForOwner({
 }): number {
   //get the set of tokens for the passed in owner
   let tokens = restoreOwners(contract.tokensPerOwner.get(accountId))
+  //if there isn't a set of tokens for the passed in account ID, we'll return 0
+  if (tokens == null) {
+    return 0
+  }
+
+  //if there is some set of tokens, we'll return the length
+  return tokens.length
+}
+
+//get the total supply of NFTs for a given owner
+export function internalPVTSupplyForOwner({
+  contract,
+  accountId,
+}: {
+  contract: Contract
+  accountId: string
+}): number {
+  //get the set of tokens for the passed in owner
+  let tokens = restoreOwners(contract.pvtTokensPerOwner.get(accountId))
   //if there isn't a set of tokens for the passed in account ID, we'll return 0
   if (tokens == null) {
     return 0
@@ -93,6 +140,43 @@ export function internalTokensForOwner({
       break
     }
     let token = internalNftToken({ contract, tokenId: keys[i] })
+    tokens.push(token)
+  }
+  return tokens
+}
+
+//Query for all the tokens for an owner
+export function internalTokenPVTsForOwner({
+  contract,
+  accountId,
+  fromIndex,
+  limit,
+}: {
+  contract: Contract
+  accountId: string
+  fromIndex?: string
+  limit?: number
+}): JsonToken[] {
+  //get the set of tokens for the passed in owner
+  let tokenSet = restoreOwners(contract.pvtTokensPerOwner.get(accountId))
+
+  //if there isn't a set of tokens for the passed in account ID, we'll return 0
+  if (tokenSet == null) {
+    return []
+  }
+
+  //where to start pagination - if we have a fromIndex, we'll use that - otherwise start from 0 index
+  let start = fromIndex ? parseInt(fromIndex) : 0
+  //take the first "limit" elements in the array. If we didn't specify a limit, use 50
+  let max = limit ? limit : 50
+
+  let keys = tokenSet.toArray()
+  let tokens: JsonToken[] = []
+  for (let i = start; i < max; i++) {
+    if (i >= keys.length) {
+      break
+    }
+    let token = internalNftPVTToken({ contract, tokenId: keys[i] })
     tokens.push(token)
   }
   return tokens

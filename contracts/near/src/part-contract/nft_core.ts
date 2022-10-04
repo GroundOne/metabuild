@@ -41,6 +41,34 @@ export function internalNftToken({
   return jsonToken
 }
 
+//get the information for a specific token ID
+export function internalNftPVTToken({
+  contract,
+  tokenId,
+}: {
+  contract: Contract
+  tokenId: string
+}) {
+  let token = contract.pvtTokensById.get(tokenId) as Token
+  //if there wasn't a token ID in the tokens_by_id collection, we return None
+  if (token == null) {
+    return null
+  }
+
+  //if there is some token ID in the tokens_by_id collection
+  //we'll get the metadata for that token
+  let metadata = contract.pvtTokenMetadataById.get(tokenId) as TokenMetadata
+
+  //we return the JsonToken
+  let jsonToken = new JsonToken({
+    tokenId,
+    ownerId: token.owner_id,
+    metadata,
+    approvedAccountIds: token.approved_account_ids,
+  })
+  return jsonToken
+}
+
 //implementation of the nft_transfer method. This transfers the NFT from the current owner to the receiver.
 export function internalNftTransfer({
   contract,

@@ -104,6 +104,26 @@ export function internalAddTokenToOwner(
   contract.tokensPerOwner.set(accountId, tokenSet)
 }
 
+export function internalAddPVTTokenToOwner(
+  contract: Contract,
+  accountId: string,
+  tokenId: string
+) {
+  //get the set of tokens for the given account
+  let tokenSet = restoreOwners(contract.pvtTokensPerOwner.get(accountId))
+
+  if (tokenSet == null) {
+    //if the account doesn't have any tokens, we create a new unordered set
+    tokenSet = new UnorderedSet("pvtTokensPerOwner" + accountId.toString())
+  }
+
+  //we insert the token ID into the set
+  tokenSet.set(tokenId)
+
+  //we insert that set for the given account ID.
+  contract.pvtTokensPerOwner.set(accountId, tokenSet)
+}
+
 //remove a token from an owner (internal method and can't be called directly via CLI).
 export function internalRemoveTokenFromOwner(
   contract: Contract,
@@ -241,6 +261,19 @@ export function internalNextTokenId({ contract }: { contract: Contract }) {
     currentTokenId += 1
 
     if (contract.totalSupply < currentTokenId) break
+  }
+
+  near.log(`New Current Token Id: ${currentTokenId}`)
+  return currentTokenId
+}
+
+export function internalNextPVTTokenId({ contract }: { contract: Contract }) {
+  let currentTokenId = contract.pvtCurrentTokenId + 1
+
+  while (contract.pvtTokensById.containsKey(currentTokenId.toString())) {
+    currentTokenId += 1
+
+    if (contract.pvtTotalSupply < currentTokenId) break
   }
 
   near.log(`New Current Token Id: ${currentTokenId}`)
