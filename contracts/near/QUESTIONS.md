@@ -41,9 +41,11 @@ an architect/property developer.
 
 - Is it possible to get the environment infos inside the ava integration tests (maybe from near-workspaces?)
 
-- advance time in js tests? Other option to test that time has passed (`presale` / `sale` states in contract)
+- advance time in js tests?
 
-- how to check balances in testing (where to find the functions?)
+  - Other option to test that time has passed (`presale` / `sale` states in contract), `t.timeout(x)` didn't seem to work?
+
+- how to check balances in testing (where to find the functions? -> Docs?)
 
 - changing tests to TS, node process consumption explodes
 
@@ -53,12 +55,12 @@ an architect/property developer.
 
 **Data Types / Variables**
 
-- which data types can be used? are there docs for it? (i128, strings?)
+- which data types can be used? are there docs for it? (i128, strings? -> Docs?)
 
 - how can I work with BigInts inside my contract?
 
   - for testing `near-workspaces` there's { NEAR } has some utility functions.
-  - Does the near-sdk-js have equivalent functionality?
+  - Does the near-sdk-js have equivalent functionality (-> Docs)?
 
 **Init**
 
