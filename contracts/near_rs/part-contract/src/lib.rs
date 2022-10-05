@@ -1,7 +1,6 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet};
-use near_sdk::json_types::I128;
-use near_sdk::json_types::{Base64VecU8, U128};
+use near_sdk::json_types::{Base64VecU8, I128, U128};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
     env, near_bindgen, AccountId, Balance, CryptoHash, PanicOnDefault, Promise, PromiseOrValue,
@@ -35,22 +34,21 @@ pub const NFT_STANDARD_NAME: &str = "nep171";
 pub struct Contract {
     //contract owner
     pub owner_id: AccountId,
+    pub project_name: String,
 
-    // max. number of tokens to be minted
-    pub total_supply: I128,
-
-    // price for buyers to deposit per token
-    pub price: I128,
+    // Part Metrics
+    pub current_token_id: i32, // start token IDs with `1`
+    pub total_supply: I128,    // max. number of tokens to be minted
+    pub price: I128,           // price for buyers to deposit per token
+    pub prelaunch_end: u64,    // blockTimestamp when regular sales starts
+    pub sale_end: u64,         // blockTimestamp when sale has finished
 
     //keeps track of all the token IDs for a given account
     pub tokens_per_owner: LookupMap<AccountId, UnorderedSet<TokenId>>,
-
     //keeps track of the token struct for a given token ID
     pub tokens_by_id: LookupMap<TokenId, Token>,
-
     //keeps track of the token metadata for a given token ID
     pub token_metadata_by_id: UnorderedMap<TokenId, TokenMetadata>,
-
     //keeps track of the metadata for the contract
     pub metadata: LazyOption<NFTContractMetadata>,
 }
@@ -77,11 +75,22 @@ impl Contract {
     */
     #[init]
     pub fn new_default_meta(owner_id: AccountId, total_supply: I128, price: I128) -> Self {
+        let project_name = String::from("GroundOne Part");
+
+        let now = env::block_timestamp();
+        let three_minutes = 3 * 60 + 1_000_000_000;
+
+        let prelaunch_end: u64 = now + three_minutes;
+        let sale_end: u64 = now + 2 * three_minutes;
+
         //calls the other function "new: with some default metadata and the owner_id passed in
         Self::new(
             owner_id,
+            project_name,
             total_supply,
             price,
+            Some(prelaunch_end),
+            Some(sale_end),
             NFTContractMetadata {
                 spec: "nft-1.0.0".to_string(),
                 name: "GroundOne PART".to_string(),
@@ -102,11 +111,17 @@ impl Contract {
     #[init]
     pub fn new(
         owner_id: AccountId,
+        project_name: String,
         total_supply: I128,
         price: I128,
+        prelaunch_end: Option<u64>,
+        sale_end: Option<u64>,
         metadata: NFTContractMetadata,
     ) -> Self {
         //create a variable of type Self with all the fields initialized.
+
+        let current_token_id = 1;
+
         let this = Self {
             //Storage keys are simply the prefixes used for the collections. This helps avoid data collision
             tokens_per_owner: LookupMap::new(StorageKey::TokensPerOwner.try_to_vec().unwrap()),
@@ -116,8 +131,12 @@ impl Contract {
             ),
             //set the owner_id field equal to the passed in owner_id.
             owner_id,
+            project_name,
+            current_token_id,
             total_supply,
             price,
+            prelaunch_end: prelaunch_end.unwrap(),
+            sale_end: sale_end.unwrap(),
             metadata: LazyOption::new(
                 StorageKey::NFTContractMetadata.try_to_vec().unwrap(),
                 Some(&metadata),
