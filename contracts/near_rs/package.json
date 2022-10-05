@@ -1,0 +1,29 @@
+{
+  "name": "nft-tutorial",
+  "version": "1.0.0",
+  "description": "Zero to Hero NFT Tutorial",
+  "author": "Ben Kurrek",
+  "license": "ISC",
+  "scripts": {
+    "create:subacc:part": "source .env && yarn near create-account $PART_CONTRACT_ID --masterAccount $MAIN_ACCOUNT --initialBalance 2",
+    "build": "cd nft-contract && bash build.sh && cd .. && ls && cd market-contract && bash build.sh && cd ..",
+    "build:part": "cd part-contract && bash build.sh && cd .. ",
+    "deploy:part": "source .env && near deploy --accountId $PART_CONTRACT_ID --wasmFile out/part.wasm",
+    "call:init": "source .env && near call $PART_CONTRACT_ID new '{\"owner_id\": \"'$PART_CONTRACT_ID'\", \"total_supply\": \"3\", \"price\": \"1000000000000000000000\", \"metadata\": {\"spec\": \"nft-1.0.0\", \"name\": \"NFT Tutorial Contract\", \"symbol\": \"GOTEAM\"}}' --accountId $PART_CONTRACT_ID",
+    "view:meta": "source .env && near view $PART_CONTRACT_ID nft_metadata",
+    "call:mint": "source .env && near call $PART_CONTRACT_ID nft_mint '{\"metadata\": {\"title\": \"GroundOne PART Token\", \"description\": \"Token ID is your ranking.\", \"media\": \"https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif\"}, \"receiver_id\": \"'$MAIN_ACCOUNT'\"}' --accountId $MAIN_ACCOUNT --amount 0.1",
+    
+    "test": "npm run test:unit && npm run test:integration",
+    "test:part": "npm run test:unit:part",
+    "test:unit": "npm run test:unit:nft && npm run test:unit:market",
+    "test:unit:part": "cd part-contract && cargo test -- --nocapture --color=always && cd ..",
+    "test:unit:nft": "cd nft-contract && cargo test -- --nocapture --color=always && cd ..",
+    "test:unit:market": "cd market-contract && cargo test -- --nocapture --color=always && cd ..",
+    "test:integration": "npm run test:integration:ts && npm run test:integration:rs",
+    "test:integration:ts": "cd integration-tests/ts && npm i && npm run test",
+    "test:integration:rs": "cd integration-tests/rs && cargo run --example integration-tests"
+  },
+  "devDependencies": {
+    "near-cli": "^3.4.2"
+  }
+}
