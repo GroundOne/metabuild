@@ -1,4 +1,64 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Ground One
+
+This is the frontend for the [Ground-One](#) project.
+
+# References
+
+## Prototype
+
+V1: <https://xd.adobe.com/view/88ec5b20-4963-4417-b89e-b7deca85050f-ddbf/>
+V2: <https://xd.adobe.com/view/d0bd60a9-4fcb-42ae-a21c-44ba91e32245-85ee/specs/>
+
+## NEAR Protocol
+
+Quickstart: <https://docs.near.org/develop/quickstart-guide>
+
+## Stuff to use
+
+**Scrim**
+<https://travishorn.com/responsive-scrim-6f286da5b6a5>
+
+**NFT Storage**
+<https://nft.storage/>
+
+## Nextjs docs
+
+<https://nextjs.org/docs/basic-features/typescript>
+
+## Boilerplates
+
+<https://github.dev/ixartz/Next-js-Boilerplate>
+<https://creativedesignsguru.com/demo/Nextjs-Boilerplate/>
+
+<https://reactjsexample.com/boilerplate-and-starter-for-next-js-12-tailwind-css-3-and-typescript/>
+
+<https://github.com/MiadV/hiredli-tw>
+
+C:\DEV\app\tmp\next-boilerplate
+
+## UI
+
+<https://tailwindui.com/components>
+<https://nerdcave.com/tailwind-cheat-sheet>
+<https://tailwindcomponents.com/cheatsheet/>
+
+### Unstyled components - behaviour UI
+
+<https://www.radix-ui.com/>
+<https://headlessui.com/>
+<https://react-spectrum.adobe.com/react-aria/index.html>
+
+### Styled components
+
+<https://daisyui.com/theme-generator/>
+<https://tailwindcss.com/docs/animation>
+
+**Forms**
+
+> <https://github.com/tailwindlabs/tailwindcss-forms>  
+> <https://tailwindcss-forms.vercel.app/>
+
+<https://flowbite.com/docs/getting-started/next-js/>
 
 ## Getting Started
 
@@ -22,8 +82,8 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+-   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+-   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
