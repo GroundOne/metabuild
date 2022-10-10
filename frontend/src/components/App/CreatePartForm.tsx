@@ -34,7 +34,7 @@ export default function CreatePartForm() {
                     type="text"
                     placeholder="Project Name"
                     isInvalid={!!errors.projectName}
-                    errorText={errors.projectName?.message}
+                    errorText={errors.projectName?.message as string | undefined}
                     {...register('projectName')}
                 />
                 <Input
@@ -42,7 +42,7 @@ export default function CreatePartForm() {
                     type="number"
                     placeholder="Amount of PARTs"
                     isInvalid={!!errors.partAmount}
-                    errorText={errors.partAmount?.message}
+                    errorText={errors.partAmount?.message as string | undefined}
                     {...register('partAmount')}
                 />
                 <button

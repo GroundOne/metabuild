@@ -4,6 +4,10 @@ This is the frontend for the [Ground-One](#) project.
 
 # References
 
+## Contract functions
+
+CONTRACTS\near\src\part-contract\index.ts
+
 ## Prototype
 
 V1: <https://xd.adobe.com/view/88ec5b20-4963-4417-b89e-b7deca85050f-ddbf/>
