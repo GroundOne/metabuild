@@ -11,17 +11,14 @@ import {
 } from "near-sdk-js"
 import { TokenMetadata } from "../part-contract/metadata"
 import {
-  internalNftPVTTokens,
   internalNftTokens,
-  internalPVTSupplyForOwner,
   internalSupplyForOwner,
-  internalTokenPVTsForOwner,
   internalTokensForOwner,
   internalTotalSupply,
 } from "./enumeration"
 import { internalPayoutNear } from "./internal"
 import { internalNftMetadata, NFTContractMetadata } from "./metadata"
-import { internalMint, internalPVTMint } from "./mint"
+import { internalMint } from "./mint"
 import { internalNftPVTToken, internalNftToken } from "./nft_core"
 import {
   internalCashoutUnluckyPresaleParticipants,
@@ -29,10 +26,10 @@ import {
   internalMintForPresaleParticipants,
   internalParticipatePresale,
 } from "./presale"
-import { internalInitPVT } from "./pvt"
+import { internalInitPVT, internalNftPVTTokens } from "./pvt"
 import { internalMintSale } from "./sale"
-import { InitializeArgs, InitializePVTArgs, MintPVTArgs } from "./types"
-import { getValuesInVector } from "./utils"
+import { InitializeArgs, InitializePVTArgs } from "./types"
+import { getValuesInHashMap, getValuesInVector } from "./utils"
 
 /// This spec can be treated like a version of the standard.
 export const NFT_METADATA_SPEC = "nft-1.0.0"
@@ -72,17 +69,9 @@ export class Contract {
   metadata: NFTContractMetadata
 
   // PVT Metrics
-  pvtCurrentTokenId: number = 1 // start token IDs with `1`
   pvts: UnorderedMap
-  pvtTotalSupply: number
   reservedPvts: Vector
-  pvtPreferenceChoiceEnd: number
-  pvtDistributionEnd: number
-
-  pvtTokensPerOwner: LookupMap
-  pvtTokensById: LookupMap
-  pvtTokenMetadataById: UnorderedMap
-  pvtMetadata: NFTContractMetadata
+  pvtDistributionStart: number
 
   constructor() {
     const twoMinutes = 2 * 60 * 1e9 // nanoseconds
@@ -118,20 +107,8 @@ export class Contract {
 
     // PVT Metrics
     this.pvts = new UnorderedMap("pvts")
-    this.pvtTotalSupply = 0
     this.reservedPvts = new Vector("reservedPvts")
-    this.pvtPreferenceChoiceEnd = saleEnd + twoMinutes
-    this.pvtDistributionEnd = this.saleEnd + 2 * twoMinutes
-
-    this.pvtTokensPerOwner = new LookupMap("pvtTokensPerOwner")
-    this.pvtTokensById = new LookupMap("pvtTokensById")
-    this.pvtTokenMetadataById = new UnorderedMap("pvtTokenMetadataById")
-
-    this.pvtMetadata = {
-      spec: NFT_METADATA_SPEC,
-      name: "GroundOne PVT",
-      symbol: "GOPVT",
-    }
+    this.pvtDistributionStart = this.saleEnd + 2 * twoMinutes
   }
 
   @initialize({})
@@ -185,6 +162,7 @@ export class Contract {
     }
   }
 
+  /* PRESALE */
   @call({ payableFunction: true })
   nft_participate_presale() {
     return internalParticipatePresale({ contract: this })
@@ -205,11 +183,30 @@ export class Contract {
     return internalMintForPresaleParticipants({ contract: this, metadata })
   }
 
+  /* SALE */
   @call({ payableFunction: true })
   nft_mint(mintArgs: { metadata: TokenMetadata; receiver_id: string }) {
     return internalMintSale({ contract: this, ...mintArgs })
   }
 
+  @call({})
+  nft_init_pvt(initArgs: InitializePVTArgs) {
+    internalInitPVT({ contract: this, ...initArgs })
+  }
+
+  // @call({ payableFunction: true })
+  // nft_edit_pvts(addArgs: AddPVTArgs) {
+  //   return internalAddPVT({ contract: this, ...addArgs })
+  // }
+
+  @call({})
+  nft_set_preferences(pvtPreferenceIds) {
+    return
+  }
+
+  /* 
+    OWNER
+  */
   @call({})
   nft_payout_near({
     amount,
@@ -219,21 +216,6 @@ export class Contract {
     receivingAccountId?: string
   }) {
     return internalPayoutNear({ amount, receivingAccountId, contract: this })
-  }
-
-  @call({})
-  nft_init_pvt(initArgs: InitializePVTArgs) {
-    internalInitPVT({ contract: this, ...initArgs })
-  }
-
-  @call({ payableFunction: true })
-  nft_mint_pvt(mintArgs: MintPVTArgs) {
-    return internalPVTMint({ contract: this, ...mintArgs })
-  }
-
-  @call({})
-  nft_set_preferences(pvtPreferenceIds) {
-    return
   }
 
   /* 
@@ -267,7 +249,7 @@ export class Contract {
   }
 
   @view({})
-  //Query for nft tokens on the contract regardless of the owner using pagination
+  //Query for pvts on the contract regardless of the owner using pagination
   nft_pvt_tokens(nftArgs: { from_index?: string; limit?: number }) {
     return internalNftPVTTokens({ contract: this, ...nftArgs })
   }
@@ -291,24 +273,24 @@ export class Contract {
     })
   }
 
-  @view({})
-  //Query for all the tokens for an owner
-  nft_pvt_tokens_for_owner({
-    account_id,
-    from_index,
-    limit,
-  }: {
-    account_id: string
-    from_index?: string
-    limit?: number
-  }) {
-    return internalTokenPVTsForOwner({
-      contract: this,
-      accountId: account_id,
-      fromIndex: from_index,
-      limit: limit,
-    })
-  }
+  // @view({})
+  // //Query for all the tokens for an owner
+  // nft_pvt_tokens_for_owner({
+  //   account_id,
+  //   from_index,
+  //   limit,
+  // }: {
+  //   account_id: string
+  //   from_index?: string
+  //   limit?: number
+  // }) {
+  //   return internalTokenPVTsForOwner({
+  //     contract: this,
+  //     accountId: account_id,
+  //     fromIndex: from_index,
+  //     limit: limit,
+  //   })
+  // }
 
   @view({})
   //get the total supply of NFTs for a given owner
@@ -316,11 +298,11 @@ export class Contract {
     return internalSupplyForOwner({ contract: this, accountId: account_id })
   }
 
-  @view({})
-  //get the total supply of NFTs for a given owner
-  nft_pvt_supply_for_owner({ account_id }) {
-    return internalPVTSupplyForOwner({ contract: this, accountId: account_id })
-  }
+  // @view({})
+  // //get the total supply of NFTs for a given owner
+  // nft_pvt_supply_for_owner({ account_id }) {
+  //   return internalPVTSupplyForOwner({ contract: this, accountId: account_id })
+  // }
 
   /* GENERAL */
   @view({})
@@ -341,11 +323,9 @@ export class Contract {
   @view({})
   nft_pvt_vars() {
     return {
-      pvtCurrentTokenId: this.pvtCurrentTokenId,
-      pvtTotalSupply: this.pvtTotalSupply,
+      pvts: this.nft_pvts(),
       reservedPvts: this.reservedPvts,
-      pvtPreferenceChoiceEnd: this.pvtPreferenceChoiceEnd,
-      pvtDistributionEnd: this.pvtDistributionEnd,
+      pvtDistributionStart: this.pvtDistributionStart,
     }
   }
 
@@ -365,6 +345,11 @@ export class Contract {
   nft_presale_distribution() {
     // return this.presaleDistribution
     return getValuesInVector(this.presaleDistribution)
+  }
+
+  @view({})
+  nft_pvts() {
+    return getValuesInHashMap(this.pvts)
   }
 
   /* SALE STATUS */

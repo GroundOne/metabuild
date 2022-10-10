@@ -1,4 +1,4 @@
-import { Vector } from "near-sdk-js"
+import { UnorderedMap, Vector } from "near-sdk-js"
 
 export function isValueInVector(value: string | number, vector: Vector) {
   return getValuesInVector(vector).some((v) => v === value)
@@ -7,8 +7,20 @@ export function isValueInVector(value: string | number, vector: Vector) {
 export function getValuesInVector(vector: Vector) {
   const values = []
 
-  for (const value of vector) {
+  for (const value of vector.toArray()) {
     values.push(value)
+  }
+
+  return values
+}
+
+export function getValuesInHashMap(hashmap: UnorderedMap) {
+  const values = []
+
+  for (const key of hashmap.keys.toArray().sort()) {
+    const value = hashmap[key as string]
+
+    values.push({ [key as string]: value })
   }
 
   return values

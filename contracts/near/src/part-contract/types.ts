@@ -1,4 +1,5 @@
-import { NFTContractMetadata, TokenMetadata } from "./metadata"
+import { NFTContractMetadata } from "./metadata"
+import { PVT } from "./pvt"
 
 export type InitializeArgs = {
   ownerId: string
@@ -12,14 +13,11 @@ export type InitializeArgs = {
 }
 
 export type InitializePVTArgs = {
-  totalSupply: number
-  preferenceEnd: number
-  distributionEnd: number
+  distributionStart: number
   reservedTokenIds?: string[]
+  totalSupply?: number
 }
 
-export type MintPVTArgs = {
-  tokenId: string
-  metadata: TokenMetadata
-  receiver_id: string
+export type AddPVTArgs = {
+  pvtData: PVT[]
 }
