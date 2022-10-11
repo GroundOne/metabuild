@@ -21,6 +21,8 @@ notes
 
 # production
 /dist
+**/*.wasm
+.env
 
 # misc
 .DS_Store
