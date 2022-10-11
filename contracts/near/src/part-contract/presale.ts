@@ -10,7 +10,7 @@ export function internalParticipatePresale({
   contract: Contract
 }) {
   assert(
-    !contract.nft_isPresaleDone(),
+    !contract.isPresaleDone(),
     `Presale is already finished is ${near.blockTimestamp()} ended ${
       contract.prelaunchEnd
     }`
@@ -49,7 +49,7 @@ export function internalDistributeAfterPresale({
 
   // check that presale is finished
   assert(
-    contract.nft_isPresaleDone(),
+    contract.isPresaleDone(),
     `Please wait until the presale is finished ${contract.prelaunchEnd}`
   )
 
@@ -96,7 +96,7 @@ export function internalCashoutUnluckyPresaleParticipants({
 
   // participants who were unlucky get cashed out
   // assert(
-  //   contract.nft_isPresaleDone(),
+  //   contract.isPresaleDone(),
   //   `Please wait until the presale is finished ${contract.prelaunchEnd}`
   // )
 

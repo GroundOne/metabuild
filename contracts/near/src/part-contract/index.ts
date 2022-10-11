@@ -19,16 +19,22 @@ import {
 import { internalPayoutNear } from "./internal"
 import { internalNftMetadata, NFTContractMetadata } from "./metadata"
 import { internalMint } from "./mint"
-import { internalNftPVTToken, internalNftToken } from "./nft_core"
+import { internalNftToken } from "./nft_core"
 import {
   internalCashoutUnluckyPresaleParticipants,
   internalDistributeAfterPresale,
   internalMintForPresaleParticipants,
   internalParticipatePresale,
 } from "./presale"
-import { internalInitPVT, internalNftPVTTokens } from "./pvt"
+import {
+  internalDistributeProperties,
+  internalInitProperties,
+  internalPropertyInfo,
+  internalPropertiesInfo,
+  internalSetPropertyPreferences,
+} from "./property"
 import { internalMintSale } from "./sale"
-import { InitializeArgs, InitializePVTArgs } from "./types"
+import { InitializeArgs, InitializePropertiesArgs } from "./types"
 import { getValuesInHashMap, getValuesInVector } from "./utils"
 
 /// This spec can be treated like a version of the standard.
@@ -55,8 +61,8 @@ export class Contract {
   currentTokenId: number = 1 // start token IDs with `1`
   totalSupply: number = 0 // maximum amount of PARTs
   price: number // deposit for each PART
-  prelaunchEnd: number // blockTimestamp when regular sales starts
-  saleEnd: number // blockTimestamp when sale has finished
+  prelaunchEnd: bigint // blockTimestamp when regular sales starts
+  saleEnd: bigint // blockTimestamp when sale has finished
 
   reservedTokenIds: Vector // stays in ownership of deployer
   presaleParticipants: Vector // candidates which buy into the presale
@@ -68,16 +74,18 @@ export class Contract {
   tokenMetadataById: UnorderedMap
   metadata: NFTContractMetadata
 
-  // PVT Metrics
-  pvts: UnorderedMap
-  reservedPvts: Vector
-  pvtDistributionStart: number
+  // Property Metrics
+  properties: UnorderedMap
+  reservedProperties: Vector
+  distributionStart: bigint
+  propertyPreferenceByTokenId: UnorderedMap
+  tokenIdByProperty: UnorderedMap
 
   constructor() {
-    const twoMinutes = 2 * 60 * 1e9 // nanoseconds
+    const twoMinutes = BigInt(2 * 60 * 1e9) // nanoseconds
 
-    const prelaunchEnd = +near.blockTimestamp().toString() + twoMinutes
-    const saleEnd = +near.blockTimestamp().toString() + 2 * twoMinutes
+    const prelaunchEnd = near.blockTimestamp() + twoMinutes
+    const saleEnd = near.blockTimestamp() + BigInt(2) * twoMinutes
 
     this.ownerId = ""
     this.projectName = "PART Token"
@@ -105,10 +113,14 @@ export class Contract {
       symbol: "GOPART",
     }
 
-    // PVT Metrics
-    this.pvts = new UnorderedMap("pvts")
-    this.reservedPvts = new Vector("reservedPvts")
-    this.pvtDistributionStart = this.saleEnd + 2 * twoMinutes
+    // Property Metrics
+    this.properties = new UnorderedMap("properties")
+    this.reservedProperties = new Vector("reservedProperties")
+    this.distributionStart = this.saleEnd + BigInt(2) * twoMinutes
+    this.propertyPreferenceByTokenId = new UnorderedMap(
+      "propertyPreferenceByTokenId"
+    )
+    this.tokenIdByProperty = new UnorderedMap("tokenIdByProperty")
   }
 
   @initialize({})
@@ -118,7 +130,7 @@ export class Contract {
     this.totalSupply = initArgs.totalSupply
     this.price = initArgs.price
 
-    if (initArgs.prelaunchEnd) this.prelaunchEnd = initArgs.prelaunchEnd
+    if (initArgs.prelaunchEnd) this.prelaunchEnd = BigInt(initArgs.prelaunchEnd)
 
     if (initArgs.saleEnd) {
       if (initArgs.prelaunchEnd) {
@@ -128,14 +140,14 @@ export class Contract {
         )
       }
 
-      this.saleEnd = initArgs.saleEnd
+      this.saleEnd = BigInt(initArgs.saleEnd)
     }
 
     if (initArgs.metadata) this.metadata = initArgs.metadata
 
-    if (this.nft_isSaleDone()) {
+    if (this.isSaleDone()) {
       this.saleStatus = SaleStatusEnum.POSTSALE
-    } else if (this.nft_isPresaleDone()) {
+    } else if (this.isPresaleDone()) {
       this.saleStatus = SaleStatusEnum.SALE
     } else {
       this.saleStatus = SaleStatusEnum.PRESALE
@@ -164,22 +176,22 @@ export class Contract {
 
   /* PRESALE */
   @call({ payableFunction: true })
-  nft_participate_presale() {
+  participate_presale() {
     return internalParticipatePresale({ contract: this })
   }
 
   @call({})
-  nft_distribute_after_presale() {
+  distribute_after_presale() {
     return internalDistributeAfterPresale({ contract: this })
   }
 
   @call({})
-  nft_cashout_unlucky_presale_participants() {
+  cashout_unlucky_presale_participants() {
     return internalCashoutUnluckyPresaleParticipants({ contract: this })
   }
 
   @call({ payableFunction: true })
-  nft_mint_for_presale_participants({ metadata }: { metadata: TokenMetadata }) {
+  mint_for_presale_participants({ metadata }: { metadata: TokenMetadata }) {
     return internalMintForPresaleParticipants({ contract: this, metadata })
   }
 
@@ -189,26 +201,37 @@ export class Contract {
     return internalMintSale({ contract: this, ...mintArgs })
   }
 
+  /* POSTSALE */
   @call({})
-  nft_init_pvt(initArgs: InitializePVTArgs) {
-    internalInitPVT({ contract: this, ...initArgs })
+  init_properties(initArgs: InitializePropertiesArgs) {
+    internalInitProperties({ contract: this, ...initArgs })
   }
 
   // @call({ payableFunction: true })
-  // nft_edit_pvts(addArgs: AddPVTArgs) {
-  //   return internalAddPVT({ contract: this, ...addArgs })
+  // edit_properties(addArgs: EditPropertiesArgs) {
+  //   return internalEditProperties({ contract: this, ...addArgs })
   // }
 
+  /* POSTSALE */
   @call({})
-  nft_set_preferences(pvtPreferenceIds) {
-    return
+  set_preferences_for_properties(propertyPreferenceIds: string[]) {
+    return internalSetPropertyPreferences({
+      propertyPreferenceIds,
+      contract: this,
+    })
+  }
+
+  /* DISTRIBUTION */
+  @call({})
+  distribute_properties() {
+    return internalDistributeProperties({ contract: this })
   }
 
   /* 
     OWNER
   */
   @call({})
-  nft_payout_near({
+  payout_near({
     amount,
     receivingAccountId,
   }: {
@@ -229,12 +252,6 @@ export class Contract {
     return internalNftToken({ contract: this, tokenId: token_id })
   }
 
-  @view({})
-  //get the information for a specific token ID
-  nft_pvt_token({ token_id }: { token_id: string }) {
-    return internalNftPVTToken({ contract: this, tokenId: token_id })
-  }
-
   /* ENUMERATION */
   @view({})
   //Query for the total supply of NFTs on the contract
@@ -246,12 +263,6 @@ export class Contract {
   //Query for nft tokens on the contract regardless of the owner using pagination
   nft_tokens(nftArgs: { from_index?: string; limit?: number }) {
     return internalNftTokens({ contract: this, ...nftArgs })
-  }
-
-  @view({})
-  //Query for pvts on the contract regardless of the owner using pagination
-  nft_pvt_tokens(nftArgs: { from_index?: string; limit?: number }) {
-    return internalNftPVTTokens({ contract: this, ...nftArgs })
   }
 
   @view({})
@@ -273,40 +284,27 @@ export class Contract {
     })
   }
 
-  // @view({})
-  // //Query for all the tokens for an owner
-  // nft_pvt_tokens_for_owner({
-  //   account_id,
-  //   from_index,
-  //   limit,
-  // }: {
-  //   account_id: string
-  //   from_index?: string
-  //   limit?: number
-  // }) {
-  //   return internalTokenPVTsForOwner({
-  //     contract: this,
-  //     accountId: account_id,
-  //     fromIndex: from_index,
-  //     limit: limit,
-  //   })
-  // }
-
   @view({})
   //get the total supply of NFTs for a given owner
   nft_supply_for_owner({ account_id }) {
     return internalSupplyForOwner({ contract: this, accountId: account_id })
   }
 
-  // @view({})
-  // //get the total supply of NFTs for a given owner
-  // nft_pvt_supply_for_owner({ account_id }) {
-  //   return internalPVTSupplyForOwner({ contract: this, accountId: account_id })
-  // }
+  @view({})
+  //Query for properties on the contract regardless of the owner using pagination
+  properties_info(nftArgs: { from_index?: string; limit?: number }) {
+    return internalPropertiesInfo({ contract: this, ...nftArgs })
+  }
+
+  @view({})
+  //get the information for a specific token ID
+  property_info({ token_id }: { token_id: string }) {
+    return internalPropertyInfo({ contract: this, tokenId: token_id })
+  }
 
   /* GENERAL */
   @view({})
-  nft_vars() {
+  contract_vars() {
     return {
       ownerId: this.ownerId,
       currentTokenId: this.currentTokenId,
@@ -314,18 +312,18 @@ export class Contract {
       totalSupply: this.totalSupply,
       price: this.price,
       reservedTokenIds: this.reservedTokenIds,
-      prelaunchEnd: this.prelaunchEnd,
-      saleEnd: this.saleEnd,
+      prelaunchEnd: this.prelaunchEnd.toString(),
+      saleEnd: this.saleEnd.toString(),
       saleStatus: this.saleStatus,
     }
   }
 
   @view({})
-  nft_pvt_vars() {
+  property_vars() {
     return {
-      pvts: this.nft_pvts(),
-      reservedPvts: this.reservedPvts,
-      pvtDistributionStart: this.pvtDistributionStart,
+      properties: this.current_properties(),
+      reservedProperties: this.reservedProperties,
+      distributionStart: this.distributionStart.toString(),
     }
   }
 
@@ -337,34 +335,38 @@ export class Contract {
 
   /* PRESALE */
   @view({})
-  nft_presale_participants() {
+  presale_participants() {
     return getValuesInVector(this.presaleParticipants)
   }
 
   @view({})
-  nft_presale_distribution() {
-    // return this.presaleDistribution
+  presale_distribution() {
     return getValuesInVector(this.presaleDistribution)
   }
 
   @view({})
-  nft_pvts() {
-    return getValuesInHashMap(this.pvts)
+  current_properties() {
+    return getValuesInHashMap(this.properties)
+  }
+
+  @view({})
+  distributed_properties() {
+    return getValuesInHashMap(this.tokenIdByProperty)
   }
 
   /* SALE STATUS */
   @view({})
-  nft_isPresaleDone() {
+  isPresaleDone() {
     return this.prelaunchEnd < near.blockTimestamp()
   }
 
   @view({})
-  nft_isSaleDone() {
+  isSaleDone() {
     return this.saleEnd < near.blockTimestamp()
   }
 
   @view({})
-  nft_current_block_time() {
+  current_block_time() {
     return near.blockTimestamp().toString()
   }
 }

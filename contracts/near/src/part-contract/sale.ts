@@ -1,4 +1,5 @@
 import { assert, near } from "near-sdk-js"
+import { internalSupplyForOwner } from "./enumeration"
 import { Contract, SaleStatusEnum } from "./index"
 import { TokenMetadata } from "./metadata"
 import { internalMint } from "./mint"
@@ -13,23 +14,28 @@ export function internalMintSale({
   receiver_id: string
 }) {
   assert(
-    contract.nft_isPresaleDone(),
+    contract.isPresaleDone(),
     `Please wait until the presale is finished ${contract.prelaunchEnd}`
   )
 
-  assert(!contract.nft_isSaleDone(), `The sale is finished ${contract.saleEnd}`)
+  assert(!contract.isSaleDone(), `The sale is finished ${contract.saleEnd}`)
 
   assert(
     contract.currentTokenId <= contract.totalSupply,
     `Total amount of tokens already minted ${contract.totalSupply}`
   )
 
-  // assert(
-  //   SaleStatusEnum[contract.saleStatus] === SaleStatusEnum.SALE,
-  //   `Can only be called when prelaunchEnd, distribution, cashout and presale minting finished and status \`sale\`, is ${
-  //     SaleStatusEnum[contract.saleStatus]
-  //   }`
-  // )
+  assert(
+    contract.saleStatus === SaleStatusEnum.SALE,
+    `Can only be called when prelaunchEnd, distribution, cashout and presale minting finished and status \`sale\`, is ${contract.saleStatus}`
+  )
+
+  assert(
+    near.currentAccountId() != contract.ownerId &&
+      internalSupplyForOwner({ contract, accountId: near.currentAccountId() }) >
+        0,
+    `Sender already owns PART Token`
+  )
 
   const depositAmount = near.attachedDeposit() as bigint
 
