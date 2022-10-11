@@ -3,7 +3,7 @@ import { useCallback, useState, } from "react";
 type AsyncState = "idle" | "pending" | "success" | "error"
 
 // Hook
-export const useAsync = <T, I, E = string>(
+export const useAsync = <T, I = undefined, E = string>(
     asyncFunction: (params?: I) => Promise<T>
 ) => {
     const [status, setStatus] = useState<AsyncState>("idle");

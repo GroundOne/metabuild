@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { ReactNode, useEffect } from 'react';
 import { partSchema, PartFormValue } from '../../types';
 import router from 'next/router';
-import Input from '../UI/Input';
+import Input from '../ui-components/Input';
 
 // export type CompanyFormProps = {
 //     isOnboarding: boolean | null;

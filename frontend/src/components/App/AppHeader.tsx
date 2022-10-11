@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import Logo from '../UI/Logo';
-import PartPvtSwitch from '../UI/PartPvtSwitch';
-import Section from '../UI/Section';
+import ConnectWalletButton from '../ui-components/ConnectWalletButton';
+import Logo from '../ui-components/Logo';
+import PartPvtSwitch from '../ui-components/PartPvtSwitch';
+import Section from '../ui-components/Section';
 
-export default function AppHeader() {
+const AppHeader: React.FC<{ connectButtonName: string; redirect: string }> = ({ connectButtonName, redirect }) => {
     const handleSwitch = (active: string) => {
         console.log('switch to ' + active);
     };
@@ -13,14 +14,14 @@ export default function AppHeader() {
             <div className="flex items-center justify-between  py-6 md:justify-start md:space-x-10">
                 <Logo />
 
-                <PartPvtSwitch handleSwitch={handleSwitch} />
+                {/* <PartPvtSwitch handleSwitch={handleSwitch} /> */}
 
                 <div className="items-center justify-end md:flex md:flex-1 lg:w-0">
-                    <Link href="/app">
-                        <div className="ff-btn-primary">Connect Wallet</div>
-                    </Link>
+                    <ConnectWalletButton connectButtonName={connectButtonName} onSignInRedirect={redirect} />
                 </div>
             </div>
         </Section>
     );
-}
+};
+
+export default AppHeader;

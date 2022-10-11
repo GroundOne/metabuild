@@ -1,4 +1,4 @@
-import AppCard from '../UI/AppCard';
+import AppCard from '../ui-components/AppCard';
 import CreatePartForm from './CreatePartForm';
 
 export default function CreatePart() {

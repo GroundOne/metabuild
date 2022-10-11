@@ -1,13 +1,13 @@
 {
-    "files.autoSave": "afterDelay",
+    // "files.autoSave": "afterDelay",
     "editor.tabSize": 4,
     "editor.detectIndentation": false,
-    "search.exclude": {
-        "package-lock.json": true
-    },
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": ["source.addMissingImports", "source.fixAll.eslint"],
+    // "search.exclude": {
+    //     "package-lock.json": true
+    // },
+    // "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    // "editor.formatOnSave": true,
+    // "editor.codeActionsOnSave": ["source.addMissingImports", "source.fixAll.eslint"],
 
     "prettier.printWidth": 120,
     "prettier.tabWidth": 4,

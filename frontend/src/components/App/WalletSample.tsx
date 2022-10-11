@@ -1,31 +1,30 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import { Wallet } from '../../utils/near-wallet';
 
-import AppCard from '../UI/AppCard';
+import AppCard from '../ui-components/AppCard';
 import clsx from 'clsx';
-import { contractApi as ca } from '../../api/contracts';
+import { contractApi } from '../../api/contracts';
 import { useAsync } from '../../utils/useAsync';
 
 enum WalletState {
-    SignedIn= 'SignedIn',
-    SignedOut= 'SignedOut',
-    Loading= 'Loading',
+    SignedIn = 'SignedIn',
+    SignedOut = 'SignedOut',
+    Loading = 'Loading',
 }
 export default function WalletSample() {
     // When creating the wallet you can optionally ask to create an access key
     // Having the key enables to call non-payable methods without interrupting the user to sign
     const wallet = useMemo(() => {
-        return new Wallet({ createAccessKeyFor: process.env.CONTRACT_NAME || 'part.groundone.testnet' });
+        return new Wallet({ createAccessKeyFor: process.env.NEXT_PUBLIC_CONTRACT_NAME });
     }, []);
 
-    const contractApi = useMemo(() => {
-        return ca({
+    const contract = useMemo(() => {
+        return contractApi({
             walletToUse: wallet,
-            contractId: process.env.CONTRACT_NAME || 'part.groundone.testnet',
+            contractId: process.env.NEXT_PUBLIC_CONTRACT_NAME!,
         });
     }, [wallet]);
-
 
     const [walletState, setWalletState] = useState(WalletState.Loading);
 
@@ -42,17 +41,13 @@ export default function WalletSample() {
         init();
     }, [wallet]);
 
-    const nftTokensCall = useAsync(contractApi.getNftTokens);
+    const nftTokensCall = useAsync(contract.getNftTokens);
 
     const runViewMethod = async () => {
         console.log(walletState);
         if (walletState === WalletState.SignedIn) {
             nftTokensCall.execute();
         }
-
-        // const retVal = await wallet.viewMethod({ contractId: 'part.groundone.testnet', method: 'nft_tokens' });
-        // // const retVal= await wallet.viewMethod({ contractId: 'part.groundone.testnet', method: 'nft_total_supply' });
-        // console.log(retVal);
     };
 
     return (
@@ -71,25 +66,24 @@ export default function WalletSample() {
                 <button
                     type="button"
                     className={clsx(
-                   walletState=== WalletState.SignedIn && 'disabled',
+                        walletState === WalletState.SignedIn && 'disabled',
                         'ff-btn-primary mt-10 bg-[#C3CED8] text-white hover:bg-opacity-90 hover:text-white'
                     )}
                     disabled={walletState !== WalletState.SignedIn}
                     onClick={runViewMethod}
                 >
-                    {`Run View Method ${nftTokensCall.status}` } 
+                    {`Run View Method ${nftTokensCall.status}`}
                 </button>
                 <button
                     type="button"
                     className={clsx(
-                        walletState=== WalletState.SignedIn && 'disabled',
+                        walletState === WalletState.SignedIn && 'disabled',
                         'ff-btn-primary mt-10 bg-[#C3CED8] text-white hover:bg-opacity-90 hover:text-white'
                     )}
                     disabled={walletState !== WalletState.SignedIn}
                 >
                     Run Call Method
                 </button>
-
                 data: {JSON.stringify(nftTokensCall.value)}
             </div>
         </AppCard>

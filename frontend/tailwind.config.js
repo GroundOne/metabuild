@@ -10,15 +10,6 @@ module.exports = {
               },
         },
     },
-    plugins: [require('daisyui'), require('@tailwindcss/typography'), require('@tailwindcss/forms')],
-    daisyui: {
-        styled: true,
-        themes: false,
-        base: true,
-        utils: true,
-        logs: true,
-        rtl: false,
-        prefix: '',
-        darkTheme: 'dark',
-    },
+    plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')],
+
 };

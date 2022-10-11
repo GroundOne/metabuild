@@ -1,4 +1,4 @@
-import Section from '../UI/Section';
+import Section from '../ui-components/Section';
 
 export default function Hero() {
     return (

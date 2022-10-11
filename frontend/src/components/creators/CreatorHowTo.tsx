@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import Section from '../UI/Section';
+import Section from '../ui-components/Section';
+import ConnectWalletButton from '../ui-components/ConnectWalletButton';
 
 export default function ConnectWallet() {
     return (
@@ -28,9 +28,10 @@ export default function ConnectWallet() {
                         cupiditate sit necessitatibus ut praesentium labore.
                     </p>
                     <div className="mt-10 flex w-full items-center justify-center">
-                        <Link href="/app">
-                            <div className="ff-btn-primary">Connect Wallet and create PART Scheme</div>
-                        </Link>
+                        <ConnectWalletButton
+                            connectButtonName="Connect Wallet and create PART Scheme"
+                            onSignInRedirect="/App"
+                        />
                     </div>
                 </div>
             </div>
