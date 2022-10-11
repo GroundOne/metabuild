@@ -1,5 +1,57 @@
 # Questions
 
+## General
+
+- Can a contract pay for gas fees of functions? Is there an example?
+
+- chaining `@call` functions is a bad idea because of max gas per block so sequentially calling them is the way to go, right?
+
+**Accounts**
+
+- If the frontend wants to let user deploy contracts, how to do that?
+
+  - can I create a subaccount
+
+    - with the near-api-js?
+    - through the wallet.near.org?
+
+  - do I need a full access key from the user (to create a subaccount / to deploy contract)?
+
+  - a contract factory wants to create a contract on behalf of the user, how can this be implemented? -> factory could track the deployed contracts
+
+  - how to keep track of which contracts were deployed?
+
+- is it possible to see all subaccounts of an account (with near-api-js)?
+
+- is it possible to see what contracts are deployed behind each subaccount?
+
+- is it possible to see all NFTs the wallet holds (like the wallet.near.org does)?
+  I need to know which NFTs tokens of a particular contract type the wallet holds.
+
+---
+
+---
+
+---
+
+Irrelevant for today:
+
+...
+
+### Technical / JS Contracts
+
+**Testing**
+
+- Is it possible to get the environment infos inside the ava integration tests (maybe from near-workspaces?)
+
+- changing tests to TS, node process consumption explodes
+
+---
+
+---
+
+---
+
 ## Background
 
 #### PART (Priority Access Ranking Token)
@@ -19,51 +71,3 @@ distributed randomly to users that have previously registered for the IRD.
 The PART contract is a smart contract that manages the sale process of PARTs (IRD + regular sale)
 in Step 1 and the distribution of properties in Step 2. One PART contract is created per project by
 an architect/property developer.
-
-## General
-
-- Does the contract can pay for gas fees? -> Owner can payout some near
-
-### Wallet
-
-- what does it take that NFTs are displayed in a wallet?
-
-  - which functions / fields have to be exposed?
-
-- does it make sense to have 2 different NFT Tokens in one contract?
-
-### Technical / JS Contracts
-
-**Token Transfer**
-
-- how to transfer NEAR in the contract?
-  - `this.transfer(receiver, amount)`??
-
-**Testing**
-
-- Is it possible to get the environment infos inside the ava integration tests (maybe from near-workspaces?)
-
-- advance time in js tests?
-
-  - Other option to test that time has passed (`presale` / `sale` states in contract), `t.timeout(x)` didn't seem to work?
-
-- how to check balances in testing (where to find the functions? -> Docs?)
-
-- changing tests to TS, node process consumption explodes
-
-**Randomization**
-
-- is the randomize logic with `seed` sound or can be improved?
-
-**Data Types / Variables**
-
-- which data types can be used? are there docs for it? (i128, strings? -> Docs?)
-
-- how can I work with BigInts inside my contract?
-
-  - for testing `near-workspaces` there's { NEAR } has some utility functions.
-  - Does the near-sdk-js have equivalent functionality (-> Docs)?
-
-**Init**
-
-- foreach in init function works but for of doesn't?
