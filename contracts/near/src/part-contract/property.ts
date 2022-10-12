@@ -30,7 +30,7 @@ export function internalInitProperties(
   )
 
   if (contract.distributionStart)
-    contract.distributionStart = BigInt(initArgs.distributionStart)
+    contract.distributionStart = BigInt(initArgs.distributionStart).toString()
 
   if (initArgs.totalSupply && initArgs.reservedTokenIds) {
     assert(

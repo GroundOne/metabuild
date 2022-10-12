@@ -9,7 +9,6 @@ import {
   Vector,
   view,
 } from "near-sdk-js"
-import { TokenMetadata } from "../part-contract/metadata"
 import {
   internalNftTokens,
   internalSupplyForOwner,
@@ -17,7 +16,11 @@ import {
   internalTotalSupply,
 } from "./enumeration"
 import { internalPayoutNear } from "./internal"
-import { internalNftMetadata, NFTContractMetadata } from "./metadata"
+import {
+  internalNftMetadata,
+  NFTContractMetadata,
+  TokenMetadata,
+} from "./metadata"
 import { internalMint } from "./mint"
 import { internalNftToken } from "./nft_core"
 import {
@@ -61,8 +64,8 @@ export class Contract {
   currentTokenId: number = 1 // start token IDs with `1`
   totalSupply: number = 0 // maximum amount of PARTs
   price: number // deposit for each PART
-  saleOpening: bigint // blockTimestamp when regular sales starts
-  saleClose: bigint // blockTimestamp when sale has finished
+  saleOpening: string // blockTimestamp when regular sales starts
+  saleClose: string // blockTimestamp when sale has finished
 
   reservedTokenIds: Vector // stays in ownership of deployer
   presaleParticipants: Vector // candidates which buy into the presale
@@ -77,7 +80,7 @@ export class Contract {
   // Property Metrics
   properties: UnorderedMap
   reservedProperties: Vector
-  distributionStart: bigint
+  distributionStart: string
   propertyPreferenceByTokenId: UnorderedMap
   tokenIdByProperty: UnorderedMap
 
@@ -95,8 +98,8 @@ export class Contract {
     this.totalSupply = 3
     this.price = 0
 
-    this.saleOpening = saleOpening
-    this.saleClose = saleClose
+    this.saleOpening = saleOpening.toString()
+    this.saleClose = saleClose.toString()
 
     this.saleStatus = SaleStatusEnum.UNSET
 
@@ -117,7 +120,7 @@ export class Contract {
     // Property Metrics
     this.properties = new UnorderedMap("properties")
     this.reservedProperties = new Vector("reservedProperties")
-    this.distributionStart = distributionStart
+    this.distributionStart = distributionStart.toString()
     this.propertyPreferenceByTokenId = new UnorderedMap(
       "propertyPreferenceByTokenId"
     )
@@ -131,7 +134,8 @@ export class Contract {
     this.totalSupply = initArgs.totalSupply
     this.price = initArgs.price
 
-    if (initArgs.saleOpening) this.saleOpening = BigInt(initArgs.saleOpening)
+    if (initArgs.saleOpening)
+      this.saleOpening = BigInt(initArgs.saleOpening).toString()
 
     if (initArgs.saleClose) {
       if (initArgs.saleOpening) {
@@ -146,7 +150,7 @@ export class Contract {
         "Sale close must be in the future"
       )
 
-      this.saleClose = BigInt(initArgs.saleClose)
+      this.saleClose = BigInt(initArgs.saleClose).toString()
     }
 
     if (initArgs.metadata) this.metadata = initArgs.metadata
@@ -231,7 +235,7 @@ export class Contract {
     return internalDistributeProperties({ contract: this })
   }
 
-  /* 
+  /*
     OWNER
   */
   @call({})
@@ -245,8 +249,8 @@ export class Contract {
     return internalPayoutNear({ amount, receivingAccountId, contract: this })
   }
 
-  /* 
-    VIEWS 
+  /*
+    VIEWS
   */
 
   /* CORE */
@@ -361,17 +365,17 @@ export class Contract {
   /* SALE STATUS */
   @view({})
   isPresaleDone() {
-    return this.saleOpening < near.blockTimestamp()
+    return BigInt(this.saleOpening) < near.blockTimestamp()
   }
 
   @view({})
   isSaleDone() {
-    return this.saleClose < near.blockTimestamp()
+    return BigInt(this.saleClose) < near.blockTimestamp()
   }
 
   @view({})
   isDistributionDone() {
-    return this.distributionStart < near.blockTimestamp()
+    return BigInt(this.distributionStart) < near.blockTimestamp()
   }
 
   @view({})
