@@ -29,8 +29,8 @@ import {
 import {
   internalDistributeProperties,
   internalInitProperties,
-  internalPropertyInfo,
   internalPropertiesInfo,
+  internalPropertyInfo,
   internalSetPropertyPreferences,
 } from "./property"
 import { internalMintSale } from "./sale"
@@ -61,8 +61,8 @@ export class Contract {
   currentTokenId: number = 1 // start token IDs with `1`
   totalSupply: number = 0 // maximum amount of PARTs
   price: number // deposit for each PART
-  prelaunchEnd: bigint // blockTimestamp when regular sales starts
-  saleEnd: bigint // blockTimestamp when sale has finished
+  saleOpening: bigint // blockTimestamp when regular sales starts
+  saleClose: bigint // blockTimestamp when sale has finished
 
   reservedTokenIds: Vector // stays in ownership of deployer
   presaleParticipants: Vector // candidates which buy into the presale
@@ -84,8 +84,8 @@ export class Contract {
   constructor() {
     const twoMinutes = BigInt(2 * 60 * 1e9) // nanoseconds
 
-    const prelaunchEnd = near.blockTimestamp() + twoMinutes
-    const saleEnd = near.blockTimestamp() + BigInt(2) * twoMinutes
+    const saleOpening = near.blockTimestamp() + twoMinutes
+    const saleClose = near.blockTimestamp() + BigInt(2) * twoMinutes
 
     this.ownerId = ""
     this.projectName = "PART Token"
@@ -94,8 +94,8 @@ export class Contract {
     this.totalSupply = 3
     this.price = 0
 
-    this.prelaunchEnd = prelaunchEnd
-    this.saleEnd = saleEnd
+    this.saleOpening = saleOpening
+    this.saleClose = saleClose
 
     this.saleStatus = SaleStatusEnum.UNSET
 
@@ -116,7 +116,7 @@ export class Contract {
     // Property Metrics
     this.properties = new UnorderedMap("properties")
     this.reservedProperties = new Vector("reservedProperties")
-    this.distributionStart = this.saleEnd + BigInt(2) * twoMinutes
+    this.distributionStart = this.saleClose + BigInt(2) * twoMinutes
     this.propertyPreferenceByTokenId = new UnorderedMap(
       "propertyPreferenceByTokenId"
     )
@@ -130,17 +130,17 @@ export class Contract {
     this.totalSupply = initArgs.totalSupply
     this.price = initArgs.price
 
-    if (initArgs.prelaunchEnd) this.prelaunchEnd = BigInt(initArgs.prelaunchEnd)
+    if (initArgs.saleOpening) this.saleOpening = BigInt(initArgs.saleOpening)
 
-    if (initArgs.saleEnd) {
-      if (initArgs.prelaunchEnd) {
+    if (initArgs.saleClose) {
+      if (initArgs.saleOpening) {
         assert(
-          initArgs.prelaunchEnd < initArgs.saleEnd,
-          "PresaleEnd must be smaller than SaleEnd"
+          initArgs.saleOpening < initArgs.saleClose,
+          "PresaleClose must be smaller than SaleClose"
         )
       }
 
-      this.saleEnd = BigInt(initArgs.saleEnd)
+      this.saleClose = BigInt(initArgs.saleClose)
     }
 
     if (initArgs.metadata) this.metadata = initArgs.metadata
@@ -214,7 +214,7 @@ export class Contract {
 
   /* POSTSALE */
   @call({})
-  set_preferences_for_properties(propertyPreferenceIds: string[]) {
+  set_preferences_properties(propertyPreferenceIds: string[]) {
     return internalSetPropertyPreferences({
       propertyPreferenceIds,
       contract: this,
@@ -298,8 +298,8 @@ export class Contract {
 
   @view({})
   //get the information for a specific token ID
-  property_info({ token_id }: { token_id: string }) {
-    return internalPropertyInfo({ contract: this, tokenId: token_id })
+  property_info({ id }: { id: string }) {
+    return internalPropertyInfo({ contract: this, id })
   }
 
   /* GENERAL */
@@ -312,8 +312,8 @@ export class Contract {
       totalSupply: this.totalSupply,
       price: this.price,
       reservedTokenIds: this.reservedTokenIds,
-      prelaunchEnd: this.prelaunchEnd.toString(),
-      saleEnd: this.saleEnd.toString(),
+      saleOpening: this.saleOpening.toString(),
+      saleClose: this.saleClose.toString(),
       saleStatus: this.saleStatus,
     }
   }
@@ -357,12 +357,17 @@ export class Contract {
   /* SALE STATUS */
   @view({})
   isPresaleDone() {
-    return this.prelaunchEnd < near.blockTimestamp()
+    return this.saleOpening < near.blockTimestamp()
   }
 
   @view({})
   isSaleDone() {
-    return this.saleEnd < near.blockTimestamp()
+    return this.saleClose < near.blockTimestamp()
+  }
+
+  @view({})
+  isDistributionDone() {
+    return this.distributionStart < near.blockTimestamp()
   }
 
   @view({})

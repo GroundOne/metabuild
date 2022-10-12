@@ -25,8 +25,8 @@ export function internalInitProperties(
   )
 
   assert(
-    contract.saleEnd < contract.distributionStart,
-    `Distribution should happen before sale end. Distribution start is ${contract.distributionStart}, sale end ${contract.saleEnd}`
+    contract.saleClose < contract.distributionStart,
+    `Distribution should happen before sale end. Distribution start is ${contract.distributionStart}, sale end ${contract.saleClose}`
   )
 
   if (contract.distributionStart)
@@ -40,21 +40,20 @@ export function internalInitProperties(
     )
   }
 
-  if (initArgs.totalSupply) {
-    const propertyIds = new Array(initArgs.totalSupply)
-      .fill(null)
-      .map((_, i) => i + 1)
-    near.log(
-      `Following properties will be created: ${JSON.stringify(propertyIds)}`
-    )
+  initArgs.totalSupply
+  const propertyIds = new Array(initArgs.totalSupply)
+    .fill(null)
+    .map((_, i) => (i + 1).toString())
+  near.log(
+    `Following properties will be created: ${JSON.stringify(propertyIds)}`
+  )
 
-    propertyIds.forEach((propertyId) => {
-      contract.properties.set(
-        propertyId.toString(),
-        new Property({ id: propertyId.toString(), link: "" })
-      )
-    })
-  }
+  propertyIds.forEach((propertyId) => {
+    contract.properties.set(
+      propertyId,
+      new Property({ id: propertyId, link: "" })
+    )
+  })
 
   if (initArgs.reservedTokenIds) {
     const reservedTokenIds = initArgs.reservedTokenIds
@@ -104,12 +103,12 @@ export function internalPropertiesInfo({
 //get the information for a specific token ID
 export function internalPropertyInfo({
   contract,
-  tokenId,
+  id,
 }: {
   contract: Contract
-  tokenId: string
+  id: string
 }) {
-  let property = contract.properties.get(tokenId) as Property
+  let property = contract.properties.get(id) as Property
   //if there wasn't a token ID in the tokens_by_id collection, we return None
   if (property == null) {
     return null

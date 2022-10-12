@@ -15,10 +15,10 @@ export function internalMintSale({
 }) {
   assert(
     contract.isPresaleDone(),
-    `Please wait until the presale is finished ${contract.prelaunchEnd}`
+    `Please wait until the presale is finished ${contract.saleOpening}`
   )
 
-  assert(!contract.isSaleDone(), `The sale is finished ${contract.saleEnd}`)
+  assert(!contract.isSaleDone(), `The sale is finished ${contract.saleClose}`)
 
   assert(
     contract.currentTokenId <= contract.totalSupply,
@@ -27,7 +27,7 @@ export function internalMintSale({
 
   assert(
     contract.saleStatus === SaleStatusEnum.SALE,
-    `Can only be called when prelaunchEnd, distribution, cashout and presale minting finished and status \`sale\`, is ${contract.saleStatus}`
+    `Can only be called when saleOpening, distribution, cashout and presale minting finished and status \`sale\`, is ${contract.saleStatus}`
   )
 
   assert(
