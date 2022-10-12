@@ -7,13 +7,13 @@ export type InitializeArgs = {
   totalSupply: number
   price: number
   reservedTokenIds?: string[]
-  saleOpening?: number
-  saleClose?: number
+  saleOpening?: string
+  saleClose?: string
   metadata?: NFTContractMetadata
 }
 
 export type InitializePropertiesArgs = {
-  distributionStart: number
+  distributionStart: string
   reservedTokenIds?: string[]
   totalSupply: number
 }

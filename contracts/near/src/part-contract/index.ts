@@ -82,10 +82,11 @@ export class Contract {
   tokenIdByProperty: UnorderedMap
 
   constructor() {
-    const twoMinutes = BigInt(2 * 60 * 1e9) // nanoseconds
+    const twoMinutes = BigInt((2 * 60 * 1e9).toString()) // nanoseconds
 
     const saleOpening = near.blockTimestamp() + twoMinutes
-    const saleClose = near.blockTimestamp() + BigInt(2) * twoMinutes
+    const saleClose = saleOpening + twoMinutes
+    const distributionStart = saleClose + twoMinutes
 
     this.ownerId = ""
     this.projectName = "PART Token"
@@ -116,7 +117,7 @@ export class Contract {
     // Property Metrics
     this.properties = new UnorderedMap("properties")
     this.reservedProperties = new Vector("reservedProperties")
-    this.distributionStart = this.saleClose + BigInt(2) * twoMinutes
+    this.distributionStart = distributionStart
     this.propertyPreferenceByTokenId = new UnorderedMap(
       "propertyPreferenceByTokenId"
     )
@@ -140,14 +141,17 @@ export class Contract {
         )
       }
 
+      assert(
+        BigInt(initArgs.saleClose) > near.blockTimestamp(),
+        "Sale close must be in the future"
+      )
+
       this.saleClose = BigInt(initArgs.saleClose)
     }
 
     if (initArgs.metadata) this.metadata = initArgs.metadata
 
-    if (this.isSaleDone()) {
-      this.saleStatus = SaleStatusEnum.POSTSALE
-    } else if (this.isPresaleDone()) {
+    if (this.isPresaleDone()) {
       this.saleStatus = SaleStatusEnum.SALE
     } else {
       this.saleStatus = SaleStatusEnum.PRESALE
@@ -163,7 +167,7 @@ export class Contract {
 
       reservedTokenIds.forEach((reservedTokenId) => {
         this.reservedTokenIds.push(reservedTokenId.toString())
-        near.log(`Minting Reserved Token with Id ${reservedTokenId}`)
+
         internalMint({
           contract: this,
           metadata: this.metadata,
