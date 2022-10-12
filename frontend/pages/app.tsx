@@ -18,7 +18,7 @@ const App: NextPage = (props: any) => {
                     {/* <AppHeader  /> */}
                     <WalletSample />
                     <CreatePart />
-                    <BuyerHowTo />
+                    {/* <BuyerHowTo /> */}
                 </ErrorBoundary>
             </div>
         </>

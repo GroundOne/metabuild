@@ -1,7 +1,7 @@
 import Section from '../ui-components/Section';
 import ConnectWalletButton from '../ui-components/ConnectWalletButton';
 
-export default function ConnectWallet() {
+const CreatorHowTo: React.FC = () => {
     return (
         <Section>
             <div className="flex justify-center pb-16">
@@ -28,13 +28,12 @@ export default function ConnectWallet() {
                         cupiditate sit necessitatibus ut praesentium labore.
                     </p>
                     <div className="mt-10 flex w-full items-center justify-center">
-                        <ConnectWalletButton
-                            connectButtonName="Connect Wallet and create PART Scheme"
-                            onSignInRedirect="/App"
-                        />
+                        <ConnectWalletButton buttonName="Connect Wallet and create PART Scheme" />
                     </div>
                 </div>
             </div>
         </Section>
     );
-}
+};
+
+export default CreatorHowTo;

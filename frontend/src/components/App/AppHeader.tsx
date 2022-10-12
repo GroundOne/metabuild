@@ -1,23 +1,21 @@
 import Link from 'next/link';
 import ConnectWalletButton from '../ui-components/ConnectWalletButton';
 import Logo from '../ui-components/Logo';
-import PartPvtSwitch from '../ui-components/PartPvtSwitch';
+import HeaderMenu from '../ui-components/HeaderMenu';
 import Section from '../ui-components/Section';
 
-const AppHeader: React.FC<{ connectButtonName: string; redirect: string }> = ({ connectButtonName, redirect }) => {
-    const handleSwitch = (active: string) => {
-        console.log('switch to ' + active);
-    };
-
+const AppHeader: React.FC<{ buttons?: Array<{ name: string; url: string }>; connectButtonName?: string }> = ({
+    buttons,
+    connectButtonName,
+}) => {
     return (
         <Section>
             <div className="flex items-center justify-between  py-6 md:justify-start md:space-x-10">
                 <Logo />
-
-                {/* <PartPvtSwitch handleSwitch={handleSwitch} /> */}
+                {buttons && <HeaderMenu buttons={buttons} />}
 
                 <div className="items-center justify-end md:flex md:flex-1 lg:w-0">
-                    <ConnectWalletButton connectButtonName={connectButtonName} onSignInRedirect={redirect} />
+                    <ConnectWalletButton buttonName={connectButtonName} />
                 </div>
             </div>
         </Section>

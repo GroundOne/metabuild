@@ -1,8 +1,7 @@
-import Link from 'next/link';
 import ConnectWalletButton from '../ui-components/ConnectWalletButton';
 import Section from '../ui-components/Section';
 
-export default function BuyerHowTo() {
+const BuyerHowTo: React.FC = () => {
     return (
         <Section>
             <div className="flex justify-center pb-16">
@@ -29,10 +28,12 @@ export default function BuyerHowTo() {
                         cupiditate sit necessitatibus ut praesentium labore.
                     </p>
                     <div className="mt-10 flex w-full items-center justify-center">
-                        <ConnectWalletButton connectButtonName="Connect Wallet" onSignInRedirect="/App" />
+                        <ConnectWalletButton />
                     </div>
                 </div>
             </div>
         </Section>
     );
-}
+};
+
+export default BuyerHowTo;

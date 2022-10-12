@@ -7,8 +7,8 @@ const Buyer: NextPage = () => {
     return (
         <>
             <div className="min-h-screen bg-gradient-to-b from-[#5E7C9665] to-[#B2C7D145]">
-                <ErrorBoundary scope="architect.tsx">
-                    <AppHeader connectButtonName="Connect Wallet" redirect="/App" />
+                <ErrorBoundary scope="buyer.tsx">
+                    <AppHeader />
                     <BuyerHowTo />
                 </ErrorBoundary>
             </div>
