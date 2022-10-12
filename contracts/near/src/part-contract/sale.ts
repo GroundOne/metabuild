@@ -31,8 +31,8 @@ export function internalMintSale({
   )
 
   assert(
-    near.currentAccountId() != contract.ownerId &&
-      internalSupplyForOwner({ contract, accountId: near.currentAccountId() }) >
+    near.signerAccountId() != contract.ownerId &&
+      internalSupplyForOwner({ contract, accountId: near.signerAccountId() }) ==
         0,
     `Sender already owns PART Token`
   )

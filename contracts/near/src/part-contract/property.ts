@@ -164,15 +164,15 @@ export function internalSetPropertyPreferences({
   contract: Contract
 }) {
   let tokens = restoreOwners(
-    contract.tokensPerOwner.get(near.currentAccountId())
+    contract.tokensPerOwner.get(near.signerAccountId())
   )
   assert(
     tokens.length == 1,
-    `Current account doesn't own any PART Tokens ${near.currentAccountId()}`
+    `Current account doesn't own any PART Tokens ${near.signerAccountId()}`
   )
 
   contract.propertyPreferenceByTokenId.set(
-    near.currentAccountId(),
+    near.signerAccountId(),
     new PropertyPreference(propertyPreferenceIds)
   )
 }

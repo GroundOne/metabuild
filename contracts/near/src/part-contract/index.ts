@@ -141,13 +141,15 @@ export class Contract {
       if (initArgs.saleOpening) {
         assert(
           initArgs.saleOpening < initArgs.saleClose,
-          "PresaleClose must be smaller than SaleClose"
+          `Sale opening must be before SaleClose, sale opening is ${initArgs.saleOpening}, sale close ${initArgs.saleClose}`
         )
       }
 
       assert(
         BigInt(initArgs.saleClose) > near.blockTimestamp(),
-        "Sale close must be in the future"
+        `Sale close must be in the future, sale close ${
+          initArgs.saleClose
+        }, current time ${near.blockTimestamp().toString()}`
       )
 
       this.saleClose = BigInt(initArgs.saleClose).toString()
