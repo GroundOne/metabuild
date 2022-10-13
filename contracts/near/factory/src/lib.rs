@@ -1,29 +1,20 @@
-use near_contract_standards::fungible_token::metadata::FungibleTokenMetadata;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::{LookupMap, UnorderedMap};
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
 use near_sdk::json_types::U128;
-use near_sdk::serde::{Deserialize, Serialize};
-use near_sdk::serde_json;
 use near_sdk::{
     env, near_bindgen, AccountId, Balance, BorshStorageKey, Gas, PanicOnDefault, Promise,
 };
+// use near_sdk::serde_json;
+
+use part::{is_valid_token_id, InitializeArgs, TokenId};
+
+mod part;
 
 const FT_WASM_CODE: &[u8] = include_bytes!("../../build/part.wasm");
 
 const EXTRA_BYTES: usize = 10000;
-const GAS: Gas = Gas(50_000_000_000_000);
-type TokenId = String;
-
-pub fn is_valid_token_id(token_id: &TokenId) -> bool {
-    for c in token_id.as_bytes() {
-        match c {
-            b'0'..=b'9' | b'a'..=b'z' => (),
-            _ => return false,
-        }
-    }
-    true
-}
+// const GAS: Gas = Gas(50_000_000_000_000);
 
 #[derive(BorshSerialize, BorshStorageKey)]
 enum StorageKey {
@@ -33,22 +24,15 @@ enum StorageKey {
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
-pub struct TokenFactory {
-    pub tokens: UnorderedMap<TokenId, TokenArgs>,
+pub struct PartTokenFactory {
+    // TODO: rename tokens into contracts
+    pub tokens: UnorderedMap<TokenId, InitializeArgs>,
     pub storage_deposits: LookupMap<AccountId, Balance>,
     pub storage_balance_cost: Balance,
 }
 
-#[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
-#[serde(crate = "near_sdk::serde")]
-pub struct TokenArgs {
-    owner_id: AccountId,
-    total_supply: U128,
-    metadata: FungibleTokenMetadata,
-}
-
 #[near_bindgen]
-impl TokenFactory {
+impl PartTokenFactory {
     #[init]
     pub fn new() -> Self {
         let mut storage_deposits = LookupMap::new(StorageKey::StorageDeposits);
@@ -67,21 +51,6 @@ impl TokenFactory {
         }
     }
 
-    fn get_min_attached_balance(&self, args: &TokenArgs) -> u128 {
-        ((FT_WASM_CODE.len() + EXTRA_BYTES + args.try_to_vec().unwrap().len() * 2) as Balance
-            * STORAGE_PRICE_PER_BYTE)
-            .into()
-    }
-
-    pub fn get_required_deposit(&self, args: TokenArgs, account_id: AccountId) -> U128 {
-        let args_deposit = self.get_min_attached_balance(&args);
-        if let Some(previous_balance) = self.storage_deposits.get(&account_id) {
-            args_deposit.saturating_sub(previous_balance).into()
-        } else {
-            (self.storage_balance_cost + args_deposit).into()
-        }
-    }
-
     #[payable]
     pub fn storage_deposit(&mut self) {
         let account_id = env::predecessor_account_id();
@@ -96,29 +65,17 @@ impl TokenFactory {
         }
     }
 
-    pub fn get_number_of_tokens(&self) -> u64 {
-        self.tokens.len()
-    }
-
-    pub fn get_tokens(&self, from_index: u64, limit: u64) -> Vec<TokenArgs> {
-        let tokens = self.tokens.values_as_vector();
-        (from_index..std::cmp::min(from_index + limit, tokens.len()))
-            .filter_map(|index| tokens.get(index))
-            .collect()
-    }
-
-    pub fn get_token(&self, token_id: TokenId) -> Option<TokenArgs> {
-        self.tokens.get(&token_id)
-    }
-
     #[payable]
-    pub fn create_token(&mut self, args: TokenArgs) -> Promise {
+    pub fn create_token(&mut self, args: InitializeArgs) -> Promise {
         if env::attached_deposit() > 0 {
             self.storage_deposit();
         }
+
         args.metadata.assert_valid();
-        let token_id = args.metadata.symbol.to_ascii_lowercase();
+
+        let token_id = args.projectName.replace(" ", "_").to_ascii_lowercase();
         assert!(is_valid_token_id(&token_id), "Invalid Symbol");
+
         let token_account_id =
             AccountId::new_unchecked(format!("{}.{}", token_id, env::current_account_id()));
         assert!(
@@ -151,6 +108,45 @@ impl TokenFactory {
             .create_account()
             .transfer(required_balance - storage_balance_used)
             .deploy_contract(FT_WASM_CODE.to_vec())
-            .function_call("new".to_string(), serde_json::to_vec(&args).unwrap(), 0, GAS)
+            .add_full_access_key(env::signer_account_pk()) // TODO give function-call access key to this factory?
+
+        // .function_call(
+        //     "new".to_string(),
+        //     serde_json::to_vec(&args).unwrap(),
+        //     0,
+        //     GAS,
+        // )
+    }
+
+    pub fn get_required_deposit(&self, args: InitializeArgs, account_id: AccountId) -> U128 {
+        let args_deposit = self.get_min_attached_balance(&args);
+        if let Some(previous_balance) = self.storage_deposits.get(&account_id) {
+            args_deposit.saturating_sub(previous_balance).into()
+        } else {
+            (self.storage_balance_cost + args_deposit).into()
+        }
+    }
+
+    pub fn get_number_of_tokens(&self) -> u64 {
+        self.tokens.len()
+    }
+
+    pub fn get_tokens(&self, from_index: Option<u64>, limit: Option<u64>) -> Vec<InitializeArgs> {
+        let from = from_index.unwrap_or(0);
+        let until = limit.unwrap_or(self.get_number_of_tokens());
+
+        let tokens = self.tokens.values_as_vector();
+        (from..std::cmp::min(from + until, tokens.len()))
+            .filter_map(|index| tokens.get(index))
+            .collect()
+    }
+
+    pub fn get_token(&self, token_id: TokenId) -> Option<InitializeArgs> {
+        self.tokens.get(&token_id)
+    }
+
+    fn get_min_attached_balance(&self, args: &InitializeArgs) -> u128 {
+        (FT_WASM_CODE.len() + EXTRA_BYTES + args.try_to_vec().unwrap().len() * 2) as Balance
+            * STORAGE_PRICE_PER_BYTE
     }
 }
