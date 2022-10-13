@@ -2,19 +2,17 @@ use near_contract_standards::fungible_token::metadata::FungibleTokenMetadata;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::{LookupMap, UnorderedMap};
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
-use near_sdk::json_types::{ValidAccountId, U128};
+use near_sdk::json_types::U128;
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::serde_json;
 use near_sdk::{
     env, near_bindgen, AccountId, Balance, BorshStorageKey, Gas, PanicOnDefault, Promise,
 };
 
-near_sdk::setup_alloc!();
-
-const FT_WASM_CODE: &[u8] = include_bytes!("../../token/res/fungible_token.wasm");
+const FT_WASM_CODE: &[u8] = include_bytes!("../../build/part.wasm");
 
 const EXTRA_BYTES: usize = 10000;
-const GAS: Gas = 50_000_000_000_000;
+const GAS: Gas = Gas(50_000_000_000_000);
 type TokenId = String;
 
 pub fn is_valid_token_id(token_id: &TokenId) -> bool {
@@ -44,7 +42,7 @@ pub struct TokenFactory {
 #[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct TokenArgs {
-    owner_id: ValidAccountId,
+    owner_id: AccountId,
     total_supply: U128,
     metadata: FungibleTokenMetadata,
 }
@@ -56,7 +54,7 @@ impl TokenFactory {
         let mut storage_deposits = LookupMap::new(StorageKey::StorageDeposits);
 
         let initial_storage_usage = env::storage_usage();
-        let tmp_account_id = "a".repeat(64);
+        let tmp_account_id = AccountId::new_unchecked("a".repeat(64));
         storage_deposits.insert(&tmp_account_id, &0);
         let storage_balance_cost =
             Balance::from(env::storage_usage() - initial_storage_usage) * STORAGE_PRICE_PER_BYTE;
@@ -75,9 +73,9 @@ impl TokenFactory {
             .into()
     }
 
-    pub fn get_required_deposit(&self, args: TokenArgs, account_id: ValidAccountId) -> U128 {
+    pub fn get_required_deposit(&self, args: TokenArgs, account_id: AccountId) -> U128 {
         let args_deposit = self.get_min_attached_balance(&args);
-        if let Some(previous_balance) = self.storage_deposits.get(account_id.as_ref()) {
+        if let Some(previous_balance) = self.storage_deposits.get(&account_id) {
             args_deposit.saturating_sub(previous_balance).into()
         } else {
             (self.storage_balance_cost + args_deposit).into()
@@ -121,7 +119,8 @@ impl TokenFactory {
         args.metadata.assert_valid();
         let token_id = args.metadata.symbol.to_ascii_lowercase();
         assert!(is_valid_token_id(&token_id), "Invalid Symbol");
-        let token_account_id = format!("{}.{}", token_id, env::current_account_id());
+        let token_account_id =
+            AccountId::new_unchecked(format!("{}.{}", token_id, env::current_account_id()));
         assert!(
             env::is_valid_account_id(token_account_id.as_bytes()),
             "Token Account ID is invalid"
@@ -152,6 +151,6 @@ impl TokenFactory {
             .create_account()
             .transfer(required_balance - storage_balance_used)
             .deploy_contract(FT_WASM_CODE.to_vec())
-            .function_call(b"new".to_vec(), serde_json::to_vec(&args).unwrap(), 0, GAS)
+            .function_call("new".to_string(), serde_json::to_vec(&args).unwrap(), 0, GAS)
     }
 }
