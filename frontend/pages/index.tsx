@@ -1,9 +1,9 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import HomepageHeader from '../src/components/homepage/HomepageHeader';
-import Hero from '../src/components/homepage/Hero';
-import StepOne from '../src/components/homepage/StepOne';
-import StepTwo from '../src/components/homepage/StepTwo';
+import HomepageHeader from '../src/components/Homepage/HomepageHeader';
+import Hero from '../src/components/Homepage/Hero';
+import StepOne from '../src/components/Homepage/StepOne';
+import StepTwo from '../src/components/Homepage/StepTwo';
 import { ErrorBoundary } from '../src/components/ErrorBoundary';
 
 const Home: NextPage = (props: any) => {
