@@ -16,7 +16,7 @@ const App: NextPage = (props: any) => {
             <div className="min-h-screen bg-gradient-to-b from-[#5E7C9665] to-[#B2C7D145]">
                 <ErrorBoundary scope="app.tsx">
                     {/* <AppHeader  /> */}
-                    <WalletSample />
+                    {/* <WalletSample /> */}
                     <CreatePart />
                     {/* <BuyerHowTo /> */}
                 </ErrorBoundary>

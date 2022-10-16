@@ -1,11 +1,39 @@
 import { Wallet } from '../utils/near-wallet';
 
-export const contractApi = ({ contractId, walletToUse }: { contractId: string, walletToUse: Wallet }) => { 
+
+interface TokenMetadata {
+    title?: string
+    description?: string
+    media?: string
+    media_hash?: string
+    copies?: number
+    issued_at?: string
+    expires_at?: string
+    starts_at?: string
+    updated_at?: string
+    extra?: string
+    reference?: string
+    reference_hash?: string
+}
+
+export const contractApi = ({ contractId, walletToUse }: { contractId: string, walletToUse: Wallet }) => {
     const api = {
-        getNftTokens: async () => {
-            await new Promise (resolve => setTimeout(resolve, 1000));
-            return walletToUse.viewMethod({ contractId, method: 'nft_tokens' });
+        call: {
+            internalMintForPresaleParticipants: async (data: TokenMetadata) => {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return walletToUse.callMethod({
+                    contractId, method: 'nft_mint_for_presale_participants', args: data
+                });
+            }
+
+        }, get: {
+            nftTokens: async () => {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return walletToUse.viewMethod({ contractId, method: 'nft_tokens' });
+            }
         }
+
+
     }
     return api;
 }

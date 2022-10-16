@@ -1,7 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import AppHeader from '../../src/components/App/AppHeader';
-import BuyerHowTo from '../../src/components/buyers/BuyerHowTo';
 import CreatePart from '../../src/components/App/CreatePart';
 import WalletSample from '../../src/components/App/WalletSample';
 import { ErrorBoundary } from '../../src/components/ErrorBoundary';
@@ -22,7 +21,7 @@ const App: NextPage = (props: any) => {
                         ]}
                     />
                     <CreatePart />
-                    <WalletSample />
+                    {/* <WalletSample /> */}
                 </ErrorBoundary>
             </div>
         </>

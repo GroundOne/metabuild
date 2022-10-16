@@ -1,5 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { WalletState, NearContextProps, NearContext } from '../walletContext';
+import Button from './Button';
 
 const ConnectWalletButton: React.FC<{ buttonName?: string }> = ({ buttonName }) => {
     const { wallet, walletState } = useContext(NearContext);
@@ -15,9 +16,9 @@ const ConnectWalletButton: React.FC<{ buttonName?: string }> = ({ buttonName }) 
     };
 
     return (
-        <button type="button" className="ff-btn-primary" onClick={handleClick}>
-            {buttonName || walletState === WalletState.SignedIn ? 'Wallet Connected' : 'Connect Wallet'}
-        </button>
+        <Button onClick={handleClick} isLoading={walletState === WalletState.Loading}>
+            {buttonName ? buttonName : walletState === WalletState.SignedIn ? 'Wallet Connected' : 'Connect Wallet'}
+        </Button>
     );
 };
 

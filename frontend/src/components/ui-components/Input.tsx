@@ -34,7 +34,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     name={name}
                     type={type}
                     className={clsx(
-                        'mt-10 ml-[-2px] block w-full rounded-md border-transparent bg-gray-100',
+                        'mt-10 block w-full rounded-md border-transparent bg-gray-100',
                         'focus:border-gray-300 focus:bg-white focus:ring-0',
                         isInvalid ? 'border-red-600 focus:ring-red-600' : '',
                         className
@@ -43,10 +43,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     ref={ref}
                     {...otherProps}
                 ></input>
-                <span className="mt-2 inline-block text-gray-600">{placeholder}</span>
                 {isInvalid && errorText && (
-                    <span className="mt-1 block pl-4 text-left text-sm text-red-600">{errorText}</span>
+                    <span className="-mb-3 block py-1 pl-4 text-left text-sm text-red-600">{errorText}</span>
                 )}
+                <span className="mt-2 inline-block pl-4 text-gray-600">{placeholder}</span>
             </label>
         );
     }

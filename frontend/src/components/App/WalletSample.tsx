@@ -41,7 +41,7 @@ export default function WalletSample() {
         init();
     }, [wallet]);
 
-    const nftTokensCall = useAsync(contract.getNftTokens);
+    const nftTokensCall = useAsync(contract.get.nftTokens);
 
     const runViewMethod = async () => {
         console.log(walletState);
@@ -57,7 +57,7 @@ export default function WalletSample() {
             <button
                 type="button"
                 onClick={walletState === WalletState.SignedIn ? wallet.signOut : wallet.signIn}
-                className="ff-btn-primary mt-10 w-1/2 bg-[#C3CED8] text-white hover:bg-opacity-90 hover:text-white"
+                className="mt-10 w-1/2 bg-[#C3CED8] text-white hover:bg-opacity-90 hover:text-white"
             >
                 {walletState === WalletState.SignedOut ? 'Sign In' : 'Sign Out'}
             </button>
@@ -67,7 +67,7 @@ export default function WalletSample() {
                     type="button"
                     className={clsx(
                         walletState === WalletState.SignedIn && 'disabled',
-                        'ff-btn-primary mt-10 bg-[#C3CED8] text-white hover:bg-opacity-90 hover:text-white'
+                        'mt-10 bg-[#C3CED8] text-white hover:bg-opacity-90 hover:text-white'
                     )}
                     disabled={walletState !== WalletState.SignedIn}
                     onClick={runViewMethod}
@@ -78,7 +78,7 @@ export default function WalletSample() {
                     type="button"
                     className={clsx(
                         walletState === WalletState.SignedIn && 'disabled',
-                        'ff-btn-primary mt-10 bg-[#C3CED8] text-white hover:bg-opacity-90 hover:text-white'
+                        'mt-10 bg-[#C3CED8] text-white hover:bg-opacity-90 hover:text-white'
                     )}
                     disabled={walletState !== WalletState.SignedIn}
                 >
