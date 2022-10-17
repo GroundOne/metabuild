@@ -1,5 +1,5 @@
 import { NFTContractMetadata } from "./metadata"
-import { PVT } from "./pvt"
+import { Property } from "./property"
 
 export type InitializeArgs = {
   ownerId: string
@@ -7,17 +7,17 @@ export type InitializeArgs = {
   totalSupply: number
   price: number
   reservedTokenIds?: string[]
-  prelaunchEnd?: number
-  saleEnd?: number
+  saleOpening?: string
+  saleClose?: string
   metadata?: NFTContractMetadata
 }
 
-export type InitializePVTArgs = {
-  distributionStart: number
+export type InitializePropertiesArgs = {
+  distributionStart: string
   reservedTokenIds?: string[]
-  totalSupply?: number
+  totalSupply: number
 }
 
-export type AddPVTArgs = {
-  pvtData: PVT[]
+export type EditPropertiesArgs = {
+  propertyData: Property[]
 }

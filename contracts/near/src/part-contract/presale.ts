@@ -10,9 +10,9 @@ export function internalParticipatePresale({
   contract: Contract
 }) {
   assert(
-    !contract.nft_isPresaleDone(),
+    !contract.isPresaleDone(),
     `Presale is already finished is ${near.blockTimestamp()} ended ${
-      contract.prelaunchEnd
+      contract.saleOpening
     }`
   )
 
@@ -49,14 +49,14 @@ export function internalDistributeAfterPresale({
 
   // check that presale is finished
   assert(
-    contract.nft_isPresaleDone(),
-    `Please wait until the presale is finished ${contract.prelaunchEnd}`
+    contract.isPresaleDone(),
+    `Please wait until the presale is finished ${contract.saleOpening}`
   )
 
   // check that it can only be called once
   assert(
     contract.saleStatus === SaleStatusEnum.PRESALE,
-    `Can only be called when prelaunchEnd finished and status \`presale\`, is ${contract.saleStatus}`
+    `Can only be called when saleOpening finished and status \`presale\`, is ${contract.saleStatus}`
   )
   contract.saleStatus = SaleStatusEnum.PRESALEDISTRIBUTION
 
@@ -96,13 +96,13 @@ export function internalCashoutUnluckyPresaleParticipants({
 
   // participants who were unlucky get cashed out
   // assert(
-  //   contract.nft_isPresaleDone(),
-  //   `Please wait until the presale is finished ${contract.prelaunchEnd}`
+  //   contract.isPresaleDone(),
+  //   `Please wait until the presale is finished ${contract.saleOpening}`
   // )
 
   assert(
     contract.saleStatus === SaleStatusEnum.PRESALEDISTRIBUTION,
-    `Can only be called when prelaunchEnd and distribution finished and status \`presaledistribution\` is ${contract.saleStatus}`
+    `Can only be called when saleOpening and distribution finished and status \`presaledistribution\` is ${contract.saleStatus}`
   )
   contract.saleStatus = SaleStatusEnum.PRESALECASHOUT
 
@@ -136,7 +136,7 @@ export function internalMintForPresaleParticipants({
 
   assert(
     contract.saleStatus === SaleStatusEnum.PRESALECASHOUT,
-    `Can only be called when prelaunchEnd, distribution and cashout finished and status \`presalecashout\`, is ${contract.saleStatus}`
+    `Can only be called when saleOpening, distribution and cashout finished and status \`presalecashout\`, is ${contract.saleStatus}`
   )
   contract.saleStatus = SaleStatusEnum.SALE
 
