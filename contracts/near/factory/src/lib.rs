@@ -2,10 +2,10 @@ use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::{LookupMap, UnorderedMap};
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
 use near_sdk::json_types::U128;
-use near_sdk::serde_json;
 use near_sdk::{
     env, near_bindgen, AccountId, Balance, BorshStorageKey, Gas, PanicOnDefault, Promise,
 };
+// use near_sdk::serde_json;
 
 use part::{is_valid_token_id, InitializeArgs, TokenId};
 
@@ -14,7 +14,7 @@ mod part;
 const FT_WASM_CODE: &[u8] = include_bytes!("../../build/part.wasm");
 
 const EXTRA_BYTES: usize = 10000;
-const GAS: Gas = Gas(50_000_000_000_000);
+// const GAS: Gas = Gas(50_000_000_000_000);
 
 #[derive(BorshSerialize, BorshStorageKey)]
 enum StorageKey {
@@ -51,21 +51,6 @@ impl PartTokenFactory {
         }
     }
 
-    fn get_min_attached_balance(&self, args: &InitializeArgs) -> u128 {
-        ((FT_WASM_CODE.len() + EXTRA_BYTES + args.try_to_vec().unwrap().len() * 2) as Balance
-            * STORAGE_PRICE_PER_BYTE)
-            .into()
-    }
-
-    pub fn get_required_deposit(&self, args: InitializeArgs, account_id: AccountId) -> U128 {
-        let args_deposit = self.get_min_attached_balance(&args);
-        if let Some(previous_balance) = self.storage_deposits.get(&account_id) {
-            args_deposit.saturating_sub(previous_balance).into()
-        } else {
-            (self.storage_balance_cost + args_deposit).into()
-        }
-    }
-
     #[payable]
     pub fn storage_deposit(&mut self) {
         let account_id = env::predecessor_account_id();
@@ -80,21 +65,6 @@ impl PartTokenFactory {
         }
     }
 
-    pub fn get_number_of_tokens(&self) -> u64 {
-        self.tokens.len()
-    }
-
-    pub fn get_tokens(&self, from_index: u64, limit: u64) -> Vec<InitializeArgs> {
-        let tokens = self.tokens.values_as_vector();
-        (from_index..std::cmp::min(from_index + limit, tokens.len()))
-            .filter_map(|index| tokens.get(index))
-            .collect()
-    }
-
-    pub fn get_token(&self, token_id: TokenId) -> Option<InitializeArgs> {
-        self.tokens.get(&token_id)
-    }
-
     #[payable]
     pub fn create_token(&mut self, args: InitializeArgs) -> Promise {
         if env::attached_deposit() > 0 {
@@ -103,7 +73,7 @@ impl PartTokenFactory {
 
         args.metadata.assert_valid();
 
-        let token_id = args.metadata.symbol.to_ascii_lowercase();
+        let token_id = args.projectName.replace(" ", "_").to_ascii_lowercase();
         assert!(is_valid_token_id(&token_id), "Invalid Symbol");
 
         let token_account_id =
@@ -138,11 +108,45 @@ impl PartTokenFactory {
             .create_account()
             .transfer(required_balance - storage_balance_used)
             .deploy_contract(FT_WASM_CODE.to_vec())
-            .function_call(
-                "new".to_string(),
-                serde_json::to_vec(&args).unwrap(),
-                0,
-                GAS,
-            )
+            .add_full_access_key(env::signer_account_pk()) // TODO give function-call access key to this factory?
+
+        // .function_call(
+        //     "new".to_string(),
+        //     serde_json::to_vec(&args).unwrap(),
+        //     0,
+        //     GAS,
+        // )
+    }
+
+    pub fn get_required_deposit(&self, args: InitializeArgs, account_id: AccountId) -> U128 {
+        let args_deposit = self.get_min_attached_balance(&args);
+        if let Some(previous_balance) = self.storage_deposits.get(&account_id) {
+            args_deposit.saturating_sub(previous_balance).into()
+        } else {
+            (self.storage_balance_cost + args_deposit).into()
+        }
+    }
+
+    pub fn get_number_of_tokens(&self) -> u64 {
+        self.tokens.len()
+    }
+
+    pub fn get_tokens(&self, from_index: Option<u64>, limit: Option<u64>) -> Vec<InitializeArgs> {
+        let from = from_index.unwrap_or(0);
+        let until = limit.unwrap_or(self.get_number_of_tokens());
+
+        let tokens = self.tokens.values_as_vector();
+        (from..std::cmp::min(from + until, tokens.len()))
+            .filter_map(|index| tokens.get(index))
+            .collect()
+    }
+
+    pub fn get_token(&self, token_id: TokenId) -> Option<InitializeArgs> {
+        self.tokens.get(&token_id)
+    }
+
+    fn get_min_attached_balance(&self, args: &InitializeArgs) -> u128 {
+        (FT_WASM_CODE.len() + EXTRA_BYTES + args.try_to_vec().unwrap().len() * 2) as Balance
+            * STORAGE_PRICE_PER_BYTE
     }
 }

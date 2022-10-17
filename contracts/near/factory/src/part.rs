@@ -5,8 +5,9 @@ use near_sdk::serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
 #[serde(crate = "near_sdk::serde")]
+#[allow(non_snake_case)] // TODO rename fields when rust part contract is set up
 pub struct InitializeArgs {
-    pub owner_id: String,
+    pub ownerId: String,
     pub projectName: String,
     pub totalSupply: U128,
     pub price: U128,
