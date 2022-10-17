@@ -1,6 +1,6 @@
 use crate::*;
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
-use near_sdk::{env, log, near_bindgen, AccountId, Balance, Promise, PublicKey};
+use near_sdk::{env, near_bindgen, AccountId, Balance, Promise, PublicKey};
 
 use std::str::FromStr;
 
