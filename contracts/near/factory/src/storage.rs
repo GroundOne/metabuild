@@ -1,5 +1,3 @@
-// use crate::{PartTokenFactory, FT_WASM_CODE, EXTRA_BYTES};
-// use crate::part::InitializeArgs;
 use crate::*;
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
 use near_sdk::json_types::U128;
@@ -8,8 +6,21 @@ use near_sdk::{env, near_bindgen, AccountId, Balance};
 #[near_bindgen]
 impl PartTokenFactory {
     #[payable]
-    pub fn storage_deposit(&mut self) {
-        let account_id = env::predecessor_account_id();
+    pub fn storage_deposit(&mut self, recipient_account: Option<String>) {
+        let mut account_id = env::predecessor_account_id();
+
+        if recipient_account.is_some() {
+            let recipient_account_id = AccountId::new_unchecked(recipient_account.unwrap());
+
+            assert!(
+                env::is_valid_account_id(recipient_account_id.as_bytes()),
+                "Recipient Account ID is invalid, {}",
+                recipient_account_id
+            );
+
+            account_id = recipient_account_id;
+        }
+
         let deposit = env::attached_deposit();
         if let Some(previous_balance) = self.storage_deposits.get(&account_id) {
             self.storage_deposits

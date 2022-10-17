@@ -24,7 +24,6 @@ enum StorageKey {
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct PartTokenFactory {
-    // TODO: rename tokens into contracts
     pub tokens: UnorderedMap<TokenId, InitializeArgs>,
     pub storage_deposits: LookupMap<AccountId, Balance>,
     pub storage_balance_cost: Balance,
