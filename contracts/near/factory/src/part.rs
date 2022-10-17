@@ -16,15 +16,3 @@ pub struct InitializeArgs {
     pub prelaunchEnd: Option<String>,
     pub saleEnd: Option<String>,
 }
-
-pub type TokenId = String;
-
-pub fn is_valid_token_id(token_id: &TokenId) -> bool {
-    for c in token_id.as_bytes() {
-        match c {
-            b'0'..=b'9' | b'a'..=b'z' | b'_' => (),
-            _ => return false,
-        }
-    }
-    true
-}
