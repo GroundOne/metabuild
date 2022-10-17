@@ -9,8 +9,8 @@ impl PartTokenFactory {
     pub fn storage_deposit(&mut self, recipient_account: Option<String>) {
         let mut account_id = env::predecessor_account_id();
 
-        if recipient_account.is_some() {
-            let recipient_account_id = AccountId::new_unchecked(recipient_account.unwrap());
+        if let Some(recipient) = recipient_account {
+            let recipient_account_id = AccountId::new_unchecked(recipient);
 
             assert!(
                 env::is_valid_account_id(recipient_account_id.as_bytes()),
