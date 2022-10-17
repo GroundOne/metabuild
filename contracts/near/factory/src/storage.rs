@@ -42,7 +42,7 @@ impl PartTokenFactory {
     }
 
     pub(crate) fn get_min_attached_balance(&self, args: &InitializeArgs) -> u128 {
-        (FT_WASM_CODE.len() + EXTRA_BYTES + args.try_to_vec().unwrap().len() * 2) as Balance
+        (PART_TOKEN_WASM_CODE.len() + EXTRA_BYTES + args.try_to_vec().unwrap().len() * 2) as Balance
             * STORAGE_PRICE_PER_BYTE
     }
 }

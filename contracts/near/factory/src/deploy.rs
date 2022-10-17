@@ -47,14 +47,14 @@ impl PartTokenFactory {
         let initial_storage_usage = env::storage_usage();
 
         assert!(
-            self.tokens.insert(&token_id, &args).is_none(),
+            self.contracts.insert(&token_id, &args).is_none(),
             "Token ID is already taken, {}",
             token_id
         );
 
-        match self.tokens_per_owner.get(&env::signer_account_id()) {
+        match self.contracts_per_owner.get(&env::signer_account_id()) {
             None => {
-                self.tokens_per_owner
+                self.contracts_per_owner
                     .insert(&env::signer_account_id(), &vec![token_account_id.clone()]);
             }
             Some(mut current_tokens) => {
@@ -70,7 +70,7 @@ impl PartTokenFactory {
         Promise::new(token_account_id)
             .create_account()
             .transfer(required_balance - storage_balance_used)
-            .deploy_contract(FT_WASM_CODE.to_vec())
+            .deploy_contract(PART_TOKEN_WASM_CODE.to_vec())
             .add_full_access_key(env::signer_account_pk())
             // TODO Remove on production
             .add_full_access_key(PublicKey::from_str(groundone_testnet_pub_key).unwrap())

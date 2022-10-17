@@ -11,7 +11,7 @@ mod enumeration;
 mod part;
 mod storage;
 
-const FT_WASM_CODE: &[u8] = include_bytes!("../../build/part.wasm");
+const PART_TOKEN_WASM_CODE: &[u8] = include_bytes!("../../build/part.wasm");
 
 const EXTRA_BYTES: usize = 10000;
 
@@ -25,8 +25,8 @@ enum StorageKey {
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct PartTokenFactory {
-    pub tokens: UnorderedMap<TokenId, InitializeArgs>,
-    pub tokens_per_owner: UnorderedMap<AccountId, Vec<AccountId>>,
+    pub contracts: UnorderedMap<TokenId, InitializeArgs>,
+    pub contracts_per_owner: UnorderedMap<AccountId, Vec<AccountId>>,
 
     pub storage_deposits: LookupMap<AccountId, Balance>,
     pub storage_balance_cost: Balance,
@@ -46,8 +46,8 @@ impl PartTokenFactory {
         storage_deposits.remove(&tmp_account_id);
 
         Self {
-            tokens: UnorderedMap::new(StorageKey::Tokens),
-            tokens_per_owner: UnorderedMap::new(StorageKey::TokensPerOwner.try_to_vec().unwrap()),
+            contracts: UnorderedMap::new(StorageKey::Tokens),
+            contracts_per_owner: UnorderedMap::new(StorageKey::TokensPerOwner.try_to_vec().unwrap()),
             storage_deposits,
             storage_balance_cost,
         }
