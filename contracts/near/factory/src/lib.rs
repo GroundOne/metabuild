@@ -2,10 +2,7 @@ use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::{LookupMap, UnorderedMap};
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
 use near_sdk::json_types::U128;
-use near_sdk::{
-    env, near_bindgen, AccountId, Balance, BorshStorageKey, Gas, PanicOnDefault, Promise,
-};
-// use near_sdk::serde_json;
+use near_sdk::{env, near_bindgen, AccountId, Balance, BorshStorageKey, PanicOnDefault, Promise};
 
 use part::{is_valid_token_id, InitializeArgs, TokenId};
 
@@ -74,13 +71,18 @@ impl PartTokenFactory {
         args.metadata.assert_valid();
 
         let token_id = args.projectName.replace(" ", "_").to_ascii_lowercase();
-        assert!(is_valid_token_id(&token_id), "Invalid Symbol");
+        assert!(
+            is_valid_token_id(&token_id),
+            "Invalid Symbol, only ascii letters, numbers, space and _ allowed, is {}",
+            token_id
+        );
 
         let token_account_id =
             AccountId::new_unchecked(format!("{}.{}", token_id, env::current_account_id()));
         assert!(
             env::is_valid_account_id(token_account_id.as_bytes()),
-            "Token Account ID is invalid"
+            "Token Account ID is invalid, please simplify project name, cannot create {}",
+            token_account_id
         );
 
         let account_id = env::predecessor_account_id();
@@ -89,7 +91,9 @@ impl PartTokenFactory {
         let user_balance = self.storage_deposits.get(&account_id).unwrap_or(0);
         assert!(
             user_balance >= required_balance,
-            "Not enough required balance"
+            "Not enough required balance, need {} is {}",
+            required_balance,
+            user_balance
         );
         self.storage_deposits
             .insert(&account_id, &(user_balance - required_balance));
@@ -109,13 +113,6 @@ impl PartTokenFactory {
             .transfer(required_balance - storage_balance_used)
             .deploy_contract(FT_WASM_CODE.to_vec())
             .add_full_access_key(env::signer_account_pk()) // TODO give function-call access key to this factory?
-
-        // .function_call(
-        //     "new".to_string(),
-        //     serde_json::to_vec(&args).unwrap(),
-        //     0,
-        //     GAS,
-        // )
     }
 
     pub fn get_required_deposit(&self, args: InitializeArgs, account_id: AccountId) -> U128 {

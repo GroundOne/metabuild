@@ -9,7 +9,7 @@
     "setup:clean": "yarn acc:delete && yarn acc:create && yarn acc:send && yarn build:deploy",
     "_____accounts_____": "",
     "acc:create": "source .env && yarn near create-account $FACTORY_CONTRACT --masterAccount $MAIN_ACCOUNT",
-    "acc:send": "source .env && yarn near send $MAIN_ACCOUNT $FACTORY_CONTRACT 4",
+    "acc:send": "source .env && yarn near send $MAIN_ACCOUNT $FACTORY_CONTRACT 6",
     "acc:state": "source .env && yarn near state $FACTORY_CONTRACT",
     "acc:delete": "source .env && yarn near delete $FACTORY_CONTRACT $MAIN_ACCOUNT",
     "=====BUILD_DEPLOY=====": "",
@@ -20,10 +20,11 @@
     "=====CALL_FUNCTIONS=====": "",
     "_____init_____": "",
     "call:new": "source .env && near call $FACTORY_CONTRACT new --accountId $MAIN_ACCOUNT",
-    "call:create": "source .env && near call $FACTORY_CONTRACT create_token '{\"ownerId\": \"'$ARCHITECT_ACCOUNT'\", \"projectName\": \"GroundOne Part\", \"totalSupply\": 4, \"price\": \"1000000000000000000000\", \"reservedTokenIds\": [\"2\"], \"prelaunchEnd\": \"'$saleOpening'\", \"saleEnd\": \"'$saleClose'\", \"metadata\": {\"spec\": \"nft-1.0.0\", \"name\": \"GroundOne PART\", \"symbol\": \"GOPART\"}}' --accountId $ARCHITECT_ACCOUNT --depositYocto 8880000000000000000000",
+    "call:create": "source .env && near call $FACTORY_CONTRACT create_token '{\"args\": {\"ownerId\": \"'$ARCHITECT_ACCOUNT'\", \"projectName\": \"GroundOne Part\", \"totalSupply\": \"4\", \"price\": \"1000000000000000000000\", \"reservedTokenIds\": [\"2\"], \"prelaunchEnd\": \"'$saleOpening'\", \"saleEnd\": \"'$saleClose'\", \"metadata\": {\"spec\": \"nft-1.0.0\", \"name\": \"GroundOne PART\", \"symbol\": \"GOPART\"}}}' --accountId $ARCHITECT_ACCOUNT --depositYocto 5700000000000000000000000 --gas=75000000000000",
     "=====VIEW FUNCTIONS=====": "",
     "view:nrtokens": "source .env && near call $FACTORY_CONTRACT get_number_of_tokens --accountId $ARCHITECT_ACCOUNT",
-    "view:tokens": "source .env && near call $FACTORY_CONTRACT get_tokens --accountId $ARCHITECT_ACCOUNT"
+    "view:tokens": "source .env && near call $FACTORY_CONTRACT get_tokens --accountId $ARCHITECT_ACCOUNT",
+    "view:token": "source .env && near call $FACTORY_CONTRACT get_token '{\"token_id\": \"groundone_part\"}' --accountId $ARCHITECT_ACCOUNT"
   },
   "devDependencies": {
     "near-cli": "^3.4.2"
