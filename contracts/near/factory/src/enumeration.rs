@@ -21,15 +21,8 @@ impl PartTokenFactory {
         self.tokens.get(&token_id)
     }
 
-    pub fn supply_for_owner(&self, account_id: String) -> U128 {
-        let owner_account_id = AccountId::new_unchecked(account_id);
-        assert!(
-            env::is_valid_account_id(owner_account_id.as_bytes()),
-            "Owner Account ID is invalid, {}",
-            owner_account_id
-        );
-
-        let tokens_for_owner_set = self.tokens_per_owner.get(&owner_account_id);
+    pub fn supply_for_owner(&self, account_id: AccountId) -> U128 {
+        let tokens_for_owner_set = self.tokens_per_owner.get(&account_id);
 
         //if there is some set of tokens, we'll return the length as a U128
         if let Some(tokens_for_owner_set) = tokens_for_owner_set {
@@ -65,8 +58,7 @@ impl PartTokenFactory {
             .iter()
             .skip(start as usize)
             .take(limit.unwrap_or(50) as usize)
-            // .cloned()
-            .map(|token_id| token_id.clone())
+            .cloned()
             .collect()
     }
 }
