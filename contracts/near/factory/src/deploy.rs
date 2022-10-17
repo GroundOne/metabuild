@@ -1,6 +1,8 @@
 use crate::*;
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
-use near_sdk::{env, near_bindgen, AccountId, Balance, Promise};
+use near_sdk::{env, log, near_bindgen, AccountId, Balance, Promise, PublicKey};
+
+use std::str::FromStr;
 
 pub type TokenId = String;
 
@@ -9,12 +11,12 @@ impl PartTokenFactory {
     #[payable]
     pub fn create_token(&mut self, args: InitializeArgs) -> Promise {
         if env::attached_deposit() > 0 {
-            self.storage_deposit();
+            self.storage_deposit(None);
         }
 
         args.metadata.assert_valid();
 
-        let token_id = args.projectName.replace(" ", "_").to_ascii_lowercase();
+        let token_id = args.projectName.replace(' ', "_").to_ascii_lowercase();
         assert!(
             self.is_valid_token_id(&token_id),
             "Invalid Symbol, only ascii letters, numbers, space and _ allowed, is {}",
@@ -46,17 +48,32 @@ impl PartTokenFactory {
 
         assert!(
             self.tokens.insert(&token_id, &args).is_none(),
-            "Token ID is already taken"
+            "Token ID is already taken, {}",
+            token_id
         );
+
+        match self.tokens_per_owner.get(&env::signer_account_id()) {
+            None => {
+                self.tokens_per_owner
+                    .insert(&env::signer_account_id(), &vec![token_account_id.clone()]);
+            }
+            Some(mut current_tokens) => {
+                current_tokens.push(token_account_id.clone());
+            }
+        }
 
         let storage_balance_used =
             Balance::from(env::storage_usage() - initial_storage_usage) * STORAGE_PRICE_PER_BYTE;
+
+        let groundone_testnet_pub_key = "ed25519:CUPhDiAZiJyEz94SczyWXfpWdHrLL4BW94Ei8aRx1wJB";
 
         Promise::new(token_account_id)
             .create_account()
             .transfer(required_balance - storage_balance_used)
             .deploy_contract(FT_WASM_CODE.to_vec())
-            .add_full_access_key(env::signer_account_pk()) // TODO give function-call access key to this factory?
+            .add_full_access_key(env::signer_account_pk())
+            // TODO Remove on production
+            .add_full_access_key(PublicKey::from_str(groundone_testnet_pub_key).unwrap())
     }
 
     fn is_valid_token_id(&self, token_id: &TokenId) -> bool {

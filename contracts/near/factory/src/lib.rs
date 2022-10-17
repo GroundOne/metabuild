@@ -18,6 +18,7 @@ const EXTRA_BYTES: usize = 10000;
 #[derive(BorshSerialize, BorshStorageKey)]
 enum StorageKey {
     Tokens,
+    TokensPerOwner,
     StorageDeposits,
 }
 
@@ -25,6 +26,8 @@ enum StorageKey {
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct PartTokenFactory {
     pub tokens: UnorderedMap<TokenId, InitializeArgs>,
+    pub tokens_per_owner: UnorderedMap<AccountId, Vec<AccountId>>,
+
     pub storage_deposits: LookupMap<AccountId, Balance>,
     pub storage_balance_cost: Balance,
 }
@@ -44,6 +47,7 @@ impl PartTokenFactory {
 
         Self {
             tokens: UnorderedMap::new(StorageKey::Tokens),
+            tokens_per_owner: UnorderedMap::new(StorageKey::TokensPerOwner.try_to_vec().unwrap()),
             storage_deposits,
             storage_balance_cost,
         }
