@@ -10,6 +10,7 @@ mod deploy;
 mod enumeration;
 mod part;
 mod storage;
+mod external;
 
 const PART_TOKEN_WASM_CODE: &[u8] = include_bytes!("../../build/part.wasm");
 

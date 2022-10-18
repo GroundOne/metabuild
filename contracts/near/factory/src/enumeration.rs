@@ -1,5 +1,5 @@
-use crate::*;
-use near_sdk::{json_types::U128, near_bindgen};
+use crate::{part::JsonPartToken, *};
+use near_sdk::{json_types::U128, log, near_bindgen, Gas, Promise, PromiseError};
 
 #[near_bindgen]
 impl PartTokenFactory {
@@ -7,7 +7,11 @@ impl PartTokenFactory {
         self.contracts.len()
     }
 
-    pub fn get_contracts(&self, from_index: Option<u64>, limit: Option<u64>) -> Vec<InitializeArgs> {
+    pub fn get_contracts(
+        &self,
+        from_index: Option<u64>,
+        limit: Option<u64>,
+    ) -> Vec<InitializeArgs> {
         let from = from_index.unwrap_or(0);
         let until = limit.unwrap_or_else(|| self.get_number_of_tokens());
 
@@ -62,5 +66,37 @@ impl PartTokenFactory {
             .collect()
     }
 
-    // pub fn part_tokens_for_holders(&self, account_id: AccountId) {}
+    // #[private] // Public - but only callable by env::current_account_id()
+    // pub fn query_nft_tokens_for_owner_callback(
+    //     &self,
+    //     #[callback_result] call_result: Result<Vec<JsonPartToken>, PromiseError>,
+    // ) -> Vec<JsonPartToken> {
+    //     // Check if the promise succeeded by calling the method outlined in external.rs
+    //     if call_result.is_err() {
+    //         log!("There was an error contacting a Part Token Contract");
+    //         return vec![];
+    //     }
+
+    //     // Return the greeting
+    //     let tokens: Vec<JsonPartToken> = call_result.unwrap();
+    //     tokens
+    // }
+
+    // pub fn query_nft_tokens_for_owner(&mut self, account_id: AccountId) -> Promise {
+    //     let all_contracts: Vec<TokenId> = self.contracts.keys().collect();
+
+    //     for contract in &all_contracts {
+    //         let contract_id = AccountId::new_unchecked(contract);
+
+    //         part_token_ext::ext(contract_id.clone())
+    //             .with_static_gas(Gas(5 * 1_000_000_000_000))
+    //             .query_nft_tokens_for_owner(contract_id)
+    //             .then(
+    //                 // Create a callback query_nft_tokens_for_owner_callback
+    //                 Self::ext(env::current_account_id())
+    //                     .with_static_gas(Gas(5 * 1_000_000_000_000))
+    //                     .query_nft_tokens_for_owner_callback(),
+    //             )
+    //     }
+    // }
 }
