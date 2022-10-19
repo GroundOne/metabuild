@@ -12,7 +12,7 @@ mod part;
 mod storage;
 mod external;
 
-const PART_TOKEN_WASM_CODE: &[u8] = include_bytes!("../../build/part.wasm");
+const PART_TOKEN_WASM_CODE: &[u8] = include_bytes!("../../part-token/build/part.wasm");
 
 const EXTRA_BYTES: usize = 10000;
 
