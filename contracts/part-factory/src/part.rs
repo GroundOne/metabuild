@@ -16,3 +16,10 @@ pub struct InitializeArgs {
     pub prelaunchEnd: Option<String>,
     pub saleEnd: Option<String>,
 }
+
+// pub struct JsonPartToken {
+//     pub token_id: String,
+//     pub owner_id: String,
+//     pub metadata: TokenMetadata,
+//     pub approved_account_ids: HashMap<String, U64>,
+// }

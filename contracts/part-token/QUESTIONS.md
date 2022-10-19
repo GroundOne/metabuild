@@ -1,29 +1,12 @@
 # Questions
 
-## General
-
-- Can a contract pay for gas fees of functions? Is there an example?
-
-- chaining `@call` functions is a bad idea because of max gas per block so sequentially calling them is the way to go, right?
-
 **Accounts**
-
-- If the frontend wants to let user deploy contracts, how to do that?
-
-  - can I create a subaccount
-
-    - with the near-api-js?
-    - through the wallet.near.org?
-
-  - do I need a full access key from the user (to create a subaccount / to deploy contract)?
-
-  - a contract factory wants to create a contract on behalf of the user, how can this be implemented? -> factory could track the deployed contracts
-
-  - how to keep track of which contracts were deployed?
 
 - is it possible to see all subaccounts of an account (with near-api-js)?
 
-- is it possible to see what contracts are deployed behind each subaccount?
+  - is it possible to see what contracts are deployed behind each subaccount?
+
+- how to use access keys with e.g. near-api-js to delete an account?
 
 - is it possible to see all NFTs the wallet holds (like the wallet.near.org does)?
   I need to know which NFTs tokens of a particular contract type the wallet holds.
@@ -39,6 +22,12 @@ Irrelevant for today:
 ...
 
 ### Technical / JS Contracts
+
+**General**
+
+- Can a contract pay for gas fees of functions? Is there an example?
+
+- chaining `@call` functions is a bad idea because of max gas per block so sequentially calling them is the way to go, right?
 
 **Testing**
 
