@@ -1,11 +1,11 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import HomepageHeader from '../src/components/Homepage/HomepageHeader';
-import Hero from '../src/components/Homepage/Hero';
-import StepOne from '../src/components/Homepage/StepOne';
-import StepTwo from '../src/components/Homepage/StepTwo';
-import { ErrorBoundary } from '../src/components/ErrorBoundary';
-import SendMail from '../src/components/samples/SendMail';
+import HomepageHeader from '../components/Homepage/HomepageHeader';
+import Hero from '../components/Homepage/Hero';
+import StepOne from '../components/Homepage/StepOne';
+import StepTwo from '../components/Homepage/StepTwo';
+import { ErrorBoundary } from '../components/ErrorBoundary';
+import SendMail from '../components/samples/SendMail';
 
 const Home: NextPage = (props: any) => {
     return (

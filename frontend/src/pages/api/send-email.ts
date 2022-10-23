@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as yup from 'yup';
-import Mailer from "../../src/utils/Mailer";
+import Mailer from "../../utils/Mailer";
 
 const emailTemplates = {
     testMail: {

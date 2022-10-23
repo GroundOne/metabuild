@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
-import AppHeader from '../../src/components/App/AppHeader';
-import BuyerHowTo from '../../src/components/buyers/BuyerHowTo';
-import { ErrorBoundary } from '../../src/components/ErrorBoundary';
+import AppHeader from '../../components/App/AppHeader';
+import BuyerHowTo from '../../components/buyers/BuyerHowTo';
+import { ErrorBoundary } from '../../components/ErrorBoundary';
 
 const Buyer: NextPage = () => {
     return (

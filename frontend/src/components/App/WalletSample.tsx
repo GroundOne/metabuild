@@ -4,7 +4,7 @@ import { Wallet } from '../../utils/near-wallet';
 
 import AppCard from '../ui-components/AppCard';
 import clsx from 'clsx';
-import { contractApi } from '../../api/contracts';
+import { contractApi } from '../../client_api/contracts';
 import { useAsync } from '../../utils/useAsync';
 
 enum WalletState {

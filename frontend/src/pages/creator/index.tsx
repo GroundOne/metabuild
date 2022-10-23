@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
-import AppHeader from '../../src/components/App/AppHeader';
-import CreatorHowTo from '../../src/components/creators/CreatorHowTo';
-import { ErrorBoundary } from '../../src/components/ErrorBoundary';
+import AppHeader from '../../components/App/AppHeader';
+import CreatorHowTo from '../../components/creators/CreatorHowTo';
+import { ErrorBoundary } from '../../components/ErrorBoundary';
 
 const Creator: NextPage = () => {
     return (

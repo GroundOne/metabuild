@@ -1,10 +1,10 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import AppHeader from '../src/components/App/AppHeader';
-import BuyerHowTo from '../src/components/buyers/BuyerHowTo';
-import CreatePart from '../src/components/App/CreatePart';
-import WalletSample from '../src/components/App/WalletSample';
-import { ErrorBoundary } from '../src/components/ErrorBoundary';
+import AppHeader from '../components/App/AppHeader';
+import BuyerHowTo from '../components/buyers/BuyerHowTo';
+import CreatePart from '../components/App/CreatePart';
+import WalletSample from '../components/App/WalletSample';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 const App: NextPage = (props: any) => {
     return (

@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Wallet } from '../utils/near-wallet';
-import { contractApi } from '../api/contracts';
-import {WalletState, NearContext } from './walletContext';
+import { contractApi } from '../client_api/contracts';
+import { WalletState, NearContext } from './walletContext';
 
 const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     const [walletState, setWalletState] = useState(WalletState.Loading);
-    
+
     // When creating the wallet you can optionally ask to create an access key
     // Having the key enables to call non-payable methods without interrupting the user to sign
     const wallet = useMemo(() => {
@@ -31,11 +31,7 @@ const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) 
         init();
     }, [wallet]);
 
-    return (
-        <NearContext.Provider value={{ wallet, walletState, contract }}>
-            {children}
-        </NearContext.Provider>
-    );
+    return <NearContext.Provider value={{ wallet, walletState, contract }}>{children}</NearContext.Provider>;
 };
 
 export default WalletProvider;

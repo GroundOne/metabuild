@@ -1,5 +1,5 @@
 import type { Wallet } from '../utils/near-wallet';
-import type { contractApi } from '../api/contracts';
+import type { contractApi } from '../client_api/contracts';
 import { createContext } from 'react';
 
 export enum WalletState {
