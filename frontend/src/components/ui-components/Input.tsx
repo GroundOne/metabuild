@@ -10,6 +10,7 @@ interface InputProps extends React.HTMLProps<HTMLInputElement> {
     required?: boolean;
     placeholder: string;
     type?: string;
+    isDisabled?: boolean;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -22,6 +23,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             errorText,
             placeholder,
             required = false,
+            isDisabled = false,
             type = 'text',
             ...otherProps
         },
@@ -37,8 +39,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                         'mt-10 block w-full rounded-md border-transparent bg-gray-100',
                         'focus:border-gray-300 focus:bg-white focus:ring-0',
                         isInvalid ? 'border-red-600 focus:ring-red-600' : '',
+                        isDisabled ? 'bg-gray-200' : '',
                         className
                     )}
+                    disabled={isDisabled}
                     //   placeholder={placeholder}
                     ref={ref}
                     {...otherProps}

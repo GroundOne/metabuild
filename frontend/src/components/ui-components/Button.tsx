@@ -96,12 +96,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
         // handle size
         if (size === 'sm') {
-            classNameList.push('h-8', 'px-2', 'text-sm');
+            classNameList.push('h-8', 'px-4', 'py-4', 'text-sm');
         } else if (size === 'md') {
-            classNameList.push('h-10', 'px-3');
+            classNameList.push('h-10', 'px-8', 'py-6', 'text-base');
         } else if (size === 'lg') {
-            classNameList.push('px-12', 'py-4', 'text-xl');
-            // classNameList.push("h-12", "px-4", "text-lg");
+            classNameList.push('h-15', 'px-12', 'py-4', 'text-xl');
         }
 
         if (isDisabled || isLoading) {
@@ -110,15 +109,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
         const classes = classNameList.join(' ');
 
+        const loaderClasses = `animate-spin rounded-full ${size === 'sm' ? 'h-3 w-3' : 'h-5 w-5'}`;
+
         const Loading: React.FC = () => {
             return (
-                <div role="status" className="inline-flex cursor-not-allowed rounded-md pr-4">
-                    <svg
-                        className="h-5 w-5 animate-spin"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                    >
+                <div role="status" className="inline-flex cursor-not-allowed rounded-md pr-3">
+                    <svg className={loaderClasses} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle
                             className="opacity-25"
                             cx="12"

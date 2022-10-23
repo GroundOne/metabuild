@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import router from 'next/router';
 import Input from '../ui-components/Input';
 import Button from '../ui-components/Button';
@@ -8,7 +8,6 @@ import * as yup from 'yup';
 
 export type PartFormSchemaProps = {
     values?: Partial<PartFormValue>;
-    disabled?: boolean;
     onCreatePartRequest: (values: PartFormValue) => unknown;
 };
 
@@ -48,7 +47,7 @@ const partFormSchema = yup.object({
 });
 export type PartFormValue = yup.InferType<typeof partFormSchema>;
 
-const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, disabled, onCreatePartRequest }) => {
+const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartRequest }) => {
     const {
         register,
         handleSubmit,
@@ -80,14 +79,25 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, disabled, onCre
         }
     }, [values, setValue]);
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleChange = () => {
+        setIsSubmitting(false);
+    };
+
     const onSubmit = (data: PartFormValue) => {
-        onCreatePartRequest(data);
+        if (isSubmitting) {
+            onCreatePartRequest(data);
+        } else {
+            setIsSubmitting(true);
+        }
     };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-x-20">
                 <Input
+                    isDisabled={isSubmitting}
                     id="projectName"
                     type="text"
                     placeholder="Project Name"
@@ -96,6 +106,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, disabled, onCre
                     {...register('projectName')}
                 />
                 <Input
+                    isDisabled={isSubmitting}
                     id="partAmount"
                     type="number"
                     placeholder="Amount of PARTs"
@@ -104,6 +115,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, disabled, onCre
                     {...register('partAmount')}
                 />
                 <Input
+                    isDisabled={isSubmitting}
                     id="saleOpeningBlock"
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
@@ -113,6 +125,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, disabled, onCre
                     {...register('saleOpeningBlock')}
                 />
                 <Input
+                    isDisabled={isSubmitting}
                     id="saleCloseBlock"
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
@@ -122,6 +135,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, disabled, onCre
                     {...register('saleCloseBlock')}
                 />
                 <Input
+                    isDisabled={isSubmitting}
                     id="partPrice"
                     type="number"
                     placeholder="PART Price (NEAR)"
@@ -130,6 +144,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, disabled, onCre
                     {...register('partPrice')}
                 />
                 <Input
+                    isDisabled={isSubmitting}
                     id="backgroundImageLink"
                     type="text"
                     placeholder="Background Image Link"
@@ -138,6 +153,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, disabled, onCre
                     {...register('backgroundImageLink')}
                 />
                 <Input
+                    isDisabled={isSubmitting}
                     id="reserveParts"
                     type="text"
                     placeholder="Reserved PARTs"
@@ -146,6 +162,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, disabled, onCre
                     {...register('reserveParts')}
                 />
                 <Input
+                    isDisabled={isSubmitting}
                     id="reservePartsAddress"
                     type="text"
                     placeholder="Reserved PARTs Address"
@@ -153,9 +170,16 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, disabled, onCre
                     errorText={errors.reservePartsAddress?.message as string | undefined}
                     {...register('reservePartsAddress')}
                 />
-                <Button isInvertedColor className="mt-10 w-2/3" type="submit">
-                    CREATE
-                </Button>
+                <div className="col-span-2">
+                    <Button isInvertedColor size="md" className="mt-10 " type="submit">
+                        {isSubmitting ? 'CONFIRM' : 'CREATE'}
+                    </Button>
+                    {isSubmitting && (
+                        <Button onClick={handleChange} isInvertedColor size="md" className="mt-10 ml-4">
+                            CHANGE
+                        </Button>
+                    )}
+                </div>
             </div>
         </form>
     );
