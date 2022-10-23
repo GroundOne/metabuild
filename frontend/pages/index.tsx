@@ -5,6 +5,7 @@ import Hero from '../src/components/Homepage/Hero';
 import StepOne from '../src/components/Homepage/StepOne';
 import StepTwo from '../src/components/Homepage/StepTwo';
 import { ErrorBoundary } from '../src/components/ErrorBoundary';
+import SendMail from '../src/components/samples/SendMail';
 
 const Home: NextPage = (props: any) => {
     return (
@@ -15,6 +16,7 @@ const Home: NextPage = (props: any) => {
             </Head>
             <div>
                 <ErrorBoundary scope="index.tsx">
+                    <SendMail />
                     <HomepageHeader />
                     <Hero />
                     <StepOne />

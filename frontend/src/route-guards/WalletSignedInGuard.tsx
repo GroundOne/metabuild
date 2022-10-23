@@ -28,5 +28,9 @@ export const WalletSignedInGuard: React.FC<{ children: React.ReactNode }> = ({ c
         }
     }, [walletState, router]);
 
+    if (walletState === WalletState.Loading) {
+        return <>Loading...</>;
+    }
+
     return <>{children}</>;
 };

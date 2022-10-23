@@ -7,25 +7,22 @@ const CreatorHowTo: React.FC = () => {
             <div className="flex justify-center pb-16">
                 <div className="max-w-4xl">
                     <h3 className="mt-20 mb-6 text-2xl font-bold text-white">How to issue PARTs?</h3>
+                    <p className="py-2 text-lg text-black">As an architect or developer you can create PARTs.</p>
                     <p className="py-2 text-lg text-black">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magnam dignissimos, debitis fuga
-                        mollitia rerum quae illum, beatae fugit quibusdam quam et ipsam deserunt ex consectetur nulla
-                        autem maxime officiis sed?
+                        A PART is an NFT on the blockchain that gives its owner a priority ranking in purchasing or
+                        renting a property once the project is realised.
                     </p>
                     <p className="py-2 text-lg text-black">
-                        Molestias qui architecto voluptatibus rem, alias ex? Vel nemo explicabo quam itaque eveniet
-                        facere alias natus similique eius et recusandae, vero, nisi doloribus magnam dolores, odio saepe
-                        cupiditate? Ipsam, recusandae.
+                        First you will need to create a PART scheme and sell the PARTs of your project to your
+                        community.
                     </p>
                     <p className="py-2 text-lg text-black">
-                        Eos omnis deleniti voluptatum tempore adipisci nemo pariatur dolore beatae dolorem vero quisquam
-                        voluptas, quo minus itaque eveniet repellat harum amet optio sunt! Veniam aspernatur dolor
-                        laborum, delectus necessitatibus ut.
+                        Once the properties in your project are ready to be sold or rented, you will need to register
+                        them on the blockchain.
                     </p>
                     <p className="py-2 text-lg text-black">
-                        Nemo ducimus, delectus dignissimos quis ipsa perspiciatis ipsam eveniet porro facilis, aliquam,
-                        sapiente at id repellendus deserunt neque possimus atque! Iusto similique, dignissimos culpa
-                        cupiditate sit necessitatibus ut praesentium labore.
+                        PART owners can then choose their favourite properties and finally, the properties are
+                        distributed to PART owners according to their preferences.
                     </p>
                     <div className="mt-10 flex w-full items-center justify-center">
                         <ConnectWalletButton buttonName="Connect Wallet and create PART Scheme" />

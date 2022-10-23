@@ -21,7 +21,7 @@ const App: NextPage = (props: any) => {
                         ]}
                     />
                     <CreatePart />
-                    {/* <WalletSample /> */}
+                    <WalletSample />
                 </ErrorBoundary>
             </div>
         </>

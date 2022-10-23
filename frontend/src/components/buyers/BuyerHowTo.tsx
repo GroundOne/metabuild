@@ -8,24 +8,20 @@ const BuyerHowTo: React.FC = () => {
                 <div className="max-w-4xl">
                     <h3 className="mt-20 mb-6 text-2xl font-bold text-white">This is how it works</h3>
                     <p className="py-2 text-lg text-black">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magnam dignissimos, debitis fuga
-                        mollitia rerum quae illum, beatae fugit quibusdam quam et ipsam deserunt ex consectetur nulla
-                        autem maxime officiis sed?
+                        First, you will need to create a NEAR wallet and purchase NEAR tokens on an exchange.
                     </p>
                     <p className="py-2 text-lg text-black">
-                        Molestias qui architecto voluptatibus rem, alias ex? Vel nemo explicabo quam itaque eveniet
-                        facere alias natus similique eius et recusandae, vero, nisi doloribus magnam dolores, odio saepe
-                        cupiditate? Ipsam, recusandae.
+                        After that, you can purchase PART NFTs. For that you will need the contract address of a
+                        project. A PART gives you priority access to buy or rent a property once the project is built.
+                        Each PART has a ranking number.
                     </p>
                     <p className="py-2 text-lg text-black">
-                        Eos omnis deleniti voluptatum tempore adipisci nemo pariatur dolore beatae dolorem vero quisquam
-                        voluptas, quo minus itaque eveniet repellat harum amet optio sunt! Veniam aspernatur dolor
-                        laborum, delectus necessitatibus ut.
+                        PARTs are either randomly distributed at Sale Opening Date if you register before the launch, or
+                        you can purchase the highest ranked PART available after Sale Opening Date.
                     </p>
                     <p className="py-2 text-lg text-black">
-                        Nemo ducimus, delectus dignissimos quis ipsa perspiciatis ipsam eveniet porro facilis, aliquam,
-                        sapiente at id repellendus deserunt neque possimus atque! Iusto similique, dignissimos culpa
-                        cupiditate sit necessitatibus ut praesentium labore.
+                        If you already own a PART and your project is being built, go to the MANAGE section of the app
+                        in order to select your favourite properties for the Property Distribution.
                     </p>
                     <div className="mt-10 flex w-full items-center justify-center">
                         <ConnectWalletButton />

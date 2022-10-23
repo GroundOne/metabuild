@@ -1,9 +1,36 @@
 # Ground One
 
-This is the frontend for the [Ground-One](#) project.
+This is the frontend for the [Ground-One](https://www.groundone.io) project.
 
 [Dev Website](https://metabuild-dev.vercel.app/)
 [Prod Website](https://metabuild.vercel.app/)
+
+## Getting Started
+
+To run in DEV mode:
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+To run in PROD mode:
+
+```bash
+npm run build
+npm run start
+# or
+yarn build
+yarn start
+```
+
+## Deploy
+
+To deploy to Vercel:
+
+-   DEV: push to the 'develop' branch on github and it will deploy automatically to the [dev website]<metabuild-dev.vercel.app>
+-   PROD: push to the main branch on github and it will deploy automatically to the [prod website]<metabuild.vercel.app>
 
 # References
 
@@ -20,6 +47,7 @@ V3: <https://xd.adobe.com/view/f751c412-8537-4f9d-803f-1f00b938c413-a202/grid>
 ## NEAR Protocol
 
 Quickstart: <https://docs.near.org/develop/quickstart-guide>
+IPFS Nextjs example <https://github.dev/ipfs-examples/js-ipfs-browser-nextjs>
 
 ## Stuff to use
 
@@ -67,36 +95,3 @@ C:\DEV\app\tmp\next-boilerplate
 
 <https://github.com/tailwindlabs/tailwindcss-forms>
 <https://tailwindcss-forms.vercel.app>
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
