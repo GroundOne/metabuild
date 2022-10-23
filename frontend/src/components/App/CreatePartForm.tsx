@@ -42,7 +42,7 @@ const partFormSchema = yup.object({
         .label('Reserved PARTs')
         .trim()
         .notRequired()
-        .matches(/[\s\d\-;]+/, { message: 'Example: 1-10; 20-30; 40; 50', excludeEmptyString: true }),
+        .matches(/^[\s\d\-;]+$/, { message: 'Example: 1-10; 20-30; 40; 50', excludeEmptyString: true }),
     reservePartsAddress: yup.string().label('Reserved PARTs address').required(),
 });
 export type PartFormValue = yup.InferType<typeof partFormSchema>;
@@ -70,8 +70,8 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
         if (process.env.NODE_ENV === 'development' && !values) {
             setValue('projectName', 'FF demo project');
             setValue('partAmount', 100);
-            setValue('saleOpeningBlock', new Date().toISOString().split('T')[0] as unknown as Date);
-            setValue('saleCloseBlock', '2022-12-31' as unknown as Date);
+            setValue('saleOpeningBlock', (new Date().toISOString().split('T')[0] + 'T10:00') as unknown as Date);
+            setValue('saleCloseBlock', '2022-12-31T12:00' as unknown as Date);
             setValue('partPrice', 1);
             setValue('backgroundImageLink', 'https://example.com');
             setValue('reserveParts', '1-10; 20-30; 40; 50');
@@ -97,75 +97,75 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-x-20">
                 <Input
-                    isDisabled={isSubmitting}
                     id="projectName"
                     type="text"
                     placeholder="Project Name"
+                    isDisabled={isSubmitting}
                     isInvalid={!!errors.projectName}
                     errorText={errors.projectName?.message as string | undefined}
                     {...register('projectName')}
                 />
                 <Input
-                    isDisabled={isSubmitting}
                     id="partAmount"
                     type="number"
                     placeholder="Amount of PARTs"
+                    isDisabled={isSubmitting}
                     isInvalid={!!errors.partAmount}
                     errorText={errors.partAmount?.message as string | undefined}
                     {...register('partAmount')}
                 />
                 <Input
-                    isDisabled={isSubmitting}
                     id="saleOpeningBlock"
-                    type="date"
+                    type="datetime-local"
                     min={new Date().toISOString().split('T')[0]}
+                    isDisabled={isSubmitting}
                     placeholder="Sale Opening Block"
                     isInvalid={!!errors.saleOpeningBlock}
                     errorText={errors.saleOpeningBlock?.message as string | undefined}
                     {...register('saleOpeningBlock')}
                 />
                 <Input
-                    isDisabled={isSubmitting}
                     id="saleCloseBlock"
-                    type="date"
+                    type="datetime-local"
                     min={new Date().toISOString().split('T')[0]}
+                    isDisabled={isSubmitting}
                     placeholder="Sale Close Block"
                     isInvalid={!!errors.saleCloseBlock}
                     errorText={errors.saleCloseBlock?.message as string | undefined}
                     {...register('saleCloseBlock')}
                 />
                 <Input
-                    isDisabled={isSubmitting}
                     id="partPrice"
                     type="number"
                     placeholder="PART Price (NEAR)"
+                    isDisabled={isSubmitting}
                     isInvalid={!!errors.partPrice}
                     errorText={errors.partPrice?.message as string | undefined}
                     {...register('partPrice')}
                 />
                 <Input
-                    isDisabled={isSubmitting}
                     id="backgroundImageLink"
                     type="text"
                     placeholder="Background Image Link"
+                    isDisabled={isSubmitting}
                     isInvalid={!!errors.backgroundImageLink}
                     errorText={errors.backgroundImageLink?.message as string | undefined}
                     {...register('backgroundImageLink')}
                 />
                 <Input
-                    isDisabled={isSubmitting}
                     id="reserveParts"
                     type="text"
                     placeholder="Reserved PARTs"
+                    isDisabled={isSubmitting}
                     isInvalid={!!errors.reserveParts}
                     errorText={errors.reserveParts?.message as string | undefined}
                     {...register('reserveParts')}
                 />
                 <Input
-                    isDisabled={isSubmitting}
                     id="reservePartsAddress"
                     type="text"
                     placeholder="Reserved PARTs Address"
+                    isDisabled={isSubmitting}
                     isInvalid={!!errors.reservePartsAddress}
                     errorText={errors.reservePartsAddress?.message as string | undefined}
                     {...register('reservePartsAddress')}

@@ -20,7 +20,7 @@ export const contractApi = ({ contractId, walletToUse }: { contractId: string, w
     const api = {
         call: {
             internalMintForPresaleParticipants: async (data: TokenMetadata) => {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // await new Promise(resolve => setTimeout(resolve, 1000));
                 return walletToUse.callMethod({
                     contractId, method: 'nft_mint_for_presale_participants', args: data
                 });
@@ -28,7 +28,7 @@ export const contractApi = ({ contractId, walletToUse }: { contractId: string, w
 
         }, get: {
             nftTokens: async () => {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // await new Promise(resolve => setTimeout(resolve, 1000));
                 return walletToUse.viewMethod({ contractId, method: 'nft_tokens' });
             }
         }

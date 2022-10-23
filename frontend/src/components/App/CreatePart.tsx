@@ -19,7 +19,18 @@ export default function CreatePart() {
     };
 
     const onCreatePart = (part: PartFormValue) => {
+        const reservedPartsArray = (part.reserveParts ?? '')
+            .replace(/\s+/g, '') // remove spaces
+            .split(';')
+            .flatMap((range) => {
+                const [from, to] = range.split('-').map((num) => parseInt(num, 10));
+                return to ? Array.from({ length: to - from + 1 }, (_, i) => from + i) : [from];
+            })
+            .filter((value, index, self) => self.indexOf(value) === index)
+            .sort((a, b) => a - b);
+
         console.log('Part: ', part);
+        console.log('Reserved parts: ', reservedPartsArray);
         runViewMethod();
     };
 

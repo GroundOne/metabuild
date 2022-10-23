@@ -6,6 +6,7 @@ import AppCard from '../ui-components/AppCard';
 import clsx from 'clsx';
 import { contractApi } from '../../client_api/contracts';
 import { useAsync } from '../../utils/useAsync';
+import { env } from '../../constants';
 
 enum WalletState {
     SignedIn = 'SignedIn',
@@ -16,13 +17,13 @@ export default function WalletSample() {
     // When creating the wallet you can optionally ask to create an access key
     // Having the key enables to call non-payable methods without interrupting the user to sign
     const wallet = useMemo(() => {
-        return new Wallet({ createAccessKeyFor: process.env.NEXT_PUBLIC_CONTRACT_NAME });
+        return new Wallet({ createAccessKeyFor: env.NEXT_PUBLIC_CONTRACT_NAME });
     }, []);
 
     const contract = useMemo(() => {
         return contractApi({
             walletToUse: wallet,
-            contractId: process.env.NEXT_PUBLIC_CONTRACT_NAME!,
+            contractId: env.NEXT_PUBLIC_CONTRACT_NAME,
         });
     }, [wallet]);
 

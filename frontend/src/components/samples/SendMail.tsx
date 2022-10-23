@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
+import { env } from '../../constants';
 
 export default function SendMail() {
     const [message, setMessage] = useState('');
     const sendMail = async () => {
         try {
             setMessage('Sending test mail');
-            // const api = process.env.NEXT_PUBLIC_API_URL + '/send-email';
-            const api = '/api/send-email';
-
+            const api = env.NEXT_PUBLIC_API_URL + '/send-email';
             const response = await fetch(api, {
                 method: 'POST',
                 headers: {
