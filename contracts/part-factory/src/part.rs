@@ -13,6 +13,7 @@ pub struct InitializeArgs {
     pub price: U128,
     pub metadata: NFTContractMetadata,
     pub reservedTokenIds: Option<Vec<String>>,
+    pub reservedTokenOwner: String,
     pub prelaunchEnd: Option<String>,
     pub saleEnd: Option<String>,
 }
