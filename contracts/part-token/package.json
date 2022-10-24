@@ -8,7 +8,7 @@
     "=====SETUP=====": "",
     "_____combination_____": "",
     "setup:clean": "yarn acc:delete && yarn acc:create && yarn acc:send && yarn build:deploy",
-    "setup:getTimes": "./src/scripts/get_times.sh 0 5 10",
+    "setup:getTimes": "./scripts/get_times.sh 0 5 10",
     "setup:presale:init": "yarn call:init:default && yarn call:presale:participate && yarn call:presale:participate2",
     "setup:presale:distribute": "yarn call:presale:distribute && yarn call:presale:cashout && yarn call:presale:mint",
     "setup:sale:init": "yarn call:init:presaleended && yarn setup:sale:mint",
@@ -23,7 +23,7 @@
     "=====BUILD_DEPLOY=====": "",
     "build:deploy": "yarn build && yarn deploy:part",
     "build": "yarn build:part",
-    "build:part": "near-sdk-js build src/part-contract/index.ts build/part.wasm",
+    "build:part": "near-sdk-js build src/index.ts build/part.wasm",
     "deploy": "yarn deploy:part",
     "deploy:part": "source .env && near deploy --accountId $PART_CONTRACT --wasmFile build/part.wasm",
     "deploy:part:dev": "near dev-deploy build/part.wasm",
@@ -69,7 +69,7 @@
     "test:watch": "nodemon --exec 'yarn test' -w ./__tests__ -w ./src -e js,ts",
     "build:test": "yarn build && yarn test"
   },
-  "author": "Tobias Leinss <caruso33@web.de>, Frangiskos Frangeskides <frangiskos@gmail.com>",
+  "author": "Tobias Leinss <caruso33@web.de>",
   "license": "UNLICENSED",
   "dependencies": {
     "lodash-es": "^4.17.21",
