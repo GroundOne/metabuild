@@ -1,3 +1,4 @@
+import { ContractStatusEnum } from "./index"
 import { assert, near, UnorderedSet } from "near-sdk-js"
 import { Contract, NFT_METADATA_SPEC, NFT_STANDARD_NAME } from "."
 import { Token } from "./metadata"
@@ -257,14 +258,20 @@ export function internalPayoutNear({
   contract: Contract
 }) {
   assert(
-    near.signerAccountId() === contract.ownerId,
+    near.predecessorAccountId() === contract.ownerId,
     `Only owner can payout near`
+  )
+
+  assert(
+    contract.contractStatus === ContractStatusEnum.SALE ||
+      contract.contractStatus === ContractStatusEnum.POSTSALE,
+    `Too early to payout near, wait for SALE or POSTSALE phase, is currently ${contract.contractStatus}`
   )
 
   const amountBigInt = BigInt(amount)
   assert(amountBigInt > BigInt("0"), "The amount should be a positive number")
   assert(
-    amountBigInt < near.accountBalance(),
+    amountBigInt <= near.accountBalance(),
     `Not enough balance ${near.accountBalance()} to cover transfer of ${amountBigInt} yoctoNEAR`
   )
 
@@ -272,14 +279,8 @@ export function internalPayoutNear({
     receivingAccountId != near.currentAccountId(),
     "Can't transfer to the contract itself"
   )
-  assert(
-    amountBigInt < near.accountBalance(),
-    `Not enough balance ${near.accountBalance()} to cover transfer of ${amountBigInt} yoctoNEAR`
-  )
 
-  const receiver = receivingAccountId ? receivingAccountId : contract.ownerId
-
-  const transferPromiseId = near.promiseBatchCreate(receiver)
+  const transferPromiseId = near.promiseBatchCreate(receivingAccountId)
 
   near.promiseBatchActionTransfer(transferPromiseId, amountBigInt)
   return near.promiseReturn(transferPromiseId)

@@ -7,6 +7,7 @@ export type InitializeArgs = {
   totalSupply: number
   price: number
   reservedTokenIds?: string[]
+  reservedTokenOwner: string
   saleOpening?: string
   saleClose?: string
   metadata?: NFTContractMetadata

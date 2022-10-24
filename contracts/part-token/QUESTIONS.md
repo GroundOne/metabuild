@@ -2,14 +2,18 @@
 
 **Accounts**
 
-- is it possible to see all subaccounts of an account (with near-api-js)?
-
-  - is it possible to see what contracts are deployed behind each subaccount?
-
 - how to use access keys with e.g. near-api-js to delete an account?
 
 - is it possible to see all NFTs the wallet holds (like the wallet.near.org does)?
   I need to know which NFTs tokens of a particular contract type the wallet holds.
+
+  - does it make sense to implement cross contract calls to retrieve this info by the factory?
+
+- is it possible to see all subaccounts of an account (with near-api-js)?
+
+- is it possible to see what contracts are deployed behind a subaccount?
+
+- Can a contract pay for gas fees of functions? Is there an example?
 
 ---
 
@@ -24,8 +28,6 @@ Irrelevant for today:
 ### Technical / JS Contracts
 
 **General**
-
-- Can a contract pay for gas fees of functions? Is there an example?
 
 - chaining `@call` functions is a bad idea because of max gas per block so sequentially calling them is the way to go, right?
 

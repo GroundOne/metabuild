@@ -1,5 +1,5 @@
 import { assert, near } from "near-sdk-js"
-import { Contract, SaleStatusEnum } from "./index"
+import { Contract, ContractStatusEnum } from "./index"
 import { TokenMetadata } from "./metadata"
 import { internalMint } from "./mint"
 import { getValuesInVector, internalSumOfBytes, isValueInVector } from "./utils"
@@ -42,10 +42,9 @@ export function internalDistributeAfterPresale({
 }: {
   contract: Contract
 }) {
-  assert(
-    near.signerAccountId() === contract.ownerId,
-    `Only owner can distribute after presale`
-  )
+  // anyone can call this method
+  // however, it makes most sense have this done by an account associated with the owner
+  // as it requires gas to do so
 
   // check that presale is finished
   assert(
@@ -55,10 +54,10 @@ export function internalDistributeAfterPresale({
 
   // check that it can only be called once
   assert(
-    contract.saleStatus === SaleStatusEnum.PRESALE,
-    `Can only be called when saleOpening finished and status \`presale\`, is ${contract.saleStatus}`
+    contract.contractStatus === ContractStatusEnum.PRESALE,
+    `Can only be called when saleOpening finished and status \`presale\`, is ${contract.contractStatus}`
   )
-  contract.saleStatus = SaleStatusEnum.PRESALEDISTRIBUTION
+  contract.contractStatus = ContractStatusEnum.POSTPRESALE_DISTRIBUTION
 
   let presaleParticipants = getValuesInVector(contract.presaleParticipants)
 
@@ -89,22 +88,21 @@ export function internalCashoutUnluckyPresaleParticipants({
 }: {
   contract: Contract
 }) {
-  assert(
-    near.signerAccountId() === contract.ownerId,
-    `Only owner can cashout unlucky participants after presale`
-  )
+  // anyone can call this method
+  // however, it makes most sense have this done by an account associated with the owner
+  // as it requires gas to do so
 
   // participants who were unlucky get cashed out
-  // assert(
-  //   contract.isPresaleDone(),
-  //   `Please wait until the presale is finished ${contract.saleOpening}`
-  // )
+  assert(
+    contract.isPresaleDone(),
+    `Please wait until the presale is finished ${contract.saleOpening}`
+  )
 
   assert(
-    contract.saleStatus === SaleStatusEnum.PRESALEDISTRIBUTION,
-    `Can only be called when saleOpening and distribution finished and status \`presaledistribution\` is ${contract.saleStatus}`
+    contract.contractStatus === ContractStatusEnum.POSTPRESALE_DISTRIBUTION,
+    `Can only be called when saleOpening and distribution finished and status \`presaledistribution\` is ${contract.contractStatus}`
   )
-  contract.saleStatus = SaleStatusEnum.PRESALECASHOUT
+  contract.contractStatus = ContractStatusEnum.POSTPRESALE_CASHOUT
 
   const presaleParticipants = getValuesInVector(contract.presaleParticipants)
   const presaleLuckyWinner = getValuesInVector(contract.presaleDistribution)
@@ -116,9 +114,10 @@ export function internalCashoutUnluckyPresaleParticipants({
   unluckyParticipants.forEach((unluckyLoser) => {
     near.log(`Refunding unlucky loser ${unluckyLoser}.`)
 
-    near.log(`NOT YET IMPLEMENTED`)
-    // TODO
-    // contract.transfer(unluckyLoser, this.price)
+    const transferPromiseId = near.promiseBatchCreate(unluckyLoser)
+
+    near.promiseBatchActionTransfer(transferPromiseId, contract.price)
+    near.promiseReturn(transferPromiseId)
   })
 }
 
@@ -135,10 +134,10 @@ export function internalMintForPresaleParticipants({
   )
 
   assert(
-    contract.saleStatus === SaleStatusEnum.PRESALECASHOUT,
-    `Can only be called when saleOpening, distribution and cashout finished and status \`presalecashout\`, is ${contract.saleStatus}`
+    contract.contractStatus === ContractStatusEnum.POSTPRESALE_CASHOUT,
+    `Can only be called when saleOpening, distribution and cashout finished and status \`presalecashout\`, is ${contract.contractStatus}`
   )
-  contract.saleStatus = SaleStatusEnum.SALE
+  contract.contractStatus = ContractStatusEnum.SALE
 
   const luckyWinners = getValuesInVector(contract.presaleDistribution)
 

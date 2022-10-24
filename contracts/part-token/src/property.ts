@@ -1,6 +1,6 @@
 import { assert, near } from "near-sdk-js"
 import { internalNftTokens } from "./enumeration"
-import { Contract } from "./index"
+import { Contract, ContractStatusEnum } from "./index"
 import { restoreOwners } from "./internal"
 import { InitializePropertiesArgs } from "./types"
 
@@ -25,22 +25,30 @@ export function internalInitProperties(
   )
 
   assert(
+    contract.isSaleDone(),
+    `Sale has to be finished to initialize properties, currently ${near.blockTimestamp()} is ending ${
+      contract.saleClose
+    }`
+  )
+
+  assert(
     contract.saleClose < contract.distributionStart,
     `Distribution should happen before sale end. Distribution start is ${contract.distributionStart}, sale end ${contract.saleClose}`
   )
+  contract.contractStatus = ContractStatusEnum.PROPERTY_SELECTION
 
-  if (contract.distributionStart)
-    contract.distributionStart = BigInt(initArgs.distributionStart).toString()
+  contract.distributionStart = BigInt(initArgs.distributionStart).toString()
 
-  if (initArgs.totalSupply && initArgs.reservedTokenIds) {
+  if (initArgs.reservedTokenIds) {
     assert(
       initArgs.totalSupply >
         Math.max.apply(initArgs.reservedTokenIds.map((t) => +t)),
-      `Amount of properties must be greater than highest reserved property ID. Amount of properties ${initArgs.totalSupply}, reserved properties: ${initArgs.reservedTokenIds}`
+      `Amount of properties must be greater than highest reserved property Id. Amount of properties ${
+        initArgs.totalSupply
+      }, reserved properties: ${initArgs.reservedTokenIds.join(", ")}`
     )
   }
 
-  initArgs.totalSupply
   const propertyIds = new Array(initArgs.totalSupply)
     .fill(null)
     .map((_, i) => (i + 1).toString())
@@ -171,6 +179,18 @@ export function internalSetPropertyPreferences({
     `Current account doesn't own any PART Tokens ${near.signerAccountId()}`
   )
 
+  assert(
+    !!contract.distributionStart,
+    `Properties not yet initialized. Please wait for it.`
+  )
+
+  assert(
+    !contract.isPropertySelectionDone(),
+    `Property selection is already finished is ${near.blockTimestamp()} ended ${
+      contract.distributionStart
+    }`
+  )
+
   contract.propertyPreferenceByTokenId.set(
     near.signerAccountId(),
     new PropertyPreference(propertyPreferenceIds)
@@ -183,6 +203,14 @@ export function internalDistributeProperties({
   contract: Contract
 }) {
   const partTokens = internalNftTokens({ contract })
+
+  assert(
+    contract.isPropertySelectionDone(),
+    `Propert Selection is not yet finished is ${near.blockTimestamp()} will end ${
+      contract.distributionStart
+    }`
+  )
+  contract.contractStatus = ContractStatusEnum.PROPERTY_DISTRIBUTION
 
   // loop through all token holders
   for (const partToken of partTokens) {
@@ -212,4 +240,6 @@ export function internalDistributeProperties({
       `No preference were unoccupied for token id: ${partToken.token_id}`
     )
   }
+
+  contract.contractStatus = ContractStatusEnum.ENDED
 }
