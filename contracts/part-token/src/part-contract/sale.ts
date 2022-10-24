@@ -1,6 +1,6 @@
 import { assert, near } from "near-sdk-js"
 import { internalSupplyForOwner } from "./enumeration"
-import { Contract, SaleStatusEnum } from "./index"
+import { Contract, ContractStatusEnum } from "./index"
 import { TokenMetadata } from "./metadata"
 import { internalMint } from "./mint"
 
@@ -13,6 +13,8 @@ export function internalMintSale({
   metadata: TokenMetadata
   receiver_id: string
 }) {
+  // TODO: Make it possible to mint directly after presale has finished 
+  // without having to wait for lifetime methods to be finished
   assert(
     contract.isPresaleDone(),
     `Please wait until the presale is finished ${contract.saleOpening}`
@@ -26,8 +28,8 @@ export function internalMintSale({
   )
 
   assert(
-    contract.saleStatus === SaleStatusEnum.SALE,
-    `Can only be called when saleOpening, distribution, cashout and presale minting finished and status \`sale\`, is ${contract.saleStatus}`
+    contract.contractStatus === ContractStatusEnum.SALE,
+    `Can only be called when saleOpening, distribution, cashout and presale minting finished and status \`sale\`, is ${contract.contractStatus}`
   )
 
   assert(

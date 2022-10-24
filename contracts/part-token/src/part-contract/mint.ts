@@ -32,10 +32,10 @@ export function internalMint({
   })
 
   const newTokenId = tokenId || contract.currentTokenId.toString()
-  // assert(
-  //   contract.totalSupply > +newTokenId,
-  //   `Total supply reached ${contract.totalSupply}`
-  // )
+  assert(
+    contract.totalSupply > +newTokenId,
+    `Total supply reached ${contract.totalSupply}`
+  )
 
   metadata.description =
     `${metadata.description ? `${metadata.description}\n` : ""}` +

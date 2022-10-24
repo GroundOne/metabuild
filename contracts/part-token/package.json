@@ -54,6 +54,7 @@
     "view:blocktime": "source .env && near view $PART_CONTRACT current_block_time",
     "view:done:presale": "source .env && near view $PART_CONTRACT isPresaleDone",
     "view:done:sale": "source .env && near view $PART_CONTRACT isSaleDone",
+    "view:done:distribution": "source .env && near view $PART_CONTRACT isPropertyPropertySelectionDone",
     "_____token_____": "",
     "view:token": "source .env && near view $PART_CONTRACT nft_token '{\"token_id\": \"1\"}'",
     "view:tokens": "source .env && near view $PART_CONTRACT nft_tokens",

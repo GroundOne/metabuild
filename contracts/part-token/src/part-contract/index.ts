@@ -46,13 +46,16 @@ export const NFT_METADATA_SPEC = "nft-1.0.0"
 /// This is the name of the NFT standard we're using
 export const NFT_STANDARD_NAME = "nep171"
 
-export enum SaleStatusEnum {
+export enum ContractStatusEnum {
   UNSET = "unset",
   PRESALE = "presale",
-  PRESALEDISTRIBUTION = "presaledistribution",
-  PRESALECASHOUT = "presalecashout",
+  POSTPRESALE_DISTRIBUTION = "postpresale_distribution",
+  POSTPRESALE_CASHOUT = "postpresale_cashout",
   SALE = "sale",
   POSTSALE = "postsale",
+  PROPERTY_SELECTION = "property_selection",
+  PROPERTY_DISTRIBUTION = "property_distribution",
+  ENDED = "ended",
 }
 
 @NearBindgen({ requireInit: true })
@@ -68,9 +71,10 @@ export class Contract {
   saleClose: string // blockTimestamp when sale has finished
 
   reservedTokenIds: Vector // stays in ownership of deployer
+  reservedTokenOwner: string
   presaleParticipants: Vector // candidates which buy into the presale
   presaleDistribution: Vector // tokens assigned to candidates
-  saleStatus: string
+  contractStatus: string
 
   tokensPerOwner: LookupMap
   tokensById: LookupMap
@@ -89,7 +93,6 @@ export class Contract {
 
     const saleOpening = near.blockTimestamp() + twoMinutes
     const saleClose = saleOpening + twoMinutes
-    const distributionStart = saleClose + twoMinutes
 
     this.ownerId = ""
     this.projectName = "PART Token"
@@ -101,7 +104,7 @@ export class Contract {
     this.saleOpening = saleOpening.toString()
     this.saleClose = saleClose.toString()
 
-    this.saleStatus = SaleStatusEnum.UNSET
+    this.contractStatus = ContractStatusEnum.UNSET
 
     this.reservedTokenIds = new Vector("reservedTokenIds")
     this.presaleParticipants = new Vector("presaleParticipants")
@@ -120,7 +123,7 @@ export class Contract {
     // Property Metrics
     this.properties = new UnorderedMap("properties")
     this.reservedProperties = new Vector("reservedProperties")
-    this.distributionStart = distributionStart.toString()
+    this.distributionStart = ""
     this.propertyPreferenceByTokenId = new UnorderedMap(
       "propertyPreferenceByTokenId"
     )
@@ -133,6 +136,7 @@ export class Contract {
     this.projectName = initArgs.projectName
     this.totalSupply = initArgs.totalSupply
     this.price = initArgs.price
+    this.reservedTokenOwner = initArgs.reservedTokenOwner
 
     if (initArgs.saleOpening)
       this.saleOpening = BigInt(initArgs.saleOpening).toString()
@@ -158,14 +162,22 @@ export class Contract {
     if (initArgs.metadata) this.metadata = initArgs.metadata
 
     if (this.isPresaleDone()) {
-      this.saleStatus = SaleStatusEnum.SALE
+      this.contractStatus = ContractStatusEnum.SALE
     } else {
-      this.saleStatus = SaleStatusEnum.PRESALE
+      this.contractStatus = ContractStatusEnum.PRESALE
     }
-    near.log(`Sale status is ${SaleStatusEnum[this.saleStatus]}`)
+    near.log(`Sale status is ${this.contractStatus}`)
 
     // mint all reserved tokens to owner
     if (initArgs.reservedTokenIds) {
+      assert(
+        initArgs.totalSupply >
+          Math.max.apply(initArgs.reservedTokenIds.map((t) => +t)),
+        `Amount of tokens must be greater than highest reserved token Id. Amount of tokens ${
+          initArgs.totalSupply
+        }, reserved tokens: ${initArgs.reservedTokenIds.join(", ")}`
+      )
+
       const reservedTokenIds = initArgs.reservedTokenIds
       near.log(
         `Following Tokens will be reserved: ${JSON.stringify(reservedTokenIds)}`
@@ -177,7 +189,7 @@ export class Contract {
         internalMint({
           contract: this,
           metadata: this.metadata,
-          receiver_id: this.ownerId,
+          receiver_id: this.reservedTokenOwner,
           tokenId: reservedTokenId.toString(),
         })
       })
@@ -246,7 +258,7 @@ export class Contract {
     receivingAccountId,
   }: {
     amount: number
-    receivingAccountId?: string
+    receivingAccountId: string
   }) {
     return internalPayoutNear({ amount, receivingAccountId, contract: this })
   }
@@ -324,7 +336,7 @@ export class Contract {
       reservedTokenIds: this.reservedTokenIds,
       saleOpening: this.saleOpening.toString(),
       saleClose: this.saleClose.toString(),
-      saleStatus: this.saleStatus,
+      contractStatus: this.contractStatus,
     }
   }
 
@@ -373,6 +385,11 @@ export class Contract {
   @view({})
   isSaleDone() {
     return BigInt(this.saleClose) < near.blockTimestamp()
+  }
+
+  @view({})
+  isPropertySelectionDone() {
+    return BigInt(this.distributionStart) < near.blockTimestamp()
   }
 
   @view({})
