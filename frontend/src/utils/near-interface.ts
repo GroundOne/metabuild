@@ -5,17 +5,17 @@ import {
 } from "./../../../contracts/part-token/src/types"
 /* Talking with a contract often involves transforming data, we recommend you to encapsulate that logic into a class */
 
-import { Wallet } from "./near-wallet"
+import { NearWallet } from "./near-wallet"
 
 export class InterfaceFields {
   constructor(
     public readonly contractId: string,
-    public readonly wallet: Wallet
+    public readonly wallet: NearWallet
   ) {}
 }
 
 export class PartTokenFactoryInterface extends InterfaceFields {
-  constructor(contractId: string, wallet: Wallet) {
+  constructor(contractId: string, wallet: NearWallet) {
     super(contractId, wallet)
   }
 
@@ -86,7 +86,7 @@ export class PartTokenFactoryInterface extends InterfaceFields {
 }
 
 export class PartTokenInterface extends InterfaceFields {
-  constructor(contractId: string, wallet: Wallet) {
+  constructor(contractId: string, wallet: NearWallet) {
     super(contractId, wallet)
   }
 
