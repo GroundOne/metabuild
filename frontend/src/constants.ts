@@ -1,6 +1,6 @@
 
 export const env: {
-    NEXT_PUBLIC_CONTRACT_NAME: string;
+    NEXT_PUBLIC_TOKEN_CONTRACT_NAME: string;
     NEXT_PUBLIC_FACTORY_CONTRACT_NAME: string;
     NEXT_PUBLIC_API_URL: string;
     EMAIL_USER: string;
@@ -9,7 +9,7 @@ export const env: {
     EMAIL_PORT: number;
     EMAIL_SENDER_ADDRESS: string;
 } = {
-    NEXT_PUBLIC_CONTRACT_NAME: process.env.NEXT_PUBLIC_CONTRACT_NAME ?? 'part.groundone.testnet',
+    NEXT_PUBLIC_TOKEN_CONTRACT_NAME: process.env.NEXT_PUBLIC_CONTRACT_NAME ?? 'part.groundone.testnet',
     NEXT_PUBLIC_FACTORY_CONTRACT_NAME: process.env.NEXT_PUBLIC_FACTORY_CONTRACT_NAME ?? 'part_factory.groundone.testnet',
 
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL ?? "/api",
