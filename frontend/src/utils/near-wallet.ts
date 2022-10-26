@@ -115,8 +115,8 @@ export class NearWallet {
         contractId: string;
         method: string;
         args: Record<string, any>;
-        gas: string;
-        deposit: string;
+        gas?: string;
+        deposit?: string;
     }) => {
         // Sign a transaction with the "FunctionCall" action
         const outcome = await this.wallet.signAndSendTransaction({

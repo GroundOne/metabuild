@@ -1,5 +1,6 @@
-import type { Wallet } from '../utils/near-wallet';
-import type { contractApi } from '../client_api/contracts';
+import { PartTokenFactoryInterface } from './../utils/near-interface';
+import type { NearWallet } from '../utils/near-wallet';
+// import type { contractApi } from "../client_api/contracts"
 import { createContext } from 'react';
 
 export enum WalletState {
@@ -9,7 +10,10 @@ export enum WalletState {
 }
 
 export interface NearContextProps {
-    wallet: Wallet; walletState: WalletState; contract: ReturnType<typeof contractApi>
+    wallet: NearWallet;
+    walletState: WalletState;
+    contract: PartTokenFactoryInterface;
+    // wallet: Wallet; walletState: WalletState; contract: ReturnType<typeof contractApi>
 }
 
 export const NearContext = createContext<NearContextProps>({} as NearContextProps);

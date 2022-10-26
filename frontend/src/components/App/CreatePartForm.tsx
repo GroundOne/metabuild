@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ReactNode, useEffect, useState } from 'react';
-import router from 'next/router';
+import { useEffect, useState } from 'react';
 import Input from '../ui-components/Input';
 import Button from '../ui-components/Button';
 import * as yup from 'yup';
@@ -12,7 +11,21 @@ export type PartFormSchemaProps = {
 };
 
 const partFormSchema = yup.object({
-    projectName: yup.string().label('Project name').required().min(3).max(16),
+    projectName: yup
+        .string()
+        .label('Project name')
+        .required()
+        .test('all ascii', 'Project name must be all ascii letters or space or _', (value) => {
+            const re = /[ -~_]/; // all ascii + " " + -
+
+            if (re.test(String(value).toLowerCase())) {
+                return true;
+            } else {
+                return false;
+            }
+        })
+        .min(3)
+        .max(16),
     partAmount: yup
         .number()
         .label('PART Amount')
@@ -32,10 +45,11 @@ const partFormSchema = yup.object({
         .number()
         .label('PART price')
         .typeError('PART Price is required')
-        .integer()
-        .required()
-        .min(1)
-        .max(1_000_000),
+        .required(),
+        // .positive()
+        // .min(0.001)
+        // .max(1_000_000),
+        // .moreThan(0.001),
     backgroundImageLink: yup.string().label('Background image link').url().required(),
     reserveParts: yup
         .string()
@@ -68,14 +82,23 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
         }
 
         if (process.env.NODE_ENV === 'development' && !values) {
+            const nowPlus5Days = new Date(new Date().setDate(new Date().getDate() + 5));
+            const nowPlus10Days = new Date(new Date().setDate(new Date().getDate() + 10));
+
             setValue('projectName', 'FF demo project');
             setValue('partAmount', 100);
-            setValue('saleOpeningBlock', (new Date().toISOString().split('T')[0] + 'T10:00') as unknown as Date);
-            setValue('saleCloseBlock', '2022-12-31T12:00' as unknown as Date);
-            setValue('partPrice', 1);
-            setValue('backgroundImageLink', 'https://example.com');
+            setValue('saleOpeningBlock', (nowPlus5Days.toISOString().split('T')[0] + 'T10:00') as unknown as Date);
+            setValue(
+                'saleCloseBlock',
+                (nowPlus10Days.toISOString().split('T')[0] + 'T10:00') as unknown as Date as unknown as Date
+            );
+            setValue('partPrice', 0.001);
+            setValue(
+                'backgroundImageLink',
+                'https://images.squarespace-cdn.com/content/v1/63283ec16922c81dc0f97e2f/e3150b7f-bfc8-4251-ad50-3344f4b21b3d/image.jpg?format=2500w'
+            );
             setValue('reserveParts', '1-10; 20-30; 40; 50');
-            setValue('reservePartsAddress', 'architect_name.near');
+            setValue('reservePartsAddress', 'groundone.testnet');
         }
     }, [values, setValue]);
 

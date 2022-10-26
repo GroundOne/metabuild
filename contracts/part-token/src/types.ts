@@ -10,7 +10,7 @@ export type InitializeArgs = {
   reservedTokenOwner: string
   saleOpening?: string
   saleClose?: string
-  metadata?: NFTContractMetadata
+  metadata: NFTContractMetadata
 }
 
 export type InitializePropertiesArgs = {

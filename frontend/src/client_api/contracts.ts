@@ -1,4 +1,4 @@
-import { Wallet } from '../utils/near-wallet';
+import { NearWallet } from '../utils/near-wallet';
 
 
 interface TokenMetadata {
@@ -16,7 +16,7 @@ interface TokenMetadata {
     reference_hash?: string
 }
 
-export const contractApi = ({ contractId, walletToUse }: { contractId: string, walletToUse: Wallet }) => {
+export const contractApi = ({ contractId, walletToUse }: { contractId: string, walletToUse: NearWallet }) => {
     const api = {
         call: {
             internalMintForPresaleParticipants: async (data: TokenMetadata) => {

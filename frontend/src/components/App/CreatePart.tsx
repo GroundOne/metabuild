@@ -1,25 +1,44 @@
-import { useContext } from 'react';
-import AppCard from '../ui-components/AppCard';
+import { useContext, useEffect } from 'react';
+import { InitializeArgs } from '../../../../contracts/part-token/src/types';
+import { NFTContractMetadata } from '../../utils/partToken';
 import { useAsync } from '../../utils/useAsync';
-import { WalletState, NearContext } from '../walletContext';
+import AppCard from '../ui-components/AppCard';
+import { NearContext, WalletState } from '../walletContext';
 import CreatePartForm, { PartFormValue } from './CreatePartForm';
 
+export const NFT_STANDARD_NAME = 'nep171';
+
 export default function CreatePart() {
-    const { walletState, contract } = useContext(NearContext);
+    const { wallet, walletState, contract } = useContext(NearContext);
 
-    const nftTokensCall = useAsync(contract.get.nftTokens);
+    // const nftTokensCall = useAsync(() => );
+    useEffect(() => {
+        async function getContracts() {
+            const contracts = await contract.getContracts();
 
-    const runViewMethod = async () => {
-        console.log(walletState);
+            console.log('contracts', contracts);
+        }
+        getContracts();
+    }, [contract]);
+
+    const runViewMethod = async (args: InitializeArgs) => {
+        console.log('runViewMethod', walletState);
+
         if (walletState === WalletState.SignedIn) {
-            nftTokensCall.execute().then(() => {
-                console.log(nftTokensCall.value);
-            });
+            console.log('signed in', walletState);
+            // nftTokensCall.execute().then(() => {
+            //     console.log('nftTokensCall.execute', nftTokensCall.value);
+            // });
+
+            const result = await contract.createToken(args);
+            console.log('created contract', result);
         }
     };
 
     const onCreatePart = (part: PartFormValue) => {
-        const reservedPartsArray = (part.reserveParts ?? '')
+        const projectName = part.projectName.replaceAll(' ', '_').replaceAll('-', '_').toLowerCase();
+
+        const reservedTokenIds = (part.reserveParts ?? '')
             .replace(/\s+/g, '') // remove spaces
             .split(';')
             .flatMap((range) => {
@@ -27,11 +46,24 @@ export default function CreatePart() {
                 return to ? Array.from({ length: to - from + 1 }, (_, i) => from + i) : [from];
             })
             .filter((value, index, self) => self.indexOf(value) === index)
-            .sort((a, b) => a - b);
+            .sort((a, b) => a - b)
+            .map((value) => value.toString());
 
-        console.log('Part: ', part);
-        console.log('Reserved parts: ', reservedPartsArray);
-        runViewMethod();
+        runViewMethod({
+            ownerId: wallet.accountId!,
+            projectName,
+            totalSupply: part.partAmount,
+            price: part.partPrice,
+            reservedTokenIds,
+            reservedTokenOwner: part.reservePartsAddress,
+            saleOpening: part.saleOpeningBlock.getTime().toString(),
+            saleClose: part.saleCloseBlock.getTime().toString(),
+            metadata: new NFTContractMetadata({
+                spec: NFT_STANDARD_NAME,
+                name: projectName,
+                symbol: projectName,
+            }),
+        });
     };
 
     return (
