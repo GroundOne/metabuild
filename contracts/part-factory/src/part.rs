@@ -1,6 +1,5 @@
 use near_contract_standards::non_fungible_token::metadata::NFTContractMetadata;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::json_types::U128;
 use near_sdk::serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize)]

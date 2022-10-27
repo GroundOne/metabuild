@@ -69,8 +69,8 @@ export class PartTokenFactoryInterface extends InterfaceFields {
         });
     }
 
-    async createToken(args: DeployArgs) {
-        const THREE_HUNDRED_TGAS = (300 * 1e6).toString();
+    async createToken(args: InitializeArgs) {
+        const THREE_HUNDRED_TGAS = (300 * 1e12).toString();
 
         return await this.wallet.callMethod({
             contractId: this.contractId,

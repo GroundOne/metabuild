@@ -1,9 +1,5 @@
-import { NetworkId } from '@near-wallet-selector/core';
 import { useContext, useEffect } from 'react';
-import { PartTokenInterface } from '../../utils/near-interface';
-import { NearWallet } from '../../utils/near-wallet';
-import { DeployArgs, NFTContractMetadata, InitializeArgs } from '../../utils/partToken';
-import { useAsync } from '../../utils/useAsync';
+import { InitializeArgs, NFTContractMetadata } from '../../utils/partToken';
 import AppCard from '../ui-components/AppCard';
 import { NearContext, WalletState } from '../walletContext';
 import CreatePartForm, { PartFormValue } from './CreatePartForm';
@@ -32,14 +28,10 @@ export default function CreatePart() {
             //     console.log('nftTokensCall.execute', nftTokensCall.value);
             // });
 
-            const result = await contract.createToken({
-                projectName: args.projectName,
-                metadata: args.metadata,
-            });
-            console.log('created contract', result);
+            await contract.createToken(args);
 
-            const { partTokenContract } = getPartTokenWalletAndContract(args.projectName);
-            await partTokenContract.init(args);
+            // const { partTokenContract } = getPartTokenWalletAndContract(args.projectName);
+            // await partTokenContract.init(args);
         }
     };
 
@@ -57,7 +49,7 @@ export default function CreatePart() {
             .sort((a, b) => a - b)
             .map((value) => value.toString());
 
-        deployAndInitTokenContract({
+        const args: InitializeArgs = {
             ownerId: wallet.accountId!,
             projectName,
             // @ts-ignore
@@ -73,7 +65,9 @@ export default function CreatePart() {
                 name: projectName,
                 symbol: projectName,
             }),
-        });
+        };
+
+        deployAndInitTokenContract(args);
     };
 
     return (
