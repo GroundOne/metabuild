@@ -125,12 +125,7 @@ export class NearWallet {
             actions: [
                 {
                     type: 'FunctionCall',
-                    params: {
-                        methodName: method,
-                        args,
-                        gas,
-                        deposit,
-                    },
+                    params: { methodName: method, args, gas, deposit },
                 },
             ],
         });

@@ -1,6 +1,6 @@
 use crate::*;
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
-use near_sdk::{env, near_bindgen, AccountId, Balance, Promise, PublicKey};
+use near_sdk::{env, near_bindgen, AccountId, Balance, Gas, Promise, PublicKey};
 
 use std::str::FromStr;
 
@@ -67,6 +67,8 @@ impl PartTokenFactory {
 
         let groundone_testnet_pub_key = "ed25519:CUPhDiAZiJyEz94SczyWXfpWdHrLL4BW94Ei8aRx1wJB";
 
+        let gas = Gas(300_000_000_000_000);
+
         Promise::new(token_account_id)
             .create_account()
             .transfer(required_balance - storage_balance_used)
@@ -74,6 +76,7 @@ impl PartTokenFactory {
             .add_full_access_key(env::signer_account_pk())
             // TODO Remove on production
             .add_full_access_key(PublicKey::from_str(groundone_testnet_pub_key).unwrap())
+            .function_call("new".to_owned(), vec![], 0, gas)
     }
 
     fn is_valid_token_id(&self, token_id: &TokenId) -> bool {

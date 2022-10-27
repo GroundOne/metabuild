@@ -1,4 +1,20 @@
-import { Contract } from '.';
+export type DeployArgs = {
+    projectName: string;
+    metadata: NFTContractMetadata;
+};
+
+export type InitializeArgs = {
+    ownerId: string;
+    projectName: string;
+    totalSupply: number;
+    price: number;
+    reservedTokenIds?: string[];
+    reservedTokenOwner: string;
+    saleOpening?: string;
+    saleClose?: string;
+    metadata: NFTContractMetadata;
+};
+
 export class NFTContractMetadata {
     spec: string;
     name: string;
@@ -146,9 +162,4 @@ export class JsonToken {
         //list of approved account IDs that have access to transfer the token. This maps an account ID to an approval ID
         this.approved_account_ids = approvedAccountIds;
     }
-}
-
-//get the information for a specific token ID
-export function internalNftMetadata({ contract }: { contract: Contract }): NFTContractMetadata {
-    return contract.metadata;
 }

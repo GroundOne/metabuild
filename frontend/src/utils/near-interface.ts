@@ -1,8 +1,10 @@
+import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { TokenMetadata } from './../../../contracts/part-token/src/metadata';
 import { InitializeArgs, InitializePropertiesArgs } from './../../../contracts/part-token/src/types';
 /* Talking with a contract often involves transforming data, we recommend you to encapsulate that logic into a class */
 
 import { NearWallet } from './near-wallet';
+import { DeployArgs } from './partToken';
 
 export class InterfaceFields {
     constructor(public readonly contractId: string, public readonly wallet: NearWallet) {}
@@ -57,8 +59,8 @@ export class PartTokenFactoryInterface extends InterfaceFields {
     }
 
     /* 
-    CALL METHODS
-  */
+        CALL METHODS
+    */
     async new() {
         return await this.wallet.callMethod({
             contractId: this.contractId,
@@ -67,11 +69,15 @@ export class PartTokenFactoryInterface extends InterfaceFields {
         });
     }
 
-    async createToken(args: InitializeArgs) {
+    async createToken(args: DeployArgs) {
+        const THREE_HUNDRED_TGAS = (300 * 1e6).toString();
+
         return await this.wallet.callMethod({
             contractId: this.contractId,
             method: 'create_token',
             args: { args },
+            gas: THREE_HUNDRED_TGAS,
+            deposit: parseNearAmount('6')!,
         });
     }
 

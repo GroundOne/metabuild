@@ -1,9 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
-import { NearWallet } from '../utils/near-wallet';
-import { contractApi } from '../client_api/contracts';
-import { WalletState, NearContext } from './walletContext';
+import { NetworkId } from '@near-wallet-selector/core';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { env } from '../constants';
-import { PartTokenFactoryInterface } from '../utils/near-interface';
+import { PartTokenFactoryInterface, PartTokenInterface } from '../utils/near-interface';
+import { NearWallet } from '../utils/near-wallet';
+import { NearContext, WalletState } from './walletContext';
 
 const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     const [walletState, setWalletState] = useState(WalletState.Loading);
@@ -18,6 +18,23 @@ const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) 
         return new PartTokenFactoryInterface(env.NEXT_PUBLIC_FACTORY_CONTRACT_NAME, wallet);
     }, [wallet]);
 
+    const getPartTokenWalletAndContract = useCallback(
+        (createAccessKeyFor: string) => {
+            const partTokenWallet = new NearWallet({
+                createAccessKeyFor,
+                network: wallet.network as NetworkId,
+            });
+
+            const partTokenContract = new PartTokenInterface(createAccessKeyFor, partTokenWallet);
+
+            return {
+                partTokenWallet,
+                partTokenContract,
+            };
+        },
+        [wallet.network]
+    );
+
     useEffect(() => {
         const init = async () => {
             let isSignedIn = await wallet.startUp();
@@ -30,7 +47,11 @@ const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) 
         init();
     }, [wallet]);
 
-    return <NearContext.Provider value={{ wallet, walletState, contract }}>{children}</NearContext.Provider>;
+    return (
+        <NearContext.Provider value={{ wallet, walletState, contract, getPartTokenWalletAndContract }}>
+            {children}
+        </NearContext.Provider>
+    );
 };
 
 export default WalletProvider;

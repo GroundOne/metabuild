@@ -77,7 +77,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.7.23",
-    "ava": "^4.3.3",
+    "ava": "^5.0.1",
     "near-cli": "^3.4.2",
     "near-workspaces": "^3.2.2",
     "ts-node": "^10.9.1",

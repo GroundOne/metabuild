@@ -7,15 +7,8 @@ use near_sdk::serde::{Deserialize, Serialize};
 #[serde(crate = "near_sdk::serde")]
 #[allow(non_snake_case)] // TODO rename fields when rust part contract is set up
 pub struct InitializeArgs {
-    pub ownerId: String,
     pub projectName: String,
-    pub totalSupply: U128,
-    pub price: U128,
     pub metadata: NFTContractMetadata,
-    pub reservedTokenIds: Option<Vec<String>>,
-    pub reservedTokenOwner: String,
-    pub prelaunchEnd: Option<String>,
-    pub saleEnd: Option<String>,
 }
 
 // pub struct JsonPartToken {

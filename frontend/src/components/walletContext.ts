@@ -1,5 +1,5 @@
-import { PartTokenFactoryInterface } from './../utils/near-interface';
-import type { NearWallet } from '../utils/near-wallet';
+import { NearWallet } from '../utils/near-wallet';
+import { PartTokenFactoryInterface, PartTokenInterface } from './../utils/near-interface';
 // import type { contractApi } from "../client_api/contracts"
 import { createContext } from 'react';
 
@@ -13,6 +13,10 @@ export interface NearContextProps {
     wallet: NearWallet;
     walletState: WalletState;
     contract: PartTokenFactoryInterface;
+    getPartTokenWalletAndContract: (createAccessKeyFor: string) => {
+        partTokenWallet: NearWallet;
+        partTokenContract: PartTokenInterface;
+    };
     // wallet: Wallet; walletState: WalletState; contract: ReturnType<typeof contractApi>
 }
 
