@@ -1,6 +1,3 @@
-import { Wallet } from './near-wallet';
-// @ts-nocheck
-
 /* A helper file that simplifies using the wallet selector */
 
 // near api js
@@ -14,7 +11,7 @@ import { setupModal } from '@near-wallet-selector/modal-ui';
 // import MyNearIconUrl from '@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png';
 
 // wallet selector options
-import { Network, NetworkId, setupWalletSelector, WalletSelector } from '@near-wallet-selector/core';
+import { Network, NetworkId, setupWalletSelector, WalletSelector, Wallet } from '@near-wallet-selector/core';
 import { setupLedger } from '@near-wallet-selector/ledger';
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
 import { string } from 'yup';
@@ -27,7 +24,7 @@ const NO_DEPOSIT = '0';
 // Wallet that simplifies using the wallet selector
 export class NearWallet {
     walletSelector: WalletSelector | null;
-    wallet: Wallet;
+    wallet: Wallet | null = null
     network: NetworkId | Network;
     createAccessKeyFor: string | null;
     accountId: string | null;
@@ -69,9 +66,11 @@ export class NearWallet {
 
     // Sign-out method
     signOut = () => {
-        this.wallet.signOut();
-        this.wallet = this.accountId = this.createAccessKeyFor = null;
-        window.location.replace(window.location.origin + window.location.pathname);
+        if (this.wallet) {
+            this.wallet.signOut();
+            this.wallet = this.accountId = this.createAccessKeyFor = null;
+            window.location.replace(window.location.origin + window.location.pathname);
+        }
     };
 
     // Make a read-only call to retrieve information from the network
@@ -119,8 +118,8 @@ export class NearWallet {
         deposit?: string;
     }) => {
         // Sign a transaction with the "FunctionCall" action
-        const outcome = await this.wallet.signAndSendTransaction({
-            signerId: this.accountId,
+        const outcome = await this.wallet!.signAndSendTransaction({
+            signerId: this.accountId!,
             receiverId: contractId,
             actions: [
                 {
@@ -128,7 +127,7 @@ export class NearWallet {
                     params: { methodName: method, args, gas, deposit },
                 },
             ],
-        });
+        }) as providers.FinalExecutionOutcome;
 
         return providers.getTransactionLastResult(outcome);
     };

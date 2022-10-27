@@ -13,6 +13,7 @@ export interface NearContextProps {
     wallet: NearWallet;
     walletState: WalletState;
     contract: PartTokenFactoryInterface;
+    tokenContract: PartTokenInterface;
     getPartTokenWalletAndContract: (createAccessKeyFor: string) => {
         partTokenWallet: NearWallet;
         partTokenContract: PartTokenInterface;

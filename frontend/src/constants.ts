@@ -25,3 +25,12 @@ export const env: {
     /** Available only on server */
     EMAIL_SENDER_ADDRESS: process.env.EMAIL_SENDER_ADDRESS ?? "",
 }
+
+const constants = {
+    env,
+    NFT_METADATA_SPEC: 'nft-1.0.0',
+    MAX_PART_PRICE: 1_000_000,
+    MIN_PART_PRICE: 0.000_001,
+};
+
+export default constants;

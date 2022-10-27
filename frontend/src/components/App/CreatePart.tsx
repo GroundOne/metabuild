@@ -3,21 +3,43 @@ import { InitializeArgs, NFTContractMetadata } from '../../utils/partToken';
 import AppCard from '../ui-components/AppCard';
 import { NearContext, WalletState } from '../walletContext';
 import CreatePartForm, { PartFormValue } from './CreatePartForm';
-
-export const NFT_METADATA_SPEC = 'nft-1.0.0';
+import { useRouter } from 'next/router';
+import constants from '../../constants';
 
 export default function CreatePart() {
-    const { wallet, walletState, contract, getPartTokenWalletAndContract } = useContext(NearContext);
+    const { wallet, walletState, contract, tokenContract, getPartTokenWalletAndContract } = useContext(NearContext);
+    const router = useRouter();
+
+    // Handle redirect after deploying the contract
+    useEffect(() => {
+        const urlParams = router.query;
+        if (urlParams.transactionHashes) {
+            // callback from deploy contract
+            if (urlParams.errorCode) {
+                // errorCode: "Error" | "userRejected"
+                // errorMessage: "Can't%20create%20a%20new%20account%20ff_demo_project.part_factory.groundone.testnet%2C%20because%20it%20already%20exists" | User%2520rejected%2520transaction
+                // transactionHashes: "6G7tBRaHDL63SztJVVEyeNV9q5jk69hat5SZzFcTfYWy"
+                const errorMessage = decodeURIComponent(urlParams.errorMessage as string) ?? 'Unknown error';
+                alert(errorMessage);
+            } else {
+                // transactionHashes=EBz4gvA9v4ezc59ZnvyfEBUB9ZsXskrxcA2x5aS84G3G
+                alert('Contract deployed successfully');
+            }
+            router.replace(router.pathname);
+        }
+    }, [router, router.query]);
 
     // const nftTokensCall = useAsync(() => );
     useEffect(() => {
         async function getContracts() {
             const contracts = await contract.getContracts();
-
             console.log('contracts', contracts);
+
+            const ownerTokens = await tokenContract.nft_tokens_for_owner();
+            console.log('ownerTokens', ownerTokens);
         }
         getContracts();
-    }, [contract]);
+    }, [contract, tokenContract]);
 
     const deployAndInitTokenContract = async (args: InitializeArgs) => {
         console.log('deployAndInitTokenContract', walletState);
@@ -58,10 +80,10 @@ export default function CreatePart() {
             price: `${part.partPrice}`,
             reservedTokenIds,
             reservedTokenOwner: part.reservePartsAddress,
-            saleOpening: part.saleOpeningBlock.getTime().toString(),
-            saleClose: part.saleCloseBlock.getTime().toString(),
+            saleOpening: part.saleOpeningDate.getTime().toString(),
+            saleClose: part.saleCloseDate.getTime().toString(),
             metadata: new NFTContractMetadata({
-                spec: NFT_METADATA_SPEC,
+                spec: constants.NFT_METADATA_SPEC,
                 name: projectName,
                 symbol: projectName,
             }),

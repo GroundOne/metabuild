@@ -7,7 +7,7 @@ import { NearWallet } from './near-wallet';
 import { DeployArgs } from './partToken';
 
 export class InterfaceFields {
-    constructor(public readonly contractId: string, public readonly wallet: NearWallet) {}
+    constructor(public readonly contractId: string, public readonly wallet: NearWallet) { }
 }
 
 export class PartTokenFactoryInterface extends InterfaceFields {
@@ -186,6 +186,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'nft_total_supply',
+            args: {},
         });
     }
 
@@ -193,6 +194,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'nft_tokens',
+            args: {},
         });
     }
 
@@ -200,6 +202,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'nft_tokens_for_owner',
+            args: {},
         });
     }
 
@@ -207,6 +210,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'nft_supply_for_owner',
+            args: {},
         });
     }
 
@@ -214,6 +218,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'properties_info',
+            args: {},
         });
     }
 
@@ -221,6 +226,9 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'property_info',
+            args: {
+                id: "fff_demo_project"
+            },
         });
     }
 
@@ -228,6 +236,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'contract_vars',
+            args: {},
         });
     }
 
@@ -235,6 +244,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'property_vars',
+            args: {},
         });
     }
 
@@ -242,6 +252,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'nft_metadata',
+            args: {},
         });
     }
 
@@ -249,6 +260,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'presale_participants',
+            args: {},
         });
     }
 
@@ -256,6 +268,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'presale_distribution',
+            args: {},
         });
     }
 
@@ -263,6 +276,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'current_properties',
+            args: {},
         });
     }
 
@@ -270,6 +284,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'distributed_properties',
+            args: {},
         });
     }
 
@@ -277,6 +292,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'isPresaleDone',
+            args: {},
         });
     }
 
@@ -284,6 +300,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'isSaleDone',
+            args: {},
         });
     }
 
@@ -291,6 +308,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'isPropertySelectionDone',
+            args: {},
         });
     }
 
@@ -298,6 +316,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'isDistributionDone',
+            args: {},
         });
     }
 
@@ -305,6 +324,7 @@ export class PartTokenInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'current_block_time',
+            args: {},
         });
     }
 }

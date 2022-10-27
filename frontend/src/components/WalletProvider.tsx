@@ -13,9 +13,12 @@ const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) 
     const wallet = useMemo(() => {
         return new NearWallet({ createAccessKeyFor: env.NEXT_PUBLIC_FACTORY_CONTRACT_NAME });
     }, []);
-
     const contract = useMemo(() => {
         return new PartTokenFactoryInterface(env.NEXT_PUBLIC_FACTORY_CONTRACT_NAME, wallet);
+    }, [wallet]);
+
+    const tokenContract = useMemo(() => {
+        return new PartTokenInterface(env.NEXT_PUBLIC_TOKEN_CONTRACT_NAME, wallet);
     }, [wallet]);
 
     const getPartTokenWalletAndContract = useCallback(
@@ -48,7 +51,7 @@ const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) 
     }, [wallet]);
 
     return (
-        <NearContext.Provider value={{ wallet, walletState, contract, getPartTokenWalletAndContract }}>
+        <NearContext.Provider value={{ wallet, walletState, contract, tokenContract, getPartTokenWalletAndContract }}>
             {children}
         </NearContext.Provider>
     );
