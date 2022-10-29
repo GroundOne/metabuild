@@ -1,13 +1,12 @@
 import { useContext, useEffect } from 'react';
 import { InitializeArgs, NFTContractMetadata } from '../../utils/partToken';
-import AppCard from '../ui-components/AppCard';
 import { NearContext, WalletState } from '../walletContext';
 import CreatePartForm, { PartFormValue } from './CreatePartForm';
 import { useRouter } from 'next/router';
 import constants from '../../constants';
 
 export default function CreatePart() {
-    const { wallet, walletState, contract, tokenContract, getPartTokenWalletAndContract } = useContext(NearContext);
+    const { wallet, walletState, contract } = useContext(NearContext);
     const router = useRouter();
 
     // Handle redirect after deploying the contract
@@ -29,31 +28,11 @@ export default function CreatePart() {
         }
     }, [router, router.query]);
 
-    // const nftTokensCall = useAsync(() => );
-    useEffect(() => {
-        async function getContracts() {
-            const contracts = await contract.getContracts();
-            console.log('contracts', contracts);
-
-            const ownerTokens = await tokenContract.nft_tokens_for_owner();
-            console.log('ownerTokens', ownerTokens);
-        }
-        getContracts();
-    }, [contract, tokenContract]);
-
     const deployAndInitTokenContract = async (args: InitializeArgs) => {
         console.log('deployAndInitTokenContract', walletState);
-
         if (walletState === WalletState.SignedIn) {
             console.log('signed in', walletState);
-            // nftTokensCall.execute().then(() => {
-            //     console.log('nftTokensCall.execute', nftTokensCall.value);
-            // });
-
             await contract.createToken(args);
-
-            // const { partTokenContract } = getPartTokenWalletAndContract(args.projectName);
-            // await partTokenContract.init(args);
         }
     };
 
@@ -93,9 +72,9 @@ export default function CreatePart() {
     };
 
     return (
-        <AppCard>
+        <>
             <div className="font-semibold">Create PART Scheme</div>
             <CreatePartForm onCreatePartRequest={onCreatePart} />
-        </AppCard>
+        </>
     );
 }

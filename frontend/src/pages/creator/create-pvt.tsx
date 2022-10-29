@@ -1,12 +1,10 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import AppHeader from '../../components/App/AppHeader';
-import BuyerHowTo from '../../components/buyers/BuyerHowTo';
-import CreatePart from '../../components/App/CreatePart';
-import WalletSample from '../../components/App/WalletSample';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
+import CreatePVT from '../../components/App/CreatePVT';
 
-const App: NextPage = (props: any) => {
+const App: NextPage = () => {
     return (
         <>
             <Head>
@@ -17,11 +15,12 @@ const App: NextPage = (props: any) => {
                 <ErrorBoundary scope="create-pvt.tsx">
                     <AppHeader
                         buttons={[
-                            { name: 'PART', url: '/creator/create-part' },
-                            { name: 'PVT', url: '/creator/create-pvt' },
+                            { name: 'CREATE', url: '/creator/create-part' },
+                            { name: 'MANAGE', url: '/creator/manage-part' },
+                            { name: 'TEST', url: '/creator/create-pvt' },
                         ]}
                     />
-                    <p>Create PVT</p>
+                    <CreatePVT />
                 </ErrorBoundary>
             </div>
         </>

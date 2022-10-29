@@ -7,6 +7,7 @@ import { NearContext, WalletState } from './walletContext';
 
 const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     const [walletState, setWalletState] = useState(WalletState.Loading);
+    const [contractId, setContractId] = useState(env.NEXT_PUBLIC_TOKEN_CONTRACT_NAME);
 
     // When creating the wallet you can optionally ask to create an access key
     // Having the key enables to call non-payable methods without interrupting the user to sign
@@ -18,25 +19,8 @@ const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) 
     }, [wallet]);
 
     const tokenContract = useMemo(() => {
-        return new PartTokenInterface(env.NEXT_PUBLIC_TOKEN_CONTRACT_NAME, wallet);
-    }, [wallet]);
-
-    const getPartTokenWalletAndContract = useCallback(
-        (createAccessKeyFor: string) => {
-            const partTokenWallet = new NearWallet({
-                createAccessKeyFor,
-                network: wallet.network as NetworkId,
-            });
-
-            const partTokenContract = new PartTokenInterface(createAccessKeyFor, partTokenWallet);
-
-            return {
-                partTokenWallet,
-                partTokenContract,
-            };
-        },
-        [wallet.network]
-    );
+        return new PartTokenInterface(contractId, wallet);
+    }, [wallet, contractId]);
 
     useEffect(() => {
         const init = async () => {
@@ -51,7 +35,16 @@ const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) 
     }, [wallet]);
 
     return (
-        <NearContext.Provider value={{ wallet, walletState, contract, tokenContract, getPartTokenWalletAndContract }}>
+        <NearContext.Provider
+            value={{
+                wallet,
+                walletState,
+                contractId,
+                setContractId,
+                contract,
+                tokenContract,
+            }}
+        >
             {children}
         </NearContext.Provider>
     );

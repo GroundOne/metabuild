@@ -7,7 +7,7 @@ import { NearWallet } from './near-wallet';
 import { DeployArgs } from './partToken';
 
 export class InterfaceFields {
-    constructor(public readonly contractId: string, public readonly wallet: NearWallet) { }
+    constructor(public readonly contractId: string, public readonly wallet: NearWallet) {}
 }
 
 export class PartTokenFactoryInterface extends InterfaceFields {
@@ -38,15 +38,16 @@ export class PartTokenFactoryInterface extends InterfaceFields {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'supply_for_owner',
-            args: {},
+            args: { account_id: this.wallet.accountId },
         });
     }
 
-    async contractsForOwner() {
+    async contractsForOwner(accountId?: string) {
+        console.log('contractsForOwnercontractsForOwner', accountId);
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'contracts_for_owner',
-            args: {},
+            args: { account_id: accountId ?? this.wallet.accountId },
         });
     }
 
@@ -199,6 +200,7 @@ export class PartTokenInterface extends InterfaceFields {
     }
 
     async nft_tokens_for_owner() {
+        // console.log(this.wallet.account_id);
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'nft_tokens_for_owner',
@@ -214,11 +216,11 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async properties_info() {
+    async properties_info(account_id: any) {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'properties_info',
-            args: {},
+            args: { account_id },
         });
     }
 
@@ -227,14 +229,14 @@ export class PartTokenInterface extends InterfaceFields {
             contractId: this.contractId,
             method: 'property_info',
             args: {
-                id: "fff_demo_project"
+                id: 'fff_demo_project',
             },
         });
     }
 
-    async contract_vars() {
+    async contract_vars(contractId?: string) {
         return await this.wallet.viewMethod({
-            contractId: this.contractId,
+            contractId: contractId ?? this.contractId, // 'fff_demo_project.part_factory.groundone.testnet',
             method: 'contract_vars',
             args: {},
         });

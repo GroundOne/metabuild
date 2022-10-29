@@ -5,6 +5,7 @@ const redirects = {
     },
     [WalletState.SignedOut]: {
         ['/creator/create-part']: '/creator',
+        ['/creator/manage-part']: '/creator',
         ['/creator/create-pvt']: '/creator',
         ['/buyer/buy']: '/buyer',
         ['/buyer/account']: '/buyer',
