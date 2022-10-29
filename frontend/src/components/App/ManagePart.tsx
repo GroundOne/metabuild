@@ -17,14 +17,17 @@ export default function ManagePart() {
             setContracts(ownerContracts);
         };
         loadContracts();
-    }, []);
+    }, [contract, tokenContract]);
 
     return (
         <>
             <div className="mb-4 text-lg font-semibold">Your Projects</div>
             {contracts.map((contract) => {
                 return (
-                    <section className="m2 my-2 mr-12 flex flex-col gap-3 rounded-3xl border border-black py-4 px-6">
+                    <section
+                        className="m2 my-2 mr-12 flex flex-col gap-3 rounded-3xl border border-black py-4 px-6"
+                        key={contract.projectName}
+                    >
                         <div>
                             Project Name: <span className="font-semibold">{contract.projectName}</span>
                         </div>

@@ -58,26 +58,32 @@ export default function CreatePVT() {
     const [factoryOutput, setFactoryOutput] = useState('');
     const [tokenOutput, setTokenOutput] = useState('');
 
-    const factoryInterface = useCallback(async (fn: string, args: [] = []) => {
-        try {
-            // @ts-ignore
-            const value = await contract[fn](...args);
-            setFactoryOutput(JSON.stringify(value, undefined, 2));
-            console.log(value);
-        } catch (error) {
-            setFactoryOutput('ERROR: ' + JSON.stringify(error, undefined, 2));
-        }
-    }, []);
-    const tokenInterface = useCallback(async (fn: string, args: [] = []) => {
-        try {
-            // @ts-ignore
-            const value = await tokenContract[fn](...args);
-            setTokenOutput(JSON.stringify(value, undefined, 2));
-            console.log(value);
-        } catch (error) {
-            setTokenOutput('ERROR: ' + JSON.stringify(error, undefined, 2));
-        }
-    }, []);
+    const factoryInterface = useCallback(
+        async (fn: string, args: [] = []) => {
+            try {
+                // @ts-ignore
+                const value = await contract[fn](...args);
+                setFactoryOutput(JSON.stringify(value, undefined, 2));
+                console.log(value);
+            } catch (error) {
+                setFactoryOutput('ERROR: ' + JSON.stringify(error, undefined, 2));
+            }
+        },
+        [contract]
+    );
+    const tokenInterface = useCallback(
+        async (fn: string, args: [] = []) => {
+            try {
+                // @ts-ignore
+                const value = await tokenContract[fn](...args);
+                setTokenOutput(JSON.stringify(value, undefined, 2));
+                console.log(value);
+            } catch (error) {
+                setTokenOutput('ERROR: ' + JSON.stringify(error, undefined, 2));
+            }
+        },
+        [tokenContract]
+    );
 
     return (
         <>
@@ -107,7 +113,7 @@ export default function CreatePVT() {
                     size="sm"
                     onClick={() => setContractId('fff_demo_project.part_factory.groundone.testnet')}
                 >
-                    Set to "fff_demo..."
+                    Set to &quot;fff_demo...&quot;
                 </Button>
                 <Button
                     isInvertedColor
@@ -115,7 +121,7 @@ export default function CreatePVT() {
                     size="sm"
                     onClick={() => setContractId('futuristic_build.part_factory.groundone.testnet')}
                 >
-                    Set to "futuristic..."
+                    Set to &quot;futuristic...&quot;
                 </Button>
             </AppCard>
 
@@ -138,6 +144,7 @@ export default function CreatePVT() {
                     <div>View Methods</div>
                     {methods.factory.view.map((method) => (
                         <Button
+                            key={Object.keys(method)[0] + Object.entries(method)[0].length}
                             isInvertedColor
                             className="m-1"
                             size="sm"
@@ -149,6 +156,7 @@ export default function CreatePVT() {
                     <div>Call Methods</div>
                     {methods.factory.call.map((method) => (
                         <Button
+                            key={Object.keys(method)[0] + Object.entries(method)[0].length}
                             isInvertedColor
                             className="m-1"
                             size="sm"
@@ -179,6 +187,7 @@ export default function CreatePVT() {
                     <div>View Methods</div>
                     {methods.token.view.map((method) => (
                         <Button
+                            key={Object.keys(method)[0] + Object.entries(method)[0].length}
                             isInvertedColor
                             className="m-1"
                             size="sm"
@@ -190,6 +199,7 @@ export default function CreatePVT() {
                     <div>Call Methods</div>
                     {methods.token.call.map((method) => (
                         <Button
+                            key={Object.keys(method)[0] + Object.entries(method)[0].length}
                             isInvertedColor
                             className="m-1"
                             size="sm"

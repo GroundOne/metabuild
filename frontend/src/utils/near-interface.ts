@@ -1,10 +1,56 @@
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
-import { TokenMetadata } from './../../../contracts/part-token/src/metadata';
-import { InitializeArgs, InitializePropertiesArgs } from './../../../contracts/part-token/src/types';
+
+/**
+ * If we import anything from /contracts folder the `npm run build` fails
+ */
+// import { TokenMetadata } from './../../../contracts/part-token/src/metadata';
+// import type { InitializeArgs, InitializePropertiesArgs } from './../../../contracts/part-token/src/types';
+
 /* Talking with a contract often involves transforming data, we recommend you to encapsulate that logic into a class */
 
 import { NearWallet } from './near-wallet';
 import { DeployArgs } from './partToken';
+
+type TokenMetadata = {
+    title?: string;
+    description?: string;
+    media?: string;
+    mediaHash?: string;
+    copies?: number;
+    issuedAt?: string;
+    expiresAt?: string;
+    startsAt?: string;
+    updatedAt?: string;
+    extra?: string;
+    reference?: string;
+    referenceHash?: string;
+};
+
+type InitializeArgs = {
+    ownerId: string;
+    projectName: string;
+    totalSupply: number;
+    price: number;
+    reservedTokenIds?: string[];
+    reservedTokenOwner: string;
+    saleOpening?: string;
+    saleClose?: string;
+    metadata: {
+        spec: string;
+        name: string;
+        symbol: string;
+        icon?: string;
+        baseUri?: string;
+        reference?: string;
+        referenceHash?: string;
+    };
+};
+
+type InitializePropertiesArgs = {
+    distributionStart: string;
+    reservedTokenIds?: string[];
+    totalSupply: number;
+};
 
 export class InterfaceFields {
     constructor(public readonly contractId: string, public readonly wallet: NearWallet) {}
