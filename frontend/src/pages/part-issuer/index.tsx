@@ -1,19 +1,19 @@
 import type { NextPage } from 'next';
 import AppHeader from '../../components/App/AppHeader';
-import CreatorHowTo from '../../components/creators/CreatorHowTo';
+import PartIssuerHowTo from '../../components/part-issuer/PartIssuerHowTo';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
 
-const Creator: NextPage = () => {
+const PartIssuer: NextPage = () => {
     return (
         <>
             <div className="min-h-screen bg-gradient-to-b from-[#5E7C9665] to-[#B2C7D145]">
-                <ErrorBoundary scope="creator.tsx">
-                    <AppHeader connectButtonName="App for PART Creators" />
-                    <CreatorHowTo />
+                <ErrorBoundary scope="part-issuer.tsx">
+                    <AppHeader connectButtonName="App for PART Issuers" />
+                    <PartIssuerHowTo />
                 </ErrorBoundary>
             </div>
         </>
     );
 };
 
-export default Creator;
+export default PartIssuer;

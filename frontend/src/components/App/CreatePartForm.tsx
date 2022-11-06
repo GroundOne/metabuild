@@ -50,7 +50,7 @@ const partFormSchema = yup.object({
         .trim()
         .notRequired()
         .matches(/^[\s\d\-;]+$/, { message: 'Example: 1-10; 20-30; 40; 50', excludeEmptyString: true }),
-    reservePartsAddress: yup.string().trim().label('Reserved PARTs address').required().min(3).max(128),
+    // reservePartsAddress: yup.string().trim().label('Reserved PARTs address').required().min(3).max(128),
 });
 export type PartFormValue = yup.InferType<typeof partFormSchema>;
 
@@ -71,7 +71,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
             values.partPrice && setValue('partPrice', values.partPrice);
             values.backgroundImageLink && setValue('backgroundImageLink', values.backgroundImageLink);
             values.reserveParts && setValue('reserveParts', values.reserveParts);
-            values.reservePartsAddress && setValue('reservePartsAddress', values.reservePartsAddress);
+            // values.reservePartsAddress && setValue('reservePartsAddress', values.reservePartsAddress);
         }
 
         if (process.env.NODE_ENV === 'development' && !values) {
@@ -91,7 +91,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                 'https://images.squarespace-cdn.com/content/v1/63283ec16922c81dc0f97e2f/e3150b7f-bfc8-4251-ad50-3344f4b21b3d/image.jpg'
             );
             setValue('reserveParts', '1-10; 20-30; 40; 50');
-            setValue('reservePartsAddress', 'groundone.testnet');
+            // setValue('reservePartsAddress', 'groundone.testnet');
         }
     }, [values, setValue]);
 
@@ -180,7 +180,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     errorText={errors.reserveParts?.message as string | undefined}
                     {...register('reserveParts')}
                 />
-                <Input
+                {/* <Input
                     id="reservePartsAddress"
                     type="text"
                     placeholder="Reserved PARTs Address"
@@ -188,7 +188,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     isInvalid={!!errors.reservePartsAddress}
                     errorText={errors.reservePartsAddress?.message as string | undefined}
                     {...register('reservePartsAddress')}
-                />
+                /> */}
                 <div className="col-span-2">
                     <Button isInvertedColor size="md" className="mt-10 " type="submit">
                         {isSubmitting ? 'CONFIRM' : 'CREATE'}

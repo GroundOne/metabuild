@@ -1,7 +1,7 @@
 import Section from '../ui-components/Section';
 import ConnectWalletButton from '../ui-components/ConnectWalletButton';
 
-const CreatorHowTo: React.FC = () => {
+const PartIssuerHowTo: React.FC = () => {
     return (
         <Section>
             <div className="flex justify-center pb-16">
@@ -33,4 +33,4 @@ const CreatorHowTo: React.FC = () => {
     );
 };
 
-export default CreatorHowTo;
+export default PartIssuerHowTo;

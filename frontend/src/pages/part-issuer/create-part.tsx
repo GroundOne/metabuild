@@ -16,9 +16,9 @@ const App: NextPage = () => {
                 <ErrorBoundary scope="create-part.tsx">
                     <AppHeader
                         buttons={[
-                            { name: 'CREATE', url: '/creator/create-part' },
-                            { name: 'MANAGE', url: '/creator/manage-part' },
-                            { name: 'TEST', url: '/creator/create-pvt' },
+                            { name: 'CREATE', url: '/part-issuer/create-part' },
+                            { name: 'MANAGE', url: '/part-issuer/manage-part' },
+                            { name: 'TEST', url: '/part-issuer/create-pvt' },
                         ]}
                     />
                     <AppCard>

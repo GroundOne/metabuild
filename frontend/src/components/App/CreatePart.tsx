@@ -58,7 +58,7 @@ export default function CreatePart() {
             // @ts-ignore
             price: `${part.partPrice}`,
             reservedTokenIds,
-            reservedTokenOwner: part.reservePartsAddress,
+            // reservedTokenOwner: part.reservePartsAddress,
             saleOpening: part.saleOpeningDate.getTime().toString(),
             saleClose: part.saleCloseDate.getTime().toString(),
             metadata: new NFTContractMetadata({

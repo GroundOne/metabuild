@@ -10,9 +10,9 @@ export default function HomepageHeader() {
                 <Logo />
 
                 <div className="items-center justify-end md:flex md:flex-1 lg:w-0">
-                    <Link href="/creator" passHref>
+                    <Link href="/part-issuer" passHref>
                         <Button as="a" isInvertedColor className="bg-black text-gray-200 hover:text-white">
-                            PART Creators App
+                            PART Issuers App
                         </Button>
                     </Link>
                     <Link href="/buyer" passHref>
