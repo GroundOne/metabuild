@@ -6,8 +6,47 @@ use near_sdk::serde::{Deserialize, Serialize};
 #[serde(crate = "near_sdk::serde")]
 #[allow(non_snake_case)] // TODO rename fields when rust part contract is set up
 pub struct InitializeArgs {
+    pub projectAddress: String, // will be subaccount name of factory
     pub projectName: String,
+    pub ownerId: String,
+    pub totalSupply: u128,
+    pub price: u128,
     pub metadata: NFTContractMetadata,
+    pub reservedTokenIds: Option<Vec<String>>,
+    pub reservedTokenOwner: Option<String>,
+    pub saleOpening: Option<String>,
+    pub saleClose: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize, Debug)]
+#[serde(crate = "near_sdk::serde")]
+#[allow(non_snake_case)] // TODO rename fields when rust part contract is set up
+pub struct DeployArgs {
+    pub projectName: String,
+    pub ownerId: String,
+    pub totalSupply: u128,
+    pub price: u128,
+    pub metadata: NFTContractMetadata,
+    pub reservedTokenIds: Option<Vec<String>>,
+    pub reservedTokenOwner: Option<String>,
+    pub saleOpening: Option<String>,
+    pub saleClose: Option<String>,
+}
+
+impl DeployArgs {
+    pub fn from_init_args(args: InitializeArgs) -> Self {
+        DeployArgs {
+            projectName: args.projectName,
+            ownerId: args.ownerId,
+            totalSupply: args.totalSupply,
+            price: args.price,
+            metadata: args.metadata,
+            reservedTokenIds: args.reservedTokenIds,
+            reservedTokenOwner: args.reservedTokenOwner,
+            saleOpening: args.saleOpening,
+            saleClose: args.saleClose,
+        }
+    }
 }
 
 // pub struct JsonPartToken {
