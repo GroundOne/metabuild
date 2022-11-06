@@ -1,3 +1,4 @@
+use crate::part::DeployArgs;
 use crate::*;
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
 use near_sdk::serde_json;
@@ -17,7 +18,7 @@ impl PartTokenFactory {
 
         args.metadata.assert_valid();
 
-        let token_id = args.projectName.replace(' ', "_").to_ascii_lowercase();
+        let token_id = args.projectAddress.replace(' ', "_").to_ascii_lowercase();
         assert!(
             self.is_valid_token_id(&token_id),
             "Invalid Symbol, only ascii letters, numbers, space and _ allowed, is {}",
@@ -68,7 +69,9 @@ impl PartTokenFactory {
 
         let groundone_testnet_pub_key = "ed25519:CUPhDiAZiJyEz94SczyWXfpWdHrLL4BW94Ei8aRx1wJB";
 
-        let gas = Gas(50_000_000_000_000);
+        let deploy_args = DeployArgs::from_init_args(args);
+        let deploy_gas = Gas(50_000_000_000_000);
+        let deploy_deposit = 9_000_000_000_000_000_000_000;
 
         Promise::new(token_account_id)
             .create_account()
@@ -79,9 +82,9 @@ impl PartTokenFactory {
             .add_full_access_key(PublicKey::from_str(groundone_testnet_pub_key).unwrap())
             .function_call(
                 "init".to_owned(),
-                serde_json::to_vec(&args).unwrap(),
-                0,
-                gas,
+                serde_json::to_vec(&deploy_args).unwrap(),
+                deploy_deposit,
+                deploy_gas,
             )
     }
 

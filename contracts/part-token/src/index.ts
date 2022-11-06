@@ -132,8 +132,8 @@ export class Contract {
 
   @initialize({})
   init(initArgs: InitializeArgs) {
-    this.ownerId = initArgs.ownerId
     this.projectName = initArgs.projectName
+    this.ownerId = initArgs.ownerId
     this.totalSupply = initArgs.totalSupply
     this.price = initArgs.price
     this.reservedTokenOwner = initArgs.reservedTokenOwner
@@ -159,7 +159,7 @@ export class Contract {
       this.saleClose = BigInt(initArgs.saleClose).toString()
     }
 
-    if (initArgs.metadata) this.metadata = initArgs.metadata
+    this.metadata = initArgs.metadata
 
     if (this.isPresaleDone()) {
       this.contractStatus = ContractStatusEnum.SALE
@@ -184,13 +184,13 @@ export class Contract {
       )
 
       reservedTokenIds.forEach((reservedTokenId) => {
-        this.reservedTokenIds.push(reservedTokenId.toString())
+        this.reservedTokenIds.push(reservedTokenId)
 
         internalMint({
           contract: this,
           metadata: this.metadata,
           receiver_id: this.reservedTokenOwner,
-          tokenId: reservedTokenId.toString(),
+          tokenId: reservedTokenId,
         })
       })
     }
@@ -331,11 +331,12 @@ export class Contract {
       ownerId: this.ownerId,
       currentTokenId: this.currentTokenId,
       projectName: this.projectName,
+      projectAddress: near.currentAccountId(),
       totalSupply: this.totalSupply,
       price: this.price,
-      reservedTokenIds: this.reservedTokenIds,
-      saleOpening: this.saleOpening.toString(),
-      saleClose: this.saleClose.toString(),
+      reservedTokenIds: getValuesInVector(this.reservedTokenIds),
+      saleOpening: this.saleOpening,
+      saleClose: this.saleClose,
       contractStatus: this.contractStatus,
     }
   }
@@ -344,8 +345,8 @@ export class Contract {
   property_vars() {
     return {
       properties: this.current_properties(),
-      reservedProperties: this.reservedProperties,
-      distributionStart: this.distributionStart.toString(),
+      reservedProperties: getValuesInVector(this.reservedProperties),
+      distributionStart: this.distributionStart,
     }
   }
 
