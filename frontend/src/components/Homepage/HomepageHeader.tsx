@@ -15,9 +15,9 @@ export default function HomepageHeader() {
                             PART Issuers App
                         </Button>
                     </Link>
-                    <Link href="/buyer" passHref>
+                    <Link href="/part-holder" passHref>
                         <Button as="a" isInvertedColor className="ml-4 bg-black text-gray-200 hover:text-white">
-                            Buyer App
+                            Part Holder App
                         </Button>
                     </Link>
                 </div>

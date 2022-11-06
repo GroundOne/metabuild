@@ -1,14 +1,14 @@
 const redirects = {
     [WalletState.SignedIn]: {
         ['/part-issuer']: '/part-issuer/create-part',
-        ['/buyer']: '/buyer/buy',
+        ['/part-holder']: '/part-holder/buy',
     },
     [WalletState.SignedOut]: {
         ['/part-issuer/create-part']: '/part-issuer',
         ['/part-issuer/manage-part']: '/part-issuer',
         ['/part-issuer/create-pvt']: '/part-issuer',
-        ['/buyer/buy']: '/buyer',
-        ['/buyer/account']: '/buyer',
+        ['/part-holder/buy']: '/part-holder',
+        ['/part-holder/account']: '/part-holder',
     },
     [WalletState.Loading]: {},
 };
