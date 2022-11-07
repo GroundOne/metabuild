@@ -9,7 +9,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format';
 /* Talking with a contract often involves transforming data, we recommend you to encapsulate that logic into a class */
 
 import { NearWallet } from './near-wallet';
-import { DeployArgs } from './partToken';
+// import { DeployArgs } from './partToken';
 
 type TokenMetadata = {
     title?: string;
