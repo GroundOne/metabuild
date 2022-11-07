@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { InitializeArgs, NFTContractMetadata } from '../../utils/partToken';
+import { DeployArgs, NFTContractMetadata } from '../../utils/partToken';
 import { NearContext, WalletState } from '../walletContext';
 import CreatePartForm, { PartFormValue } from './CreatePartForm';
 import { useRouter } from 'next/router';
@@ -28,7 +28,7 @@ export default function CreatePart() {
         }
     }, [router, router.query]);
 
-    const deployAndInitTokenContract = async (args: InitializeArgs) => {
+    const deployAndInitTokenContract = async (args: DeployArgs) => {
         console.log('deployAndInitTokenContract', walletState);
         if (walletState === WalletState.SignedIn) {
             console.log('signed in', walletState);
@@ -37,7 +37,7 @@ export default function CreatePart() {
     };
 
     const onCreatePart = (part: PartFormValue) => {
-        const projectName = part.projectName.replaceAll(' ', '_').replaceAll('-', '_').toLowerCase();
+        const projectName = part.projectName.toLowerCase();
 
         const reservedTokenIds = (part.reserveParts ?? '')
             .replace(/\s+/g, '') // remove spaces
@@ -50,23 +50,23 @@ export default function CreatePart() {
             .sort((a, b) => a - b)
             .map((value) => value.toString());
 
-        const args: InitializeArgs = {
-            ownerId: wallet.accountId!,
+        const args: DeployArgs = {
+            projectAddress: part.projectAddress,
             projectName,
-            // @ts-ignore
-            totalSupply: `${part.partAmount}`,
-            // @ts-ignore
-            price: `${part.partPrice}`,
+            ownerId: wallet.accountId!,
+            totalSupply: +part.partAmount,
+            price: +part.partPrice,
             reservedTokenIds,
-            reservedTokenOwner: part.reservePartsAddress,
             saleOpening: part.saleOpeningDate.getTime().toString(),
             saleClose: part.saleCloseDate.getTime().toString(),
             metadata: new NFTContractMetadata({
                 spec: constants.NFT_METADATA_SPEC,
                 name: projectName,
-                symbol: projectName,
+                symbol: part.projectAddress,
             }),
         };
+
+        console.log("Deploy arguments: ", args);
 
         deployAndInitTokenContract(args);
     };

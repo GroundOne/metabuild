@@ -71,7 +71,6 @@ export class Contract {
   saleClose: string // blockTimestamp when sale has finished
 
   reservedTokenIds: Vector // stays in ownership of deployer
-  reservedTokenOwner: string
   presaleParticipants: Vector // candidates which buy into the presale
   presaleDistribution: Vector // tokens assigned to candidates
   contractStatus: string
@@ -136,7 +135,6 @@ export class Contract {
     this.ownerId = initArgs.ownerId
     this.totalSupply = initArgs.totalSupply
     this.price = initArgs.price
-    this.reservedTokenOwner = initArgs.reservedTokenOwner
 
     if (initArgs.saleOpening)
       this.saleOpening = BigInt(initArgs.saleOpening).toString()
@@ -189,7 +187,7 @@ export class Contract {
         internalMint({
           contract: this,
           metadata: this.metadata,
-          receiver_id: this.reservedTokenOwner,
+          receiver_id: this.ownerId,
           tokenId: reservedTokenId,
         })
       })

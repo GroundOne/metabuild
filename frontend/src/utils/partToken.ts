@@ -1,15 +1,10 @@
 export type DeployArgs = {
     projectName: string;
-    metadata: NFTContractMetadata;
-};
-
-export type InitializeArgs = {
+    projectAddress: string;
     ownerId: string;
-    projectName: string;
     totalSupply: number;
     price: number;
     reservedTokenIds?: string[];
-    reservedTokenOwner: string;
     saleOpening?: string;
     saleClose?: string;
     metadata: NFTContractMetadata;

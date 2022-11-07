@@ -26,13 +26,13 @@ type TokenMetadata = {
     referenceHash?: string;
 };
 
-type InitializeArgs = {
+type DeployArgs = {
     ownerId: string;
     projectName: string;
+    projectAddress: string;
     totalSupply: number;
     price: number;
     reservedTokenIds?: string[];
-    reservedTokenOwner: string;
     saleOpening?: string;
     saleClose?: string;
     metadata: {
@@ -116,7 +116,7 @@ export class PartTokenFactoryInterface extends InterfaceFields {
         });
     }
 
-    async createToken(args: InitializeArgs) {
+    async createToken(args: DeployArgs) {
         const THREE_HUNDRED_TGAS = (300 * 1e12).toString();
 
         return await this.wallet.callMethod({
@@ -145,7 +145,7 @@ export class PartTokenInterface extends InterfaceFields {
     /* 
     CALL METHODS
   */
-    async init(args: InitializeArgs) {
+    async init(args: DeployArgs) {
         return await this.wallet.callMethod({
             contractId: this.contractId,
             method: 'init',
