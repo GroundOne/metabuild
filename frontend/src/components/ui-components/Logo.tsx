@@ -5,16 +5,14 @@ export default function Logo() {
     return (
         <div className="flex justify-start lg:w-0 lg:flex-1">
             <Link href="/" passHref>
-                <a>
-                    <Image
-                        className="h-8 w-auto cursor-pointer sm:h-10"
-                        src="/ground-one.svg"
-                        alt=""
-                        width={200}
-                        height={30}
-                    />
-                    <span className="sr-only">Ground One</span>
-                </a>
+                <Image
+                    className="h-8 w-auto cursor-pointer sm:h-10"
+                    src="/ground-one.svg"
+                    alt=""
+                    width={200}
+                    height={30}
+                />
+                <span className="sr-only">Ground One</span>
             </Link>
         </div>
     );

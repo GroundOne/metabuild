@@ -6,7 +6,7 @@ import { ErrorBoundary } from '../../components/ErrorBoundary';
 const PartHolder: NextPage = () => {
     return (
         <>
-            <div className="min-h-screen bg-gradient-to-b from-[#5E7C9665] to-[#B2C7D145]">
+            <div className="min-h-screen bg-gradient-to-b from-[#5E7C9665] to-[#B2C7D145] pl-[calc(100vw-100%)]">
                 <ErrorBoundary scope="part-holder.tsx">
                     <AppHeader />
                     <PartHolderHowTo />
