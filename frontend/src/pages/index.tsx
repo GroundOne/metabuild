@@ -16,7 +16,7 @@ const Home: NextPage = (props: any) => {
             </Head>
             <div>
                 <ErrorBoundary scope="index.tsx">
-                    <SendMail />
+                    {/* <SendMail /> */}
                     <HomepageHeader />
                     <Hero />
                     <StepOne />

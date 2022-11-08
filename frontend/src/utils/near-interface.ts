@@ -53,6 +53,8 @@ export class PartTokenFactoryInterface extends InterfaceFields {
     }
 
     async getContracts() {
+        console.log('Requesting all contracts');
+
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'get_contracts',
@@ -61,18 +63,26 @@ export class PartTokenFactoryInterface extends InterfaceFields {
     }
 
     async supplyForOwner() {
+        const account_id = this.wallet.accountId;
+
+        console.log('Requesting contracts for account:', account_id);
+
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'supply_for_owner',
-            args: { account_id: this.wallet.accountId },
+            args: { account_id },
         });
     }
 
     async contractsForOwner(accountId?: string) {
+        const account_id = accountId ?? this.wallet.accountId;
+
+        console.log('Requesting contracts for account:', account_id);
+
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'contracts_for_owner',
-            args: { account_id: accountId ?? this.wallet.accountId },
+            args: { account_id },
         });
     }
 
