@@ -33,7 +33,7 @@ export function internalMint({
 
   const newTokenId = tokenId || contract.currentTokenId.toString()
   assert(
-    contract.totalSupply > +newTokenId,
+    contract.totalSupply >= +newTokenId,
     `Total supply reached ${contract.totalSupply}`
   )
 

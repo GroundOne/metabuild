@@ -26,7 +26,7 @@ export function internalParticipatePresale({
   const depositAmount = near.attachedDeposit() as bigint
 
   assert(
-    +depositAmount.toString() >= contract.price,
+    depositAmount >= BigInt(contract.price),
     `Deposit amount ${depositAmount.toString()} must be PART price ${
       contract.price
     }`
@@ -116,7 +116,7 @@ export function internalCashoutUnluckyPresaleParticipants({
 
     const transferPromiseId = near.promiseBatchCreate(unluckyLoser)
 
-    near.promiseBatchActionTransfer(transferPromiseId, contract.price)
+    near.promiseBatchActionTransfer(transferPromiseId, BigInt(contract.price))
     near.promiseReturn(transferPromiseId)
   })
 }

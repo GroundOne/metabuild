@@ -26,26 +26,6 @@ type TokenMetadata = {
     referenceHash?: string;
 };
 
-type InitializeArgs = {
-    ownerId: string;
-    projectName: string;
-    totalSupply: number;
-    price: number;
-    reservedTokenIds?: string[];
-    reservedTokenOwner: string;
-    saleOpening?: string;
-    saleClose?: string;
-    metadata: {
-        spec: string;
-        name: string;
-        symbol: string;
-        icon?: string;
-        baseUri?: string;
-        reference?: string;
-        referenceHash?: string;
-    };
-};
-
 type InitializePropertiesArgs = {
     distributionStart: string;
     reservedTokenIds?: string[];
@@ -89,7 +69,6 @@ export class PartTokenFactoryInterface extends InterfaceFields {
     }
 
     async contractsForOwner(accountId?: string) {
-        console.log('contractsForOwnercontractsForOwner', accountId);
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'contracts_for_owner',
@@ -116,15 +95,16 @@ export class PartTokenFactoryInterface extends InterfaceFields {
         });
     }
 
-    async createToken(args: InitializeArgs) {
+    async createToken(args: DeployArgs) {
         const THREE_HUNDRED_TGAS = (300 * 1e12).toString();
+        const SIX_NEAR = parseNearAmount('6')!;
 
         return await this.wallet.callMethod({
             contractId: this.contractId,
             method: 'create_token',
             args: { args },
             gas: THREE_HUNDRED_TGAS,
-            deposit: parseNearAmount('6')!,
+            deposit: SIX_NEAR,
         });
     }
 
@@ -145,7 +125,7 @@ export class PartTokenInterface extends InterfaceFields {
     /* 
     CALL METHODS
   */
-    async init(args: InitializeArgs) {
+    async init(args: DeployArgs) {
         return await this.wallet.callMethod({
             contractId: this.contractId,
             method: 'init',

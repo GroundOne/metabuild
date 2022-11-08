@@ -20,13 +20,14 @@
     "=====CALL_FUNCTIONS=====": "",
     "_____init_____": "",
     "call:new": "source .env && near call $FACTORY_CONTRACT new --accountId $MAIN_ACCOUNT",
-    "call:create": "source .env && near call $FACTORY_CONTRACT create_token '{\"args\": {\"projectAddress\": \"test_project\", \"projectName\": \"Test Project\", \"ownerId\": \"'$ARCHITECT_ACCOUNT'\", \"totalSupply\": 4, \"price\": 100000000000000, \"reservedTokenIds\": [\"2\"],  \"reservedTokenOwner\": \"'$ARCHITECT_ACCOUNT'\", \"prelaunchEnd\": \"'$saleOpening'\", \"saleEnd\": \"'$saleClose'\", \"metadata\": {\"spec\": \"nft-1.0.0\", \"name\": \"GroundOne PART\", \"symbol\": \"GOPART\"}}}' --accountId $ARCHITECT_ACCOUNT --depositYocto 5700000000000000000000000 --gas=300000000000000",
+    "call:create": "source .env && near call $FACTORY_CONTRACT create_token '{\"args\": {\"projectAddress\": \"token_project_test23\", \"projectName\": \"Test Project\", \"ownerId\": \"'$ARCHITECT_ACCOUNT'\", \"totalSupply\": 50, \"price\": \"'$TOKEN_PRICE'\", \"reservedTokenIds\": [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\", \"20\", \"21\", \"22\", \"23\", \"24\", \"25\", \"26\", \"27\", \"28\", \"29\", \"30\", \"31\", \"32\", \"33\", \"34\", \"35\", \"36\", \"37\", \"38\", \"39\", \"40\", \"50\"],  \"prelaunchEnd\": \"'$saleOpening'\", \"saleEnd\": \"'$saleClose'\", \"metadata\": {\"spec\": \"nft-1.0.0\", \"name\": \"GroundOne PART\", \"symbol\": \"GOPART\"}}}' --accountId $ARCHITECT_ACCOUNT --depositYocto $DEPOSIT --gas $GAS",
     "=====VIEW FUNCTIONS=====": "",
     "view:nrtokens": "source .env && near call $FACTORY_CONTRACT get_number_of_tokens --accountId $ARCHITECT_ACCOUNT",
     "view:contracts": "source .env && near call $FACTORY_CONTRACT get_contracts --accountId $ARCHITECT_ACCOUNT",
     "view:contract": "source .env && near call $FACTORY_CONTRACT get_contract '{\"token_id\": \"'$FACTORY_CONTRACT'\"}' --accountId $ARCHITECT_ACCOUNT",
     "view:token:supply": "source .env && near view $FACTORY_CONTRACT supply_for_owner '{\"account_id\": \"'$ARCHITECT_ACCOUNT'\"}' --accountId $ARCHITECT_ACCOUNT",
-    "view:token:owner": "source .env && near view $FACTORY_CONTRACT contracts_for_owner '{\"account_id\": \"'$ARCHITECT_ACCOUNT'\"}' --accountId $ARCHITECT_ACCOUNT"
+    "view:token:owner": "source .env && near view $FACTORY_CONTRACT contracts_for_owner '{\"account_id\": \"'$ARCHITECT_ACCOUNT'\"}' --accountId $ARCHITECT_ACCOUNT",
+    "view:deposit": "source .env && yarn near call part_factory.groundone.testnet get_required_deposit '{\"args\": {\"projectAddress\": \"token_project_test\", \"projectName\": \"Test Project\", \"ownerId\": \"'$ARCHITECT_ACCOUNT'\", \"totalSupply\": 50, \"price\": \"'$TOKEN_PRICE'\", \"reservedTokenIds\": [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\", \"20\", \"21\", \"22\", \"23\", \"24\", \"25\", \"26\", \"27\", \"28\", \"29\", \"30\", \"31\", \"32\", \"33\", \"34\", \"35\", \"36\", \"37\", \"38\", \"39\", \"40\", \"50\"],  \"prelaunchEnd\": \"'$saleOpening'\", \"saleEnd\": \"'$saleClose'\", \"metadata\": {\"spec\": \"nft-1.0.0\", \"name\": \"GroundOne PART\", \"symbol\": \"GOPART\"}}, \"account_id\": \"'$ARCHITECT_ACCOUNT'\"}' --accountId $ARCHITECT_ACCOUNT"
   },
   "devDependencies": {
     "dotenv": "^16.0.3",

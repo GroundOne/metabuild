@@ -5,18 +5,16 @@ export type InitializeArgs = {
   projectName: string
   ownerId: string
   totalSupply: number
-  price: number
+  price: string
   metadata: NFTContractMetadata
   reservedTokenIds?: string[]
-  reservedTokenOwner?: string
-  saleOpening?: string
-  saleClose?: string
+  saleOpening?: string // unix timestamp in nanoseconds (1e-9)
+  saleClose?: string // unix timestamp in nanoseconds (1e-9)
 }
 
 export type InitializePropertiesArgs = {
   distributionStart: string
   reservedTokenIds?: string[]
-  reservedTokenOwner?: string
   totalSupply: number
 }
 
