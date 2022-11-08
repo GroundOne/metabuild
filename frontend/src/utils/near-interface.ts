@@ -97,13 +97,14 @@ export class PartTokenFactoryInterface extends InterfaceFields {
 
     async createToken(args: DeployArgs) {
         const THREE_HUNDRED_TGAS = (300 * 1e12).toString();
+        const SIX_NEAR = parseNearAmount('6')!;
 
         return await this.wallet.callMethod({
             contractId: this.contractId,
             method: 'create_token',
             args: { args },
             gas: THREE_HUNDRED_TGAS,
-            deposit: parseNearAmount('6')!,
+            deposit: SIX_NEAR,
         });
     }
 

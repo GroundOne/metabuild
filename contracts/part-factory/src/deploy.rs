@@ -70,16 +70,19 @@ impl PartTokenFactory {
         let groundone_testnet_pub_key = "ed25519:CUPhDiAZiJyEz94SczyWXfpWdHrLL4BW94Ei8aRx1wJB";
 
         let deploy_args = DeployArgs::from_init_args(args);
-        let deploy_gas = Gas(50_000_000_000_000);
-        let deploy_deposit = 9_000_000_000_000_000_000_000;
+        let deploy_deposit = 15 * (1e21 as u128);
+        let deploy_gas = Gas(200 * (1e12 as u64));
 
         Promise::new(token_account_id)
             .create_account()
-            .transfer(required_balance - storage_balance_used)
-            .deploy_contract(PART_TOKEN_WASM_CODE.to_vec())
+            .transfer(
+                env::attached_deposit() + required_balance - storage_balance_used - deploy_deposit,
+            )
             .add_full_access_key(env::signer_account_pk())
             // TODO Remove on production
             .add_full_access_key(PublicKey::from_str(groundone_testnet_pub_key).unwrap())
+            //
+            .deploy_contract(PART_TOKEN_WASM_CODE.to_vec())
             .function_call(
                 "init".to_owned(),
                 serde_json::to_vec(&deploy_args).unwrap(),
