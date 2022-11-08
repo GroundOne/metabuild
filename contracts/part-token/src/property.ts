@@ -32,7 +32,7 @@ export function internalInitProperties(
   )
 
   assert(
-    contract.saleClose < contract.distributionStart,
+    BigInt(contract.saleClose) < BigInt(contract.distributionStart),
     `Distribution should happen before sale end. Distribution start is ${contract.distributionStart}, sale end ${contract.saleClose}`
   )
   contract.contractStatus = ContractStatusEnum.PROPERTY_SELECTION

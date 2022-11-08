@@ -20,7 +20,7 @@
     "=====CALL_FUNCTIONS=====": "",
     "_____init_____": "",
     "call:new": "source .env && near call $FACTORY_CONTRACT new --accountId $MAIN_ACCOUNT",
-    "call:create": "source .env && near call $FACTORY_CONTRACT create_token '{\"args\": {\"projectAddress\": \"token_project_test\", \"projectName\": \"Test Project\", \"ownerId\": \"'$ARCHITECT_ACCOUNT'\", \"totalSupply\": 4, \"price\": 100000000000000, \"reservedTokenIds\": [\"2\"],  \"prelaunchEnd\": \"'$saleOpening'\", \"saleEnd\": \"'$saleClose'\", \"metadata\": {\"spec\": \"nft-1.0.0\", \"name\": \"GroundOne PART\", \"symbol\": \"GOPART\"}}}' --accountId $ARCHITECT_ACCOUNT --depositYocto $DEPOSIT --gas $GAS",
+    "call:create": "source .env && near call $FACTORY_CONTRACT create_token '{\"args\": {\"projectAddress\": \"token_project_test12\", \"projectName\": \"Test Project\", \"ownerId\": \"'$ARCHITECT_ACCOUNT'\", \"totalSupply\": 4, \"price\": \"'$TOKEN_PRICE'\", \"reservedTokenIds\": [\"2\"],  \"prelaunchEnd\": \"'$saleOpening'\", \"saleEnd\": \"'$saleClose'\", \"metadata\": {\"spec\": \"nft-1.0.0\", \"name\": \"GroundOne PART\", \"symbol\": \"GOPART\"}}}' --accountId $ARCHITECT_ACCOUNT --depositYocto $DEPOSIT --gas $GAS",
     "=====VIEW FUNCTIONS=====": "",
     "view:nrtokens": "source .env && near call $FACTORY_CONTRACT get_number_of_tokens --accountId $ARCHITECT_ACCOUNT",
     "view:contracts": "source .env && near call $FACTORY_CONTRACT get_contracts --accountId $ARCHITECT_ACCOUNT",

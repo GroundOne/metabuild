@@ -17,7 +17,7 @@ const partFormSchema = yup.object({
         .label('Project address')
         .trim()
         .required()
-        .matches(/^[a-zA-Z_]+$/, { message: 'Use only letters and "_"', excludeEmptyString: true })
+        .matches(/^[a-zA-Z0-9_]+$/, { message: 'Use only letters, numbers and "_"', excludeEmptyString: true })
         .min(3)
         .max(50),
     projectName: yup.string().label('Project name').trim().required().min(3).max(50),
@@ -81,12 +81,12 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
             setValue('projectAddress', 'demo_project_test');
             setValue('projectName', 'Village Utopia');
             setValue('partAmount', 100);
+            setValue('partPrice', 0.1);
             setValue('saleOpeningDate', (nowPlus5Days.toISOString().split('T')[0] + 'T10:00') as unknown as Date);
             setValue(
                 'saleCloseDate',
                 (nowPlus10Days.toISOString().split('T')[0] + 'T10:00') as unknown as Date as unknown as Date
             );
-            setValue('partPrice', 0.001);
             setValue(
                 'backgroundImageLink',
                 'https://images.squarespace-cdn.com/content/v1/63283ec16922c81dc0f97e2f/e3150b7f-bfc8-4251-ad50-3344f4b21b3d/image.jpg'

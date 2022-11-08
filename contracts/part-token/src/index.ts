@@ -66,7 +66,7 @@ export class Contract {
   // Part Metrics
   currentTokenId: number = 1 // start token IDs with `1`
   totalSupply: number = 0 // maximum amount of PARTs
-  price: number // deposit for each PART
+  price: string // deposit for each PART
   saleOpening: string // blockTimestamp when regular sales starts
   saleClose: string // blockTimestamp when sale has finished
 
@@ -98,7 +98,7 @@ export class Contract {
 
     // PART Metrics
     this.totalSupply = 3
-    this.price = 0
+    this.price = `0`
 
     this.saleOpening = saleOpening.toString()
     this.saleClose = saleClose.toString()
@@ -122,7 +122,7 @@ export class Contract {
     // Property Metrics
     this.properties = new UnorderedMap("properties")
     this.reservedProperties = new Vector("reservedProperties")
-    this.distributionStart = ""
+    this.distributionStart = `0`
     this.propertyPreferenceByTokenId = new UnorderedMap(
       "propertyPreferenceByTokenId"
     )

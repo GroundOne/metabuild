@@ -3,10 +3,10 @@ export type DeployArgs = {
     projectAddress: string;
     ownerId: string;
     totalSupply: number;
-    price: number;
+    price: string;
     reservedTokenIds?: string[];
-    saleOpening?: string;
-    saleClose?: string;
+    saleOpening?: string; // unix timestamp in nanosecods (1e-9)
+    saleClose?: string; // unix timestamp in nanosecods (1e-9)
     metadata: NFTContractMetadata;
 };
 

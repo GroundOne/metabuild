@@ -5,11 +5,11 @@ export type InitializeArgs = {
   projectName: string
   ownerId: string
   totalSupply: number
-  price: number
+  price: string
   metadata: NFTContractMetadata
   reservedTokenIds?: string[]
-  saleOpening?: string
-  saleClose?: string
+  saleOpening?: string // unix timestamp in nanoseconds (1e-9)
+  saleClose?: string // unix timestamp in nanoseconds (1e-9)
 }
 
 export type InitializePropertiesArgs = {

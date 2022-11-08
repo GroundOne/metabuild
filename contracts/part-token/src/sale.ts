@@ -13,7 +13,7 @@ export function internalMintSale({
   metadata: TokenMetadata
   receiver_id: string
 }) {
-  // TODO: Make it possible to mint directly after presale has finished 
+  // TODO: Make it possible to mint directly after presale has finished
   // without having to wait for lifetime methods to be finished
   assert(
     contract.isPresaleDone(),
@@ -42,7 +42,7 @@ export function internalMintSale({
   const depositAmount = near.attachedDeposit() as bigint
 
   assert(
-    +depositAmount.toString() >= contract.price,
+    depositAmount >= BigInt(contract.price),
     `Deposit amount ${depositAmount.toString()} must be PART price ${
       contract.price
     }`

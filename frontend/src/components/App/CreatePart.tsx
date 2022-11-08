@@ -1,9 +1,10 @@
+import { parseNearAmount } from 'near-api-js/lib/utils/format';
+import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
+import constants from '../../constants';
 import { DeployArgs, NFTContractMetadata } from '../../utils/partToken';
 import { NearContext, WalletState } from '../walletContext';
 import CreatePartForm, { PartFormValue } from './CreatePartForm';
-import { useRouter } from 'next/router';
-import constants from '../../constants';
 
 export default function CreatePart() {
     const { wallet, walletState, contract } = useContext(NearContext);
@@ -37,8 +38,6 @@ export default function CreatePart() {
     };
 
     const onCreatePart = (part: PartFormValue) => {
-        const projectName = part.projectName.toLowerCase();
-
         const reservedTokenIds = (part.reserveParts ?? '')
             .replace(/\s+/g, '') // remove spaces
             .split(';')
@@ -50,23 +49,23 @@ export default function CreatePart() {
             .sort((a, b) => a - b)
             .map((value) => value.toString());
 
+        const projectAddress = part.projectAddress.toLowerCase();
+
         const args: DeployArgs = {
-            projectAddress: part.projectAddress,
-            projectName,
+            projectAddress,
+            projectName: part.projectName,
             ownerId: wallet.accountId!,
-            totalSupply: +part.partAmount,
-            price: +part.partPrice,
+            totalSupply: part.partAmount,
+            price: parseNearAmount(part.partPrice.toString())!,
             reservedTokenIds,
-            saleOpening: part.saleOpeningDate.getTime().toString(),
-            saleClose: part.saleCloseDate.getTime().toString(),
+            saleOpening: (part.saleOpeningDate.getTime() * 1e6).toString(),
+            saleClose: (part.saleCloseDate.getTime() * 1e6).toString(),
             metadata: new NFTContractMetadata({
                 spec: constants.NFT_METADATA_SPEC,
-                name: projectName,
-                symbol: part.projectAddress,
+                name: part.projectName,
+                symbol: projectAddress,
             }),
         };
-
-        console.log("Deploy arguments: ", args);
 
         deployAndInitTokenContract(args);
     };

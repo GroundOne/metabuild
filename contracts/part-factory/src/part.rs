@@ -10,7 +10,7 @@ pub struct InitializeArgs {
     pub projectName: String,
     pub ownerId: String,
     pub totalSupply: u128,
-    pub price: u128,
+    pub price: String, // yoctoNear
     pub metadata: NFTContractMetadata,
     pub reservedTokenIds: Option<Vec<String>>,
     pub saleOpening: Option<String>,
@@ -24,7 +24,7 @@ pub struct DeployArgs {
     pub projectName: String,
     pub ownerId: String,
     pub totalSupply: u128,
-    pub price: u128,
+    pub price: String, // yoctoNear
     pub metadata: NFTContractMetadata,
     pub reservedTokenIds: Option<Vec<String>>,
     pub saleOpening: Option<String>,

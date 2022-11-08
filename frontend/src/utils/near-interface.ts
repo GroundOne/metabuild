@@ -26,26 +26,6 @@ type TokenMetadata = {
     referenceHash?: string;
 };
 
-type DeployArgs = {
-    ownerId: string;
-    projectName: string;
-    projectAddress: string;
-    totalSupply: number;
-    price: number;
-    reservedTokenIds?: string[];
-    saleOpening?: string;
-    saleClose?: string;
-    metadata: {
-        spec: string;
-        name: string;
-        symbol: string;
-        icon?: string;
-        baseUri?: string;
-        reference?: string;
-        referenceHash?: string;
-    };
-};
-
 type InitializePropertiesArgs = {
     distributionStart: string;
     reservedTokenIds?: string[];
@@ -89,7 +69,6 @@ export class PartTokenFactoryInterface extends InterfaceFields {
     }
 
     async contractsForOwner(accountId?: string) {
-        console.log('contractsForOwnercontractsForOwner', accountId);
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'contracts_for_owner',
