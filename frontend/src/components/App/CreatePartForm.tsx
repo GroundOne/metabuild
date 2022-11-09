@@ -12,14 +12,15 @@ export type PartFormSchemaProps = {
 };
 
 const partFormSchema = yup.object({
-    projectName: yup
+    projectAddress: yup
         .string()
-        .label('Project name')
+        .label('Project address')
         .trim()
         .required()
-        .matches(/^[a-zA-Z \-_]+$/, { message: 'Use only letters, space, "-" and "_"', excludeEmptyString: true })
+        .matches(/^[a-z0-9_]+$/, { message: 'Use only lowercase letters, numbers and "_"', excludeEmptyString: true })
         .min(3)
-        .max(16),
+        .max(50),
+    projectName: yup.string().label('Project name').trim().required().min(3).max(50),
     partAmount: yup
         .number()
         .label('PART Amount')
@@ -50,7 +51,6 @@ const partFormSchema = yup.object({
         .trim()
         .notRequired()
         .matches(/^[\s\d\-;]+$/, { message: 'Example: 1-10; 20-30; 40; 50', excludeEmptyString: true }),
-    // reservePartsAddress: yup.string().trim().label('Reserved PARTs address').required().min(3).max(128),
 });
 export type PartFormValue = yup.InferType<typeof partFormSchema>;
 
@@ -64,6 +64,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
 
     useEffect(() => {
         if (values) {
+            values.projectAddress && setValue('projectAddress', values.projectAddress);
             values.projectName && setValue('projectName', values.projectName);
             values.partAmount && setValue('partAmount', values.partAmount);
             values.saleOpeningDate && setValue('saleOpeningDate', values.saleOpeningDate);
@@ -71,27 +72,26 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
             values.partPrice && setValue('partPrice', values.partPrice);
             values.backgroundImageLink && setValue('backgroundImageLink', values.backgroundImageLink);
             values.reserveParts && setValue('reserveParts', values.reserveParts);
-            // values.reservePartsAddress && setValue('reservePartsAddress', values.reservePartsAddress);
         }
 
         if (process.env.NODE_ENV === 'development' && !values) {
             const nowPlus5Days = new Date(new Date().setDate(new Date().getDate() + 5));
             const nowPlus10Days = new Date(new Date().setDate(new Date().getDate() + 10));
 
-            setValue('projectName', 'FF demo project');
+            setValue('projectAddress', 'demo_project_test');
+            setValue('projectName', 'Village Utopia');
             setValue('partAmount', 100);
+            setValue('partPrice', 0.1);
             setValue('saleOpeningDate', (nowPlus5Days.toISOString().split('T')[0] + 'T10:00') as unknown as Date);
             setValue(
                 'saleCloseDate',
                 (nowPlus10Days.toISOString().split('T')[0] + 'T10:00') as unknown as Date as unknown as Date
             );
-            setValue('partPrice', 0.001);
             setValue(
                 'backgroundImageLink',
                 'https://images.squarespace-cdn.com/content/v1/63283ec16922c81dc0f97e2f/e3150b7f-bfc8-4251-ad50-3344f4b21b3d/image.jpg'
             );
             setValue('reserveParts', '1-10; 20-30; 40; 50');
-            // setValue('reservePartsAddress', 'groundone.testnet');
         }
     }, [values, setValue]);
 
@@ -113,6 +113,16 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-x-20">
                 <Input
+                    id="projectAddress"
+                    type="text"
+                    placeholder="Project Address"
+                    labelRight=".near"
+                    isDisabled={isSubmitting}
+                    isInvalid={!!errors.projectAddress}
+                    errorText={errors.projectAddress?.message as string | undefined}
+                    {...register('projectAddress')}
+                />
+                <Input
                     id="projectName"
                     type="text"
                     placeholder="Project Name"
@@ -129,6 +139,18 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     isInvalid={!!errors.partAmount}
                     errorText={errors.partAmount?.message as string | undefined}
                     {...register('partAmount')}
+                />
+                <Input
+                    id="partPrice"
+                    type="number"
+                    min={constants.MIN_PART_PRICE}
+                    max={constants.MAX_PART_PRICE}
+                    step={constants.MIN_PART_PRICE}
+                    placeholder="PART Price (NEAR)"
+                    isDisabled={isSubmitting}
+                    isInvalid={!!errors.partPrice}
+                    errorText={errors.partPrice?.message as string | undefined}
+                    {...register('partPrice')}
                 />
                 <Input
                     id="saleOpeningDate"
@@ -151,18 +173,6 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     {...register('saleCloseDate')}
                 />
                 <Input
-                    id="partPrice"
-                    type="number"
-                    min={constants.MIN_PART_PRICE}
-                    max={constants.MAX_PART_PRICE}
-                    step={constants.MIN_PART_PRICE}
-                    placeholder="PART Price (NEAR)"
-                    isDisabled={isSubmitting}
-                    isInvalid={!!errors.partPrice}
-                    errorText={errors.partPrice?.message as string | undefined}
-                    {...register('partPrice')}
-                />
-                <Input
                     id="backgroundImageLink"
                     type="text"
                     placeholder="Background Image Link"
@@ -180,15 +190,6 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     errorText={errors.reserveParts?.message as string | undefined}
                     {...register('reserveParts')}
                 />
-                {/* <Input
-                    id="reservePartsAddress"
-                    type="text"
-                    placeholder="Reserved PARTs Address"
-                    isDisabled={isSubmitting}
-                    isInvalid={!!errors.reservePartsAddress}
-                    errorText={errors.reservePartsAddress?.message as string | undefined}
-                    {...register('reservePartsAddress')}
-                /> */}
                 <div className="col-span-2">
                     <Button isInvertedColor size="md" className="mt-10 " type="submit">
                         {isSubmitting ? 'CONFIRM' : 'CREATE'}

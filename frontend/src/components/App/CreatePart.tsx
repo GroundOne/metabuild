@@ -1,9 +1,10 @@
+import { parseNearAmount } from 'near-api-js/lib/utils/format';
+import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
-import { InitializeArgs, NFTContractMetadata } from '../../utils/partToken';
+import constants from '../../constants';
+import { DeployArgs, NFTContractMetadata } from '../../utils/partToken';
 import { NearContext, WalletState } from '../walletContext';
 import CreatePartForm, { PartFormValue } from './CreatePartForm';
-import { useRouter } from 'next/router';
-import constants from '../../constants';
 import Modal from '../ui-components/Modal';
 
 export default function CreatePart() {
@@ -34,7 +35,7 @@ export default function CreatePart() {
         }
     }, [router, router.query]);
 
-    const deployAndInitTokenContract = async (args: InitializeArgs) => {
+    const deployAndInitTokenContract = async (args: DeployArgs) => {
         console.log('deployAndInitTokenContract', walletState);
         if (walletState === WalletState.SignedIn) {
             console.log('signed in', walletState);
@@ -48,8 +49,6 @@ export default function CreatePart() {
     };
 
     const onCreatePart = (part: PartFormValue) => {
-        const projectName = part.projectName.replaceAll(' ', '_').replaceAll('-', '_').toLowerCase();
-
         const reservedTokenIds = (part.reserveParts ?? '')
             .replace(/\s+/g, '') // remove spaces
             .split(';')
@@ -61,21 +60,21 @@ export default function CreatePart() {
             .sort((a, b) => a - b)
             .map((value) => value.toString());
 
-        const args: InitializeArgs = {
+        const projectAddress = part.projectAddress.toLowerCase();
+
+        const args: DeployArgs = {
+            projectAddress,
+            projectName: part.projectName,
             ownerId: wallet.accountId!,
-            projectName,
-            // @ts-ignore
-            totalSupply: `${part.partAmount}`,
-            // @ts-ignore
-            price: `${part.partPrice}`,
+            totalSupply: part.partAmount,
+            price: parseNearAmount(part.partPrice.toString())!,
             reservedTokenIds,
-            // reservedTokenOwner: part.reservePartsAddress,
-            saleOpening: part.saleOpeningDate.getTime().toString(),
-            saleClose: part.saleCloseDate.getTime().toString(),
+            saleOpening: (part.saleOpeningDate.getTime() * 1e6).toString(),
+            saleClose: (part.saleCloseDate.getTime() * 1e6).toString(),
             metadata: new NFTContractMetadata({
                 spec: constants.NFT_METADATA_SPEC,
-                name: projectName,
-                symbol: projectName,
+                name: part.projectName,
+                symbol: projectAddress,
             }),
         };
 
