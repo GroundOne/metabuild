@@ -123,119 +123,121 @@
     "nanoid" "3.3.4"
     "query-string" "^7.1.1"
 
-"@near-wallet-selector/core@^7.0.0", "@near-wallet-selector/core@7.0.3":
-  "integrity" "sha512-bggK3+axEpC1tu5+XJi9djEmVSNCCYF7nQkHje3NuBqD/0tfK4UmRn5+g95fs3Kxbi8fp6lh9eRWBtX3EnBSZQ=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/core/-/core-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/core@^7.2.0", "@near-wallet-selector/core@7.2.0":
+  "integrity" "sha512-AfJOoTeQwzF+qNsvwq4MnB2ChJReKhRpf5w5zF5W9f1kl0S0nZB2hbHQr8WZRD2t2dmjHJ96tNvtt3/BpkXp6Q=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/core/-/core-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "rxjs" "^7.5.5"
+    "rxjs" "^7.5.7"
 
-"@near-wallet-selector/default-wallets@^7.0.3":
-  "integrity" "sha512-JTsDY63nul8xKbTSRW92OeOOx5Om1qABpHpGIPvuJfzLS34/wGqZy0iyIQ8oexAIBnCjo15J7NRPoDc1f/XW5w=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/default-wallets/-/default-wallets-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/default-wallets@^7.2.0":
+  "integrity" "sha512-spv3bffwWsSBzrIz8GaM++kqOBz/pMJY9cgY1F1sJzGpONwCAiBW/ejGB5dbdV1R4SinArKUgbKFY3NEL8+eLQ=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/default-wallets/-/default-wallets-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "@near-wallet-selector/core" "7.0.3"
-    "@near-wallet-selector/ledger" "7.0.3"
-    "@near-wallet-selector/my-near-wallet" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
+    "@near-wallet-selector/ledger" "7.2.0"
+    "@near-wallet-selector/my-near-wallet" "7.2.0"
 
-"@near-wallet-selector/ledger@^7.0.0", "@near-wallet-selector/ledger@7.0.3":
-  "integrity" "sha512-B50jcFoXoxL7xzyXdHko0foWZK8V/X1m254HT0+6Tp66VkwGgAkI5KXb/EsZHPVCeDmYBOl4oFSimMMiXfBKsQ=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/ledger/-/ledger-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/ledger@^7.2.0", "@near-wallet-selector/ledger@7.2.0":
+  "integrity" "sha512-GZelSqSRSRXGKZvkHA/pEBbG1uxYnbh0v5vcVRWtPlkGFoi+GOMUV/CAsnOr80s9XY4BZ9SUW4BxXiLPeqejWg=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/ledger/-/ledger-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
     "@ledgerhq/hw-transport" "6.27.1"
     "@ledgerhq/hw-transport-webhid" "6.27.1"
-    "@near-wallet-selector/core" "7.0.3"
-    "@near-wallet-selector/wallet-utils" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
+    "@near-wallet-selector/wallet-utils" "7.2.0"
     "bn.js" "^5.2.0"
     "is-mobile" "^3.1.1"
 
-"@near-wallet-selector/math-wallet@^7.0.0":
-  "integrity" "sha512-Ou2cxghzCdKhsaApGlcfAWS1t4XxQh6ChWyu8nKrM9R31cJx11qnMU189Tffqk4o5Va4Xl04lBAzoquqi0rSag=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/math-wallet/-/math-wallet-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/math-wallet@^7.2.0":
+  "integrity" "sha512-ta4ssjLePX+Vln6EDcYTIUyE5+0SKNiidJ4Y1fGw7B5ns+mf4ViK6iny4wLah/yPyqFMAVY6o5US6xNGsxqM1A=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/math-wallet/-/math-wallet-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "@near-wallet-selector/core" "7.0.3"
-    "@near-wallet-selector/wallet-utils" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
+    "@near-wallet-selector/wallet-utils" "7.2.0"
     "is-mobile" "^3.1.1"
 
-"@near-wallet-selector/meteor-wallet@^7.0.0":
-  "integrity" "sha512-A5r6e9d3tZhE+Dmgj3vHjFL89VJmArzE3468UB3H4ARmc/cf2mpWFaJRPcHg6bhIrVPvI+Q9pZS0U41j3A14TQ=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/meteor-wallet/-/meteor-wallet-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/meteor-wallet@^7.2.0":
+  "integrity" "sha512-/S8rRraFTD61WUP1P78kcrGoDeTCv2mZtMW2HBJsidLYG0vwlGvtprViv6tnMM0VR6dgAO0HGUcuNu0y+fKZLA=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/meteor-wallet/-/meteor-wallet-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
     "@meteorwallet/sdk" "^0.6.0"
-    "@near-wallet-selector/core" "7.0.3"
-    "@near-wallet-selector/wallet-utils" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
+    "@near-wallet-selector/wallet-utils" "7.2.0"
 
-"@near-wallet-selector/modal-ui@^7.0.0":
-  "integrity" "sha512-VftKoABCud66pJETF4QLGRnLq4iWwKVPca3LarVVS4Rx0HGldAZjMQr+L4/C2UQ+kUEz9FQbYWKvuK9ef2rAcw=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/modal-ui/-/modal-ui-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/modal-ui@^7.2.0":
+  "integrity" "sha512-gnlaVGMyU07pS7UBB5Aalu9oqONGPy7fnksSWBJKRveNmuqkseChZJgh13cSRT1wt0/0ltGo5x7CyOCFOf0O9A=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/modal-ui/-/modal-ui-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "@near-wallet-selector/core" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
+    "copy-to-clipboard" "^3.3.2"
+    "qrcode" "^1.5.1"
     "react" "18.2.0"
     "react-dom" "18.2.0"
 
-"@near-wallet-selector/my-near-wallet@^7.0.0", "@near-wallet-selector/my-near-wallet@7.0.3":
-  "integrity" "sha512-1uOj5059njnaiuGIQ8QvXoKhdwgLz3H9N3Y15ulg828242Vn5iw/6LboR7AWJbI6IpTtGbvrrDqsYFAnyssmPw=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/my-near-wallet/-/my-near-wallet-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/my-near-wallet@^7.2.0", "@near-wallet-selector/my-near-wallet@7.2.0":
+  "integrity" "sha512-uxBgePNQLfb6BiyAUlIeGgXU2PKebwzGzGNfxOSCYwom3Mw+Gq5OVL2u0RZfiOjQ59hWTiMo1Z71HWXLRfF+8g=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/my-near-wallet/-/my-near-wallet-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "@near-wallet-selector/core" "7.0.3"
-    "@near-wallet-selector/wallet-utils" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
+    "@near-wallet-selector/wallet-utils" "7.2.0"
 
-"@near-wallet-selector/near-wallet@^7.0.0":
-  "integrity" "sha512-zLuSuWj/CgHzBOHTnWERQiOh/pDw9yvA1k4x5YkRSQ77Fql5YM3F++kcUDWoqfA8YMR6OASyCzX16cigyU2acw=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/near-wallet/-/near-wallet-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/near-wallet@^7.2.0":
+  "integrity" "sha512-ToMAM9fndWoFGz5RDfrlAGjsppaUCf3MX1Ng14dtLH0cxLDkgAUp3SmSKS7GA6DlgE/IGip0CKqCrJRmn7Z+kg=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/near-wallet/-/near-wallet-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "@near-wallet-selector/core" "7.0.3"
-    "@near-wallet-selector/my-near-wallet" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
+    "@near-wallet-selector/my-near-wallet" "7.2.0"
 
-"@near-wallet-selector/nightly-connect@^7.0.0":
-  "integrity" "sha512-hNnoPXPKHl63uhWiqGBqNCgzna3wjD0rBFd7qZXSErq5MF3nGXOgehe5or6vDouFJKGk2Fk6Eju4HQ0quJGBMg=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/nightly-connect/-/nightly-connect-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/nightly-connect@^7.2.0":
+  "integrity" "sha512-lWCb81I73L+D9B0KEB540XxaMj2CbIzJnte+5iJ3S4FhRgUe4Th9GLlcpv2Qj0wsfi8eSNBF1w1LdSyeYvoPVg=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/nightly-connect/-/nightly-connect-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "@near-wallet-selector/core" "7.0.3"
-    "@near-wallet-selector/wallet-utils" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
+    "@near-wallet-selector/wallet-utils" "7.2.0"
     "@nightlylabs/connect-near" "0.0.13"
 
-"@near-wallet-selector/nightly@^7.0.0":
-  "integrity" "sha512-dGGg8/C8iM/OvlCGiiBZuR0/x1Z9YZ5uIWIJPOgyzlSjF1HvPD/Dw6055mrMPHwX/Mr5gC5sl7EaAltfnDCEng=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/nightly/-/nightly-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/nightly@^7.2.0":
+  "integrity" "sha512-p5d9JSQD2fi8CaJaWA5jTzlx6/sMSNaS+3O9nb7LJuhPqiuAFcmmeN2ysA1W6OXrYDiTse8wEwY52hpIMio0tw=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/nightly/-/nightly-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "@near-wallet-selector/core" "7.0.3"
-    "@near-wallet-selector/wallet-utils" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
+    "@near-wallet-selector/wallet-utils" "7.2.0"
     "is-mobile" "^3.1.1"
 
-"@near-wallet-selector/sender@^7.0.0":
-  "integrity" "sha512-HdJWzWyYS/xBXllXzJSfw0sZvccgIQrLyyDdPpm3HJZYD9nEFtuRhhMBIvYuZ4Is/tVr9Ieaxa9cWCirsFN1gg=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/sender/-/sender-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/sender@^7.2.0":
+  "integrity" "sha512-qFhf4iDmzgF2JfkrFnKdCwykRFLZ2rqAouiWW4R3QXQ1TkXeicFMrGQU6p6TwMSwHdloWAgkGXAgTrnGWj6xZg=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/sender/-/sender-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "@near-wallet-selector/core" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
     "is-mobile" "^3.1.1"
 
-"@near-wallet-selector/wallet-connect@^7.0.0":
-  "integrity" "sha512-PAAcCouWE0agb3i2ziFRF4u6H8P8/kswF+EhS1ocCaittEYCvzf3/uhtYYOnzFXY0T4JKuGaworu8EuMkkQDPw=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/wallet-connect/-/wallet-connect-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/wallet-connect@^7.2.0":
+  "integrity" "sha512-6cE1jmbDKFtljE/w0ce9gfeUn/SpyoNrVrluiKVQbM0j/3Yxb2z6/zzxFQzrqwiSAJRWNICD5gSXwSX1yZSdNg=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/wallet-connect/-/wallet-connect-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "@near-wallet-selector/core" "7.0.3"
-    "@near-wallet-selector/wallet-utils" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
+    "@near-wallet-selector/wallet-utils" "7.2.0"
     "@walletconnect/qrcode-modal" "2.0.0-alpha.20"
-    "@walletconnect/sign-client" "2.0.0-rc.3"
+    "@walletconnect/sign-client" "2.0.0-rc.4"
 
-"@near-wallet-selector/wallet-utils@7.0.3":
-  "integrity" "sha512-ghkaqTkO4xmTLaBQSPoWciSMExIjav5fKalvyG+VNLfCrkRLglczdOk4J5mM5ozaQSi6iknGaSiVaX0wkMdkEw=="
-  "resolved" "https://registry.npmjs.org/@near-wallet-selector/wallet-utils/-/wallet-utils-7.0.3.tgz"
-  "version" "7.0.3"
+"@near-wallet-selector/wallet-utils@7.2.0":
+  "integrity" "sha512-B8hZO9snqwOr6V8oPbIAGaBLhtibPXc9ebUpHMgWJGpC/hU8RgVOw0XY9d/FOKAOPe1T6h1Wh4ppV/LQRlZbeA=="
+  "resolved" "https://registry.npmjs.org/@near-wallet-selector/wallet-utils/-/wallet-utils-7.2.0.tgz"
+  "version" "7.2.0"
   dependencies:
-    "@near-wallet-selector/core" "7.0.3"
+    "@near-wallet-selector/core" "7.2.0"
     "bn.js" "^5.2.0"
 
 "@next/env@13.0.2":
@@ -399,18 +401,18 @@
     "@stablelib/constant-time" "^1.0.1"
     "@stablelib/wipe" "^1.0.1"
 
-"@stablelib/random@^1.0.1", "@stablelib/random@^1.0.2":
-  "integrity" "sha512-rIsE83Xpb7clHPVRlBj8qNe5L8ISQOzjghYQm/dZ7VaM2KHYwMW5adjQjrzTZCchFnNCNhkwtnOBa9HTMJCI8w=="
-  "resolved" "https://registry.npmjs.org/@stablelib/random/-/random-1.0.2.tgz"
-  "version" "1.0.2"
+"@stablelib/random@^1.0.1", "@stablelib/random@1.0.1":
+  "integrity" "sha512-zOh+JHX3XG9MSfIB0LZl/YwPP9w3o6WBiJkZvjPoKKu5LKFW4OLV71vMxWp9qG5T43NaWyn0QQTWgqCdO+yOBQ=="
+  "resolved" "https://registry.npmjs.org/@stablelib/random/-/random-1.0.1.tgz"
+  "version" "1.0.1"
   dependencies:
     "@stablelib/binary" "^1.0.1"
     "@stablelib/wipe" "^1.0.1"
 
-"@stablelib/random@1.0.1":
-  "integrity" "sha512-zOh+JHX3XG9MSfIB0LZl/YwPP9w3o6WBiJkZvjPoKKu5LKFW4OLV71vMxWp9qG5T43NaWyn0QQTWgqCdO+yOBQ=="
-  "resolved" "https://registry.npmjs.org/@stablelib/random/-/random-1.0.1.tgz"
-  "version" "1.0.1"
+"@stablelib/random@^1.0.2":
+  "integrity" "sha512-rIsE83Xpb7clHPVRlBj8qNe5L8ISQOzjghYQm/dZ7VaM2KHYwMW5adjQjrzTZCchFnNCNhkwtnOBa9HTMJCI8w=="
+  "resolved" "https://registry.npmjs.org/@stablelib/random/-/random-1.0.2.tgz"
+  "version" "1.0.2"
   dependencies:
     "@stablelib/binary" "^1.0.1"
     "@stablelib/wipe" "^1.0.1"
@@ -563,23 +565,23 @@
     "@typescript-eslint/types" "5.38.1"
     "eslint-visitor-keys" "^3.3.0"
 
-"@walletconnect/core@2.0.0-rc.3":
-  "integrity" "sha512-ErnwoAZVnu8658GT9Aw3WjaOctFu1TQYyhOSL6LRF4pa+K4wvHOikiBLxPG7HsrkqyZ8ItdROmkw2ycSipmMow=="
-  "resolved" "https://registry.npmjs.org/@walletconnect/core/-/core-2.0.0-rc.3.tgz"
-  "version" "2.0.0-rc.3"
+"@walletconnect/core@2.0.0-rc.4":
+  "integrity" "sha512-DBxKE5cpRvfa/d8LZLhvAXzPn5+Ezax9meV1tR5WAjmCqcRxHC6YFNrwFupt5WZrpSpAhrPTOmL5hGs9zvBzrQ=="
+  "resolved" "https://registry.npmjs.org/@walletconnect/core/-/core-2.0.0-rc.4.tgz"
+  "version" "2.0.0-rc.4"
   dependencies:
     "@walletconnect/heartbeat" "1.0.0"
     "@walletconnect/jsonrpc-provider" "1.0.5"
     "@walletconnect/jsonrpc-utils" "1.0.3"
     "@walletconnect/jsonrpc-ws-connection" "1.0.3"
-    "@walletconnect/keyvaluestorage" "1.0.0"
+    "@walletconnect/keyvaluestorage" "1.0.1-rc.2"
     "@walletconnect/logger" "1.0.1"
     "@walletconnect/relay-api" "1.0.6"
     "@walletconnect/relay-auth" "1.0.3"
     "@walletconnect/safe-json" "1.0.0"
     "@walletconnect/time" "1.0.1"
-    "@walletconnect/types" "2.0.0-rc.3"
-    "@walletconnect/utils" "2.0.0-rc.3"
+    "@walletconnect/types" "2.0.0-rc.4"
+    "@walletconnect/utils" "2.0.0-rc.4"
     "lodash.isequal" "4.5.0"
     "pino" "6.7.0"
     "pino-pretty" "4.3.0"
@@ -645,6 +647,14 @@
     "localStorage" "^1.0.4"
     "safe-json-utils" "^1.1.1"
 
+"@walletconnect/keyvaluestorage@1.0.1-rc.2":
+  "integrity" "sha512-W704vnzAAZ4b/v7vEvYDul7fZ+TtG2vIfw8J41N8DnfBeee3IZ/urSrsAPaNUcDZArAWv/ZOYrIGHz5K9sdeUA=="
+  "resolved" "https://registry.npmjs.org/@walletconnect/keyvaluestorage/-/keyvaluestorage-1.0.1-rc.2.tgz"
+  "version" "1.0.1-rc.2"
+  dependencies:
+    "localStorage" "^1.0.4"
+    "safe-json-utils" "^1.1.1"
+
 "@walletconnect/logger@1.0.1":
   "integrity" "sha512-veJCZTA2uhJP8qS5J8FGYXSduShFZflNFIYesm80fW6zKIQ+Hvg0GR0r4LeXk5cnve5qT7QO+FUnO29v/aYtPQ=="
   "resolved" "https://registry.npmjs.org/@walletconnect/logger/-/logger-1.0.1.tgz"
@@ -694,20 +704,20 @@
   "resolved" "https://registry.npmjs.org/@walletconnect/safe-json/-/safe-json-1.0.0.tgz"
   "version" "1.0.0"
 
-"@walletconnect/sign-client@2.0.0-rc.3":
-  "integrity" "sha512-M/+tmccQvNIM86CJ3RsQBZVaECSq8jH1CEj1iUDmhxuG0eEg3Zesf5yJMg41aFFNVi2vSdBCeP0zcqWCDChf/g=="
-  "resolved" "https://registry.npmjs.org/@walletconnect/sign-client/-/sign-client-2.0.0-rc.3.tgz"
-  "version" "2.0.0-rc.3"
+"@walletconnect/sign-client@2.0.0-rc.4":
+  "integrity" "sha512-LW38YpEjEblqFyH1J5h0xpn+F7eIfmc5AHECcY/bQYVKywEcQHojdKimxUSNWU2ThMO1iJK4e7VJj6AgTP1vgg=="
+  "resolved" "https://registry.npmjs.org/@walletconnect/sign-client/-/sign-client-2.0.0-rc.4.tgz"
+  "version" "2.0.0-rc.4"
   dependencies:
-    "@walletconnect/core" "2.0.0-rc.3"
+    "@walletconnect/core" "2.0.0-rc.4"
     "@walletconnect/events" "1.0.0"
     "@walletconnect/heartbeat" "1.0.0"
     "@walletconnect/jsonrpc-provider" "1.0.5"
     "@walletconnect/jsonrpc-utils" "1.0.3"
     "@walletconnect/logger" "1.0.1"
     "@walletconnect/time" "1.0.1"
-    "@walletconnect/types" "2.0.0-rc.3"
-    "@walletconnect/utils" "2.0.0-rc.3"
+    "@walletconnect/types" "2.0.0-rc.4"
+    "@walletconnect/utils" "2.0.0-rc.4"
     "pino" "6.7.0"
     "pino-pretty" "4.3.0"
 
@@ -716,20 +726,30 @@
   "resolved" "https://registry.npmjs.org/@walletconnect/time/-/time-1.0.1.tgz"
   "version" "1.0.1"
 
-"@walletconnect/types@^2.0.0-alpha.20", "@walletconnect/types@2.0.0-rc.3":
-  "integrity" "sha512-PkzgdBr4tSXQtyGT91P6cdQJ44dCwRRwIW4BDW6tRqsvziPcyt6aQzWYfKQiMl6i2fIMK/8fgr1oDYPcLQLvbA=="
-  "resolved" "https://registry.npmjs.org/@walletconnect/types/-/types-2.0.0-rc.3.tgz"
-  "version" "2.0.0-rc.3"
+"@walletconnect/types@^2.0.0-alpha.20", "@walletconnect/types@2.1.1":
+  "integrity" "sha512-h6Cp7MeQgt8rvvW/gAD1uhLRJ9+VvFfbRP1rS3qxLWECiV34ngCBDvd5re/htdl77UOZJ2/3VoVAJyjS716mEg=="
+  "resolved" "https://registry.npmjs.org/@walletconnect/types/-/types-2.1.1.tgz"
+  "version" "2.1.1"
+  dependencies:
+    "@walletconnect/events" "1.0.0"
+    "@walletconnect/heartbeat" "1.0.0"
+    "@walletconnect/jsonrpc-types" "1.0.1"
+    "@walletconnect/keyvaluestorage" "1.0.1-rc.2"
+
+"@walletconnect/types@2.0.0-rc.4":
+  "integrity" "sha512-ZNGkwWNVQab85cNKyp5h82pripRoa46loEo5gWlR8H/KNIrll1GZbijnd8mZb4RF+TLLN+FrQqfZZNcaeWNFCw=="
+  "resolved" "https://registry.npmjs.org/@walletconnect/types/-/types-2.0.0-rc.4.tgz"
+  "version" "2.0.0-rc.4"
   dependencies:
     "@walletconnect/events" "1.0.0"
     "@walletconnect/heartbeat" "1.0.0"
     "@walletconnect/jsonrpc-types" "1.0.1"
     "@walletconnect/keyvaluestorage" "1.0.0"
 
-"@walletconnect/utils@^2.0.0-alpha.20", "@walletconnect/utils@2.0.0-rc.3":
-  "integrity" "sha512-ThMv+uLZiU9iSEN28cLZy98/LyQmHQ6eq29P9qsET9ZginF5QplmvTRKQvLSeLrU4K4rcRaXs/FndhxxiRhPcQ=="
-  "resolved" "https://registry.npmjs.org/@walletconnect/utils/-/utils-2.0.0-rc.3.tgz"
-  "version" "2.0.0-rc.3"
+"@walletconnect/utils@^2.0.0-alpha.20":
+  "integrity" "sha512-gkWr+2M4BwSiMPEdJGOMOh1IInGGrtTx8iOKyZlFPPo1q6aYYzhnreJUSS3dfov8yVU07IJZWqGhfkJIGGYJxw=="
+  "resolved" "https://registry.npmjs.org/@walletconnect/utils/-/utils-2.1.1.tgz"
+  "version" "2.1.1"
   dependencies:
     "@stablelib/chacha20poly1305" "1.0.1"
     "@stablelib/hkdf" "1.0.1"
@@ -740,7 +760,28 @@
     "@walletconnect/relay-api" "1.0.6"
     "@walletconnect/safe-json" "1.0.0"
     "@walletconnect/time" "1.0.1"
-    "@walletconnect/types" "2.0.0-rc.3"
+    "@walletconnect/types" "2.1.1"
+    "@walletconnect/window-getters" "1.0.0"
+    "@walletconnect/window-metadata" "1.0.0"
+    "detect-browser" "5.3.0"
+    "query-string" "7.1.1"
+    "uint8arrays" "3.1.0"
+
+"@walletconnect/utils@2.0.0-rc.4":
+  "integrity" "sha512-qg3a924eauH1u/FfgdjEEkJuNlFsKglh2AGosnFXB4bYaAhFBZkMxZfh0W6I2s9GJWU8pyr21qso489YIDWIVw=="
+  "resolved" "https://registry.npmjs.org/@walletconnect/utils/-/utils-2.0.0-rc.4.tgz"
+  "version" "2.0.0-rc.4"
+  dependencies:
+    "@stablelib/chacha20poly1305" "1.0.1"
+    "@stablelib/hkdf" "1.0.1"
+    "@stablelib/random" "1.0.1"
+    "@stablelib/sha256" "1.0.1"
+    "@stablelib/x25519" "1.0.2"
+    "@walletconnect/jsonrpc-utils" "1.0.3"
+    "@walletconnect/relay-api" "1.0.6"
+    "@walletconnect/safe-json" "1.0.0"
+    "@walletconnect/time" "1.0.1"
+    "@walletconnect/types" "2.0.0-rc.4"
     "@walletconnect/window-getters" "1.0.0"
     "@walletconnect/window-metadata" "1.0.0"
     "detect-browser" "5.3.0"
@@ -943,7 +984,7 @@
   "resolved" "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz"
   "version" "2.2.0"
 
-"bn.js@^5.2.0":
+"bn.js@^5.2.0", "bn.js@5.2.1":
   "integrity" "sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ=="
   "resolved" "https://registry.npmjs.org/bn.js/-/bn.js-5.2.1.tgz"
   "version" "5.2.1"
@@ -952,15 +993,6 @@
   "integrity" "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
   "resolved" "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz"
   "version" "5.2.0"
-
-"borsh@^0.6.0":
-  "integrity" "sha512-sl5k89ViqsThXQpYa9XDtz1sBl3l1lI313cFUY1HKr+wvMILnb+58xpkqTNrYbelh99dY7K8usxoCusQmqix9Q=="
-  "resolved" "https://registry.npmjs.org/borsh/-/borsh-0.6.0.tgz"
-  "version" "0.6.0"
-  dependencies:
-    "bn.js" "^5.2.0"
-    "bs58" "^4.0.0"
-    "text-encoding-utf-8" "^1.0.2"
 
 "borsh@^0.7.0":
   "integrity" "sha512-CLCsZGIBCFnPtkNnieW/a8wmreDmfUtjU2m9yHrzPXIlNbqVs0AQrSatSG6vdNYUqdc83tkQi2eHfF98ubzQLA=="
@@ -1021,7 +1053,12 @@
   "resolved" "https://registry.npmjs.org/camelcase-css/-/camelcase-css-2.0.1.tgz"
   "version" "2.0.1"
 
-"camelcase@^5.0.0", "camelcase@5.0.0":
+"camelcase@^5.0.0":
+  "integrity" "sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg=="
+  "resolved" "https://registry.npmjs.org/camelcase/-/camelcase-5.3.1.tgz"
+  "version" "5.3.1"
+
+"camelcase@5.0.0":
   "integrity" "sha512-faqwZqnWxbxn+F1d399ygeamQNy3lPp/H9H6rNrqYh4FSVCtcY+3cub1MxA8o9mDd55mM8Aghuu/kuyYA6VTsA=="
   "resolved" "https://registry.npmjs.org/camelcase/-/camelcase-5.0.0.tgz"
   "version" "5.0.0"
@@ -1115,6 +1152,13 @@
   "integrity" "sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg=="
   "resolved" "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
   "version" "0.0.1"
+
+"copy-to-clipboard@^3.3.2":
+  "integrity" "sha512-Vme1Z6RUDzrb6xAI7EZlVZ5uvOk2F//GaxKUxajDqm9LhOVM1inxNAD2vy+UZDYsd0uyA9s7b3/FVZPSxqrCfg=="
+  "resolved" "https://registry.npmjs.org/copy-to-clipboard/-/copy-to-clipboard-3.3.2.tgz"
+  "version" "3.3.2"
+  dependencies:
+    "toggle-selection" "^1.0.6"
 
 "core-js-pure@^3.25.1":
   "integrity" "sha512-T/7qvgv70MEvRkZ8p6BasLZmOVYKzOaWNBEHAU8FmveCJkl4nko2quqPQOmy6AJIp5MBanhz9no3A94NoRb0XA=="
@@ -2240,13 +2284,13 @@
   "resolved" "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
   "version" "1.4.0"
 
-"near-api-js@^0.44.2", "near-api-js@^0.44.2 || ^1.0.0":
-  "integrity" "sha512-eMnc4V+geggapEUa3nU2p8HSHn/njtloI4P2mceHQWO8vDE1NGpnAw8FuTBrLmXSgIv9m6oocgFc9t3VNf5zwg=="
-  "resolved" "https://registry.npmjs.org/near-api-js/-/near-api-js-0.44.2.tgz"
-  "version" "0.44.2"
+"near-api-js@^0.44.2", "near-api-js@^0.44.2 || ^1.0.0", "near-api-js@^1.1.0":
+  "integrity" "sha512-qYKv1mYsaDZc2uYndhS+ttDhR9+60qFc+ZjD6lWsAxr3ZskMjRwPffDGQZYhC7BRDQMe1HEbk6d5mf+TVm0Lqg=="
+  "resolved" "https://registry.npmjs.org/near-api-js/-/near-api-js-1.1.0.tgz"
+  "version" "1.1.0"
   dependencies:
-    "bn.js" "5.2.0"
-    "borsh" "^0.6.0"
+    "bn.js" "5.2.1"
+    "borsh" "^0.7.0"
     "bs58" "^4.0.0"
     "depd" "^2.0.0"
     "error-polyfill" "^0.1.3"
@@ -2607,9 +2651,9 @@
     "source-map-js" "^1.0.2"
 
 "preact@^10.4.1":
-  "integrity" "sha512-Fk6+vB2kb6mSJfDgODq0YDhMfl0HNtK5+Uc9QqECO4nlyPAQwCI+BKyWO//idA7ikV7o+0Fm6LQmNuQi1wXI1w=="
-  "resolved" "https://registry.npmjs.org/preact/-/preact-10.11.0.tgz"
-  "version" "10.11.0"
+  "integrity" "sha512-skAwGDFmgxhq1DCBHke/9e12ewkhc7WYwjuhHB8HHS8zkdtITXLRmUMTeol2ldxvLwYtwbFeifZ9uDDWuyL4Iw=="
+  "resolved" "https://registry.npmjs.org/preact/-/preact-10.11.2.tgz"
+  "version" "10.11.2"
 
 "prelude-ls@^1.2.1":
   "integrity" "sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g=="
@@ -2658,7 +2702,7 @@
   "resolved" "https://registry.npmjs.org/qrcode-generator/-/qrcode-generator-1.4.4.tgz"
   "version" "1.4.4"
 
-"qrcode@^1.4.4":
+"qrcode@^1.4.4", "qrcode@^1.5.1":
   "integrity" "sha512-nS8NJ1Z3md8uTjKtP+SGGhfqmTCs5flU/xR623oI0JX+Wepz9R8UrRVCTBTJm3qGw3rH6jJ6MUHjkDx15cxSSg=="
   "resolved" "https://registry.npmjs.org/qrcode/-/qrcode-1.5.1.tgz"
   "version" "1.5.1"
@@ -2812,7 +2856,7 @@
   dependencies:
     "queue-microtask" "^1.2.2"
 
-"rxjs@^7.5.5", "rxjs@^7.5.7":
+"rxjs@^7.5.7":
   "integrity" "sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA=="
   "resolved" "https://registry.npmjs.org/rxjs/-/rxjs-7.5.7.tgz"
   "version" "7.5.7"
@@ -3076,6 +3120,11 @@
   dependencies:
     "is-number" "^7.0.0"
 
+"toggle-selection@^1.0.6":
+  "integrity" "sha512-BiZS+C1OS8g/q2RRbJmy59xpyghNBqrr6k5L/uKBGRsTfxmu3ffiRnd8mlGPUVayg8pvfi5urfnu8TU7DVOkLQ=="
+  "resolved" "https://registry.npmjs.org/toggle-selection/-/toggle-selection-1.0.6.tgz"
+  "version" "1.0.6"
+
 "toidentifier@1.0.1":
   "integrity" "sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA=="
   "resolved" "https://registry.npmjs.org/toidentifier/-/toidentifier-1.0.1.tgz"
@@ -3267,9 +3316,9 @@
     "slide" "^1.1.5"
 
 "ws@*", "ws@^8.8.0":
-  "integrity" "sha512-Ja7nszREasGaYUYCI2k4lCKIRTt+y7XuqVoHR44YpI49TtryyqbqvDMn5eqfW7e6HzTukDRIsXqzVHScqRcafg=="
-  "resolved" "https://registry.npmjs.org/ws/-/ws-8.9.0.tgz"
-  "version" "8.9.0"
+  "integrity" "sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg=="
+  "resolved" "https://registry.npmjs.org/ws/-/ws-8.11.0.tgz"
+  "version" "8.11.0"
 
 "ws@^7.5.1":
   "integrity" "sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q=="
