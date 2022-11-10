@@ -263,9 +263,8 @@ export function internalPayoutNear({
   )
 
   assert(
-    contract.contractStatus === ContractStatusEnum.SALE ||
-      contract.contractStatus === ContractStatusEnum.POSTSALE,
-    `Too early to payout near, wait for SALE or POSTSALE phase, is currently ${contract.contractStatus}`
+    contract.isSaleDone(),
+    `Too early to payout near, wait for SALE phase, is currently ${contract.contractStatus}`
   )
 
   const amountBigInt = BigInt(amount)

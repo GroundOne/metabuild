@@ -32,7 +32,7 @@ export function internalInitProperties(
   )
 
   assert(
-    BigInt(contract.saleClose) < BigInt(contract.distributionStart),
+    BigInt(contract.saleClose) < BigInt(initArgs.distributionStart),
     `Distribution should happen before sale end. Distribution start is ${contract.distributionStart}, sale end ${contract.saleClose}`
   )
   contract.contractStatus = ContractStatusEnum.PROPERTY_SELECTION
@@ -180,12 +180,12 @@ export function internalSetPropertyPreferences({
   )
 
   assert(
-    !!contract.distributionStart,
+    contract.contractStatus === ContractStatusEnum.PROPERTY_SELECTION,
     `Properties not yet initialized. Please wait for it.`
   )
 
   assert(
-    !contract.isPropertySelectionDone(),
+    !contract.isDistributionDone(),
     `Property selection is already finished is ${near.blockTimestamp()} ended ${
       contract.distributionStart
     }`
@@ -205,7 +205,7 @@ export function internalDistributeProperties({
   const partTokens = internalNftTokens({ contract })
 
   assert(
-    contract.isPropertySelectionDone(),
+    contract.isDistributionDone(),
     `Propert Selection is not yet finished is ${near.blockTimestamp()} will end ${
       contract.distributionStart
     }`

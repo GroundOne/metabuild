@@ -52,7 +52,6 @@ export enum ContractStatusEnum {
   POSTPRESALE_DISTRIBUTION = "postpresale_distribution",
   POSTPRESALE_CASHOUT = "postpresale_cashout",
   SALE = "sale",
-  POSTSALE = "postsale",
   PROPERTY_SELECTION = "property_selection",
   PROPERTY_DISTRIBUTION = "property_distribution",
   ENDED = "ended",
@@ -200,6 +199,14 @@ export class Contract {
     return internalParticipatePresale({ contract: this })
   }
 
+  @call({ payableFunction: true })
+  postpresale_proceed_to_sale({ metadata }: { metadata: TokenMetadata }) {
+    // combines the methods for convenience
+    this.distribute_after_presale()
+    this.cashout_unlucky_presale_participants()
+    this.mint_for_presale_participants({ metadata })
+  }
+
   @call({})
   distribute_after_presale() {
     return internalDistributeAfterPresale({ contract: this })
@@ -232,7 +239,6 @@ export class Contract {
   //   return internalEditProperties({ contract: this, ...addArgs })
   // }
 
-  /* POSTSALE */
   @call({})
   set_preferences_properties(propertyPreferenceIds: string[]) {
     return internalSetPropertyPreferences({
@@ -384,11 +390,6 @@ export class Contract {
   @view({})
   isSaleDone() {
     return BigInt(this.saleClose) < near.blockTimestamp()
-  }
-
-  @view({})
-  isPropertySelectionDone() {
-    return BigInt(this.distributionStart) < near.blockTimestamp()
   }
 
   @view({})
