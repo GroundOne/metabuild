@@ -6,6 +6,7 @@ import { DeployArgs, NFTContractMetadata } from '../../utils/partToken';
 import { NearContext, WalletState } from '../walletContext';
 import CreatePartForm, { PartFormValue } from './CreatePartForm';
 import Modal from '../ui-components/Modal';
+import { getContractIdFromTransactionId } from '../../utils/common';
 
 export default function CreatePart() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -28,9 +29,8 @@ export default function CreatePart() {
                 const errorMessage = decodeURIComponent(urlParams.errorMessage as string) ?? 'Unknown error';
                 setErrorMessage(errorMessage);
             } else {
-                wallet.getTransactionResult(urlParams.transactionHashes as string).then((result) => {
-                    setContractDeployed({ deployed: true, data: result });
-                });
+                const projectId = getContractIdFromTransactionId(urlParams.transactionHashes as string);
+                console.log('projectId', projectId);
                 // transactionHashes=EBz4gvA9v4ezc59ZnvyfEBUB9ZsXskrxcA2x5aS84G3G
             }
             // router.replace(router.pathname);

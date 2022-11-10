@@ -40,7 +40,7 @@ export default function ManagePart() {
             for await (const contractId of ownerContractIDs) {
                 const contractInfo = await tokenContract.contract_vars(contractId);
                 contractInfo.tokens = convertIdsToIdString(contractInfo.reservedTokenIds as number[]);
-                console.log(`Contract info for ${contractId}: ${JSON.stringify(contractInfo)}`);
+                // console.log(`Contract info for ${contractId}: ${JSON.stringify(contractInfo)}`);
                 ownerContracts.push(contractInfo);
             }
             setContracts(ownerContracts);
