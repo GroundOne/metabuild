@@ -85,7 +85,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
             setValue('projectAddress', 'demo_project_test');
             setValue('projectName', 'Village Utopia');
             setValue('partAmount', 100);
-            setValue('partPrice', 0.1);
+            setValue('partPrice', 5);
             setValue('saleOpeningDate', (nowPlus5Days.toISOString().split('T')[0] + 'T10:00') as unknown as Date);
             setValue(
                 'saleCloseDate',
@@ -129,6 +129,15 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-x-20">
                 <Input
+                    id="projectName"
+                    type="text"
+                    placeholder="Project Name"
+                    isDisabled={isSubmitting}
+                    isInvalid={!!errors.projectName}
+                    errorText={errors.projectName?.message as string | undefined}
+                    {...register('projectName')}
+                />
+                <Input
                     id="projectAddress"
                     type="text"
                     placeholder="Project Address"
@@ -137,15 +146,6 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     isInvalid={!!errors.projectAddress}
                     errorText={errors.projectAddress?.message as string | undefined}
                     {...register('projectAddress')}
-                />
-                <Input
-                    id="projectName"
-                    type="text"
-                    placeholder="Project Name"
-                    isDisabled={isSubmitting}
-                    isInvalid={!!errors.projectName}
-                    errorText={errors.projectName?.message as string | undefined}
-                    {...register('projectName')}
                 />
                 <Input
                     id="partAmount"
@@ -162,6 +162,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     min={constants.MIN_PART_PRICE}
                     max={constants.MAX_PART_PRICE}
                     step={constants.MIN_PART_PRICE}
+                    inputMode="decimal"
                     placeholder="PART Price (NEAR)"
                     isDisabled={isSubmitting}
                     isInvalid={!!errors.partPrice}
