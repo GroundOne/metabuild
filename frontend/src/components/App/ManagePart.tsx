@@ -6,12 +6,40 @@ export default function ManagePart() {
     const { contract, tokenContract } = useContext(NearContext);
     const [contracts, setContracts] = useState<any[]>([]);
 
+    const convertIdsToIdString = (ids: number[]) => {
+        if (!ids!.length) return '';
+        return ids
+            .map((value) => +value)
+            .sort((a, b) => a - b)
+            .reduce((acc: number[][], cur, i, array) => {
+                if (i === 0) {
+                    return [...acc, [cur]];
+                }
+                const last = acc[acc.length - 1];
+                if (cur === last[last.length - 1] + 1) {
+                    const lastItems = last.length > 1 ? last.slice(0, -1) : last;
+                    return [...acc.slice(0, -1), [...lastItems, cur]];
+                } else {
+                    return [...acc, [cur]];
+                }
+            }, [])
+            .map((token) =>
+                token.length > 1
+                    ? token[0] === token[1] - 1
+                        ? token.join('; ')
+                        : `${token[0]}-${token[token.length - 1]}`
+                    : token[0]
+            )
+            .join('; ');
+    };
+
     useEffect(() => {
         const loadContracts = async () => {
             const ownerContractIDs = await contract.contractsForOwner();
             const ownerContracts = [];
             for await (const contractId of ownerContractIDs) {
                 const contractInfo = await tokenContract.contract_vars(contractId);
+                contractInfo.tokens = convertIdsToIdString(contractInfo.reservedTokenIds as number[]);
                 ownerContracts.push(contractInfo);
             }
             setContracts(ownerContracts);
@@ -33,7 +61,7 @@ export default function ManagePart() {
                         </div>
                         <div>
                             Reserved Token Ids:
-                            <span className="font-semibold"> {JSON.stringify(contract.reservedTokenIds)}</span>
+                            <span className="font-semibold"> {contract.tokens}</span>
                         </div>
                         <div>
                             Current Token Id: <span className="font-semibold">{contract.currentTokenId}</span>
