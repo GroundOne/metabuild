@@ -45,7 +45,7 @@ const partFormSchema = yup.object({
         .required()
         .min(constants.MIN_PART_PRICE, `PART price must be at least ${constants.MIN_PART_PRICE} Ⓝ`)
         .max(constants.MAX_PART_PRICE, `PART price must be at most ${constants.MAX_PART_PRICE} Ⓝ`),
-    backgroundImageLink: yup.string().label('Background image link').url().required(),
+    backgroundImageLink: yup.string().label('Background image link').url(),
     reserveParts: yup
         .string()
         .label('Reserved PARTs')
