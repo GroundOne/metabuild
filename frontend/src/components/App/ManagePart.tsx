@@ -40,6 +40,7 @@ export default function ManagePart() {
             for await (const contractId of ownerContractIDs) {
                 const contractInfo = await tokenContract.contract_vars(contractId);
                 contractInfo.tokens = convertIdsToIdString(contractInfo.reservedTokenIds as number[]);
+                console.log(`Contract info for ${contractId}: ${JSON.stringify(contractInfo)}`);
                 ownerContracts.push(contractInfo);
             }
             setContracts(ownerContracts);
@@ -60,8 +61,15 @@ export default function ManagePart() {
                             Project Name: <span className="font-semibold">{contract.projectName}</span>
                         </div>
                         <div>
+                            Project Address: <span className="font-semibold">{contract.projectAddress}</span>
+                        </div>
+                        <div>
                             Reserved Token Ids:
                             <span className="font-semibold"> {contract.tokens}</span>
+                            {/* <span className="break-all font-semibold">
+                                {' '}
+                                {contract.reservedTokenIds?.map((token: string) => +token).join(', ')}
+                            </span> */}
                         </div>
                         <div>
                             Current Token Id: <span className="font-semibold">{contract.currentTokenId}</span>

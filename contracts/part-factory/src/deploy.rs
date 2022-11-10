@@ -61,6 +61,9 @@ impl PartTokenFactory {
             }
             Some(mut current_tokens) => {
                 current_tokens.push(token_account_id.clone());
+
+                self.contracts_per_owner
+                    .insert(&env::signer_account_id(), &current_tokens);
             }
         }
 
