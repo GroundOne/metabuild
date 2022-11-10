@@ -1,10 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Input from '../ui-components/Input';
 import Button from '../ui-components/Button';
 import * as yup from 'yup';
 import constants from '../../constants';
+import { NearContext } from '../walletContext';
 
 export type PartFormSchemaProps = {
     values?: Partial<PartFormValue>;
@@ -55,11 +56,14 @@ const partFormSchema = yup.object({
 export type PartFormValue = yup.InferType<typeof partFormSchema>;
 
 const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartRequest }) => {
+    const { contract } = useContext(NearContext);
+
     const {
         register,
         handleSubmit,
         formState: { errors },
         setValue,
+        setError,
     } = useForm<PartFormValue>({ resolver: yupResolver(partFormSchema) });
 
     useEffect(() => {
@@ -101,11 +105,23 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
         setIsSubmitting(false);
     };
 
-    const onSubmit = (data: PartFormValue) => {
+    const onSubmit = async (data: PartFormValue) => {
         if (isSubmitting) {
             onCreatePartRequest(data);
         } else {
-            setIsSubmitting(true);
+            // Validate unique contract ID
+            const existingProjectAddresses = await contract
+                .getContracts()
+                .then((contracts) => contracts.map((contract: { projectAddress: string }) => contract.projectAddress));
+
+            if (existingProjectAddresses.includes(data.projectAddress)) {
+                setError('projectAddress', {
+                    type: 'manual',
+                    message: 'Project address is already taken',
+                });
+            } else {
+                setIsSubmitting(true);
+            }
         }
     };
 

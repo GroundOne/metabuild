@@ -9,6 +9,7 @@ import Modal from '../ui-components/Modal';
 
 export default function CreatePart() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [contractDeployed, setContractDeployed] = useState({ deployed: false, data: null });
 
     const { wallet, walletState, contract } = useContext(NearContext);
     const router = useRouter();
@@ -17,8 +18,9 @@ export default function CreatePart() {
     useEffect(() => {
         const urlParams = router.query;
         // if (urlParams.transactionHashes) {
-        if (urlParams.errorCode) {
+        if (urlParams.transactionHashes || urlParams.errorCode) {
             // callback from deploy contract
+
             if (urlParams.errorCode) {
                 // errorCode: "Error" | "userRejected"
                 // errorMessage: "Can't%20create%20a%20new%20account%20ff_demo_project.part_factory.groundone.testnet%2C%20because%20it%20already%20exists" | User%2520rejected%2520transaction
@@ -26,14 +28,17 @@ export default function CreatePart() {
                 const errorMessage = decodeURIComponent(urlParams.errorMessage as string) ?? 'Unknown error';
                 setErrorMessage(errorMessage);
             } else {
+                wallet.getTransactionResult(urlParams.transactionHashes as string).then((result) => {
+                    setContractDeployed({ deployed: true, data: result });
+                });
                 // transactionHashes=EBz4gvA9v4ezc59ZnvyfEBUB9ZsXskrxcA2x5aS84G3G
-                alert('Contract deployed successfully');
             }
             // router.replace(router.pathname);
         } else {
             setErrorMessage(null);
+            setContractDeployed({ deployed: false, data: null });
         }
-    }, [router, router.query]);
+    }, [wallet, router, router.query]);
 
     const deployAndInitTokenContract = async (args: DeployArgs) => {
         console.log('deployAndInitTokenContract', walletState);
@@ -43,9 +48,10 @@ export default function CreatePart() {
         }
     };
 
-    const handleCloseError = () => {
-        router.replace(router.pathname);
+    const handleCloseModal = () => {
         setErrorMessage(null);
+        setContractDeployed({ deployed: false, data: null });
+        router.replace(router.pathname);
     };
 
     const onCreatePart = (part: PartFormValue) => {
@@ -83,7 +89,12 @@ export default function CreatePart() {
 
     return (
         <>
-            <Modal show={!!errorMessage} onClose={handleCloseError} title="This is title">
+            <Modal
+                show={contractDeployed.deployed}
+                onClose={handleCloseModal}
+                title=" Contract deployed successfully"
+            />
+            <Modal show={!!errorMessage} onClose={handleCloseModal} title="Contract deployment failed">
                 <p>{errorMessage}</p>
             </Modal>
             <div className="font-semibold">Create PART Scheme</div>

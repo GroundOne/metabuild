@@ -5,7 +5,7 @@ import Button from './Button';
 interface ModalProps extends React.HTMLProps<HTMLDivElement> {
     show: boolean;
     title: string;
-    children: React.ReactNode | React.ReactNode[];
+    children?: React.ReactNode | React.ReactNode[];
     className?: string;
     onClose?: () => void;
 }
@@ -21,16 +21,17 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({ show, title, children, c
             tabIndex={-1}
             className={clsx(
                 !show && 'hidden',
-                'pointer-events-none',
+                // 'pointer-events-none',
                 'fixed flex items-center justify-center bg-black bg-opacity-30',
                 'h-modal fixed top-0 right-0 left-0 z-50 w-full overflow-y-auto overflow-x-hidden md:inset-0 md:h-full'
             )}
         >
-            <div className="pointer-events-auto relative h-full w-full max-w-md p-4 md:h-auto">
+            <div className="fixed top-0 left-0 h-full w-full" onClick={onClose}></div>
+            <div className="pointer-events-auto relative mb-[25vh] h-full w-full max-w-md p-4 md:h-auto">
                 {/* Modal content */}
                 <div className="relative rounded-lg bg-white shadow ">
                     {/* Modal header */}
-                    <div className="flex items-center justify-between rounded-t border-b p-5">
+                    <div className={clsx('flex items-center justify-between rounded-t p-5', children && 'border-b')}>
                         <h3 className="text-xl font-medium text-gray-900 ">{title}</h3>
                         <button
                             type="button"
@@ -54,15 +55,19 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(({ show, title, children, c
                         </button>
                     </div>
                     {/* Modal body */}
-                    <div className="space-y-6 p-6">
-                        <div className="text-base leading-relaxed text-gray-500">{children}</div>
-                    </div>
+                    {children && (
+                        <div className="space-y-6 p-6">
+                            <div className="text-base leading-relaxed text-gray-500">{children}</div>
+                        </div>
+                    )}
                     {/* Modal footer */}
-                    <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6">
-                        <Button isInvertedColor size="sm" onClick={onClose}>
-                            <span>Close</span>
-                        </Button>
-                    </div>
+                    {children && (
+                        <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6">
+                            <Button isInvertedColor size="sm" onClick={onClose}>
+                                <span>Close</span>
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
