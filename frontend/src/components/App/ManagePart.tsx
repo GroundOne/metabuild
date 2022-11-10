@@ -54,7 +54,7 @@ export default function ManagePart() {
             {contracts.map((contract) => {
                 return (
                     <section
-                        className="m2 my-2 mr-12 flex flex-col gap-3 rounded-3xl border border-black py-4 px-6"
+                        className="m2 my-4 mr-12 flex flex-col gap-3 rounded-3xl border border-black py-4 px-6"
                         key={contract.projectName}
                     >
                         <div>
@@ -66,13 +66,9 @@ export default function ManagePart() {
                         <div>
                             Reserved Token Ids:
                             <span className="font-semibold"> {contract.tokens}</span>
-                            {/* <span className="break-all font-semibold">
-                                {' '}
-                                {contract.reservedTokenIds?.map((token: string) => +token).join(', ')}
-                            </span> */}
                         </div>
                         <div>
-                            Current Token Id: <span className="font-semibold">{contract.currentTokenId}</span>
+                            PARTs sold: <span className="font-semibold">{contract.currentTokenId - 1}</span>
                         </div>
                         <div>
                             Sale Opening:{' '}
