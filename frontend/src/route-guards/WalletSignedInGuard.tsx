@@ -6,6 +6,7 @@ const redirects = {
     [WalletState.SignedOut]: {
         ['/part-issuer/create-part']: '/part-issuer',
         ['/part-issuer/manage-part']: '/part-issuer',
+        ['/part-issuer/manage-part/distribution']: '/part-issuer',
         ['/part-issuer/create-pvt']: '/part-issuer',
         ['/part-holder/buy']: '/part-holder',
         ['/part-holder/account']: '/part-holder',

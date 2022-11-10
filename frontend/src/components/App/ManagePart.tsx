@@ -1,9 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import Button from '../ui-components/Button';
-import { NearContext } from '../walletContext';
+import { NearContext, WalletState } from '../walletContext';
+import { useRouter } from 'next/router';
 
 export default function ManagePart() {
-    const { contract, tokenContract } = useContext(NearContext);
+    const router = useRouter();
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
     const [contracts, setContracts] = useState<any[]>([]);
 
     const convertIdsToIdString = (ids: number[]) => {
@@ -38,19 +41,49 @@ export default function ManagePart() {
             const ownerContractIDs = await contract.contractsForOwner();
             const ownerContracts = [];
             for await (const contractId of ownerContractIDs) {
-                const contractInfo = await tokenContract.contract_vars(contractId);
-                contractInfo.tokens = convertIdsToIdString(contractInfo.reservedTokenIds as number[]);
+                const contract = await tokenContract.contract_vars(contractId);
+                const tokens = convertIdsToIdString(contract.reservedTokenIds as number[]);
                 // console.log(`Contract info for ${contractId}: ${JSON.stringify(contractInfo)}`);
-                ownerContracts.push(contractInfo);
+                const saleOpeningDate = new Date(contract.saleOpening / 1e6);
+                const saleCloseDate = new Date(contract.saleClose / 1e6);
+                const status =
+                    currentDate < contract.saleOpeningDate
+                        ? 'Presale'
+                        : currentDate < contract.saleCloseDate
+                        ? 'Open'
+                        : 'Closed';
+                ownerContracts.push({ ...contract, tokens, saleOpeningDate, saleCloseDate, status });
             }
             setContracts(ownerContracts);
         };
         loadContracts();
     }, [contract, tokenContract]);
 
+    const handleInitiatePresale = useCallback(
+        async (contractId: string) => {
+            if (walletState === WalletState.SignedIn) {
+                // distribute_after_presale
+                await tokenContract.distributeAfterPresale(contractId);
+                // cashout_unlucky_presale_participants
+                // mint_for_presale_participants
+            }
+        },
+        [tokenContract]
+    );
+
     return (
         <>
-            <div className="mb-4 text-lg font-semibold">Your Projects</div>
+            <div className="mr-12 flex justify-between">
+                <div className="mb-4 text-lg font-semibold">Your Projects</div>
+                <div>
+                    <span>As of Date: </span>
+                    <input
+                        type="date"
+                        value={currentDate.toISOString().split('T')[0]}
+                        onChange={(e) => setCurrentDate(new Date(e.currentTarget.value || Date.now()))}
+                    />
+                </div>
+            </div>
             {contracts.map((contract) => {
                 return (
                     <section
@@ -82,6 +115,35 @@ export default function ManagePart() {
                         </div>
                         <div>
                             Contract Status: <span className="font-semibold">{contract.contractStatus}</span>
+                        </div>
+                        <div className="flex justify-end gap-2">
+                            <Button
+                                size="sm"
+                                isInvertedColor
+                                className="w-32"
+                                onClick={() => handleInitiatePresale(contract.projectAddress)}
+                            >
+                                Initiate pre-sale
+                            </Button>
+                            <Button
+                                size="sm"
+                                isInvertedColor
+                                onClick={() =>
+                                    router.push(router.pathname + '/distribution?project=' + contract.projectAddress)
+                                }
+                            >
+                                Property Distribution...
+                            </Button>
+                            <Button
+                                size="sm"
+                                isInvertedColor
+                                className="w-32"
+                                onClick={() => {
+                                    console.log('clicked');
+                                }}
+                            >
+                                Manage
+                            </Button>
                         </div>
                     </section>
                 );

@@ -151,9 +151,9 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async distributeAfterPresale() {
+    async distributeAfterPresale(contractId: string) {
         return await this.wallet.callMethod({
-            contractId: this.contractId,
+            contractId,
             method: 'distribute_after_presale',
             args: {},
         });
