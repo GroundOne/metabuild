@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import Button from '../ui-components/Button';
 import { NearContext, WalletState } from '../walletContext';
 import { useRouter } from 'next/router';
+import { debounce } from '../../utils/common';
 
 export default function ManagePart() {
     const router = useRouter();
@@ -56,8 +57,8 @@ export default function ManagePart() {
             }
             setContracts(ownerContracts);
         };
-        loadContracts();
-    }, [contract, tokenContract]);
+        debounce(loadContracts, 500)();
+    }, [contract, tokenContract, currentDate]);
 
     const handleInitiatePresale = useCallback(
         async (contractId: string) => {
@@ -68,7 +69,7 @@ export default function ManagePart() {
                 // mint_for_presale_participants
             }
         },
-        [tokenContract]
+        [tokenContract, walletState]
     );
 
     return (
@@ -78,6 +79,7 @@ export default function ManagePart() {
                 <div>
                     <span>As of Date: </span>
                     <input
+                        className="rounded-full"
                         type="date"
                         value={currentDate.toISOString().split('T')[0]}
                         onChange={(e) => setCurrentDate(new Date(e.currentTarget.value || Date.now()))}
