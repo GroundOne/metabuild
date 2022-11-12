@@ -1,4 +1,5 @@
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
+import { convertPropertyIdsToIdString } from './common';
 
 /**
  * If we import anything from /contracts folder the `npm run build` fails
@@ -30,6 +31,26 @@ type InitializePropertiesArgs = {
     distributionStart: string;
     reservedTokenIds?: string[];
     totalSupply: number;
+};
+
+type ContractVars = {
+    ownerId: string;
+    currentTokenId: number;
+    projectName: string;
+    projectAddress: string;
+    totalSupply: number;
+    price: string;
+    reservedTokenIds: string[];
+    saleOpening: string;
+    saleClose: string;
+    contractStatus: string;
+};
+
+export type ContractVarsParsed = ContractVars & {
+    reservedTokens: string;
+    saleOpeningDate: Date;
+    saleCloseDate: Date;
+    status: 'Presale' | 'Open' | 'Closed';
 };
 
 export class InterfaceFields {
@@ -270,12 +291,27 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async contract_vars(contractId?: string) {
-        return await this.wallet.viewMethod({
+    async contract_vars(contractId?: string, currentDate = new Date()) {
+        const contractVars: ContractVars = await this.wallet.viewMethod({
             contractId: contractId ?? this.contractId, // 'fff_demo_project.part_factory.groundone.testnet',
             method: 'contract_vars',
             args: {},
         });
+
+        const reservedTokens = convertPropertyIdsToIdString(contractVars.reservedTokenIds ?? []);
+        const saleOpeningDate = new Date(+contractVars.saleOpening / 1e6);
+        const saleCloseDate = new Date(+contractVars.saleClose / 1e6);
+        const status = currentDate < saleOpeningDate ? 'Presale' : currentDate < saleCloseDate ? 'Open' : 'Closed';
+
+        const contractVarsParsed: ContractVarsParsed = {
+            reservedTokens,
+            ...contractVars,
+            saleOpeningDate,
+            saleCloseDate,
+            status,
+        };
+
+        return contractVarsParsed;
     }
 
     async property_vars() {

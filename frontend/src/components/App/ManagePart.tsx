@@ -3,69 +3,35 @@ import Button from '../ui-components/Button';
 import { NearContext, WalletState } from '../walletContext';
 import { useRouter } from 'next/router';
 import { debounce } from '../../utils/common';
+import { ContractVarsParsed } from '../../utils/near-interface';
 
 export default function ManagePart() {
     const router = useRouter();
     const [currentDate, setCurrentDate] = useState(new Date());
-    const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
-    const [contracts, setContracts] = useState<any[]>([]);
+    const { walletState, contract, tokenContract } = useContext(NearContext);
+    const [contracts, setContracts] = useState<ContractVarsParsed[]>([]);
 
-    const convertIdsToIdString = (ids: number[]) => {
-        if (!ids!.length) return '';
-        return ids
-            .map((value) => +value)
-            .sort((a, b) => a - b)
-            .reduce((acc: number[][], cur, i, array) => {
-                if (i === 0) {
-                    return [...acc, [cur]];
-                }
-                const last = acc[acc.length - 1];
-                if (cur === last[last.length - 1] + 1) {
-                    const lastItems = last.length > 1 ? last.slice(0, -1) : last;
-                    return [...acc.slice(0, -1), [...lastItems, cur]];
-                } else {
-                    return [...acc, [cur]];
-                }
-            }, [])
-            .map((token) =>
-                token.length > 1
-                    ? token[0] === token[1] - 1
-                        ? token.join('; ')
-                        : `${token[0]}-${token[token.length - 1]}`
-                    : token[0]
-            )
-            .join('; ');
-    };
+    const locale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
 
-    const getContracts = async () => {
+    const getContracts = async (forDate: Date) => {
         const ownerContractIDs = await contract.contractsForOwner();
         const contractsPromise = ownerContractIDs.map(async (contractId: string) => {
-            const contract = await tokenContract.contract_vars(contractId);
-            const tokens = convertIdsToIdString(contract.reservedTokenIds as number[]);
-            // console.log(`Contract info for ${contractId}: ${JSON.stringify(contractInfo)}`);
-            const saleOpeningDate = new Date(contract.saleOpening / 1e6);
-            const saleCloseDate = new Date(contract.saleClose / 1e6);
-            const status =
-                currentDate < contract.saleOpeningDate
-                    ? 'Presale'
-                    : currentDate < contract.saleCloseDate
-                    ? 'Open'
-                    : 'Closed';
-            return { ...contract, tokens, saleOpeningDate, saleCloseDate, status };
+            return tokenContract.contract_vars(contractId, forDate);
         });
         const ownerContracts = await Promise.all(contractsPromise);
         setContracts(ownerContracts);
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadContracts = useCallback(
         debounce(getContracts, 400),
-        // add function dependencies in the useEffect hook below
+        // add function dependencies in the useEffect hook for loadContracts()
         []
     );
 
     useEffect(() => {
-        loadContracts();
-    }, [contract, tokenContract, currentDate]);
+        loadContracts(currentDate);
+    }, [contract, tokenContract, currentDate, loadContracts]);
 
     const handleInitiatePresale = useCallback(
         async (contractId: string) => {
@@ -107,23 +73,24 @@ export default function ManagePart() {
                         </div>
                         <div>
                             Reserved Token Ids:
-                            <span className="font-semibold"> {contract.tokens}</span>
+                            <span className="font-semibold"> {contract.reservedTokens}</span>
                         </div>
                         <div>
                             PARTs sold: <span className="font-semibold">{contract.currentTokenId - 1}</span>
                         </div>
                         <div>
                             Sale Opening:{' '}
-                            <span className="font-semibold">
-                                {new Date(contract.saleOpening / 1e6).toLocaleString()}
-                            </span>
+                            <span className="font-semibold">{contract.saleOpeningDate.toLocaleDateString(locale)}</span>
                         </div>
                         <div>
                             Sale Close:{' '}
-                            <span className="font-semibold">{new Date(contract.saleClose / 1e6).toLocaleString()}</span>
+                            <span className="font-semibold">{contract.saleCloseDate.toLocaleDateString(locale)}</span>
                         </div>
                         <div>
                             Contract Status: <span className="font-semibold">{contract.contractStatus}</span>
+                        </div>
+                        <div>
+                            Calculated Status: <span className="font-semibold">{contract.status}</span>
                         </div>
                         <div className="flex justify-end gap-2">
                             <Button

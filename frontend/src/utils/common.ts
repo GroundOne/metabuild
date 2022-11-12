@@ -13,7 +13,6 @@ export async function getContractIdFromTransactionId(transactionId: string): Pro
     });
     const transactionJson = await transactionData.json();
     console.log('transactionJson', transactionJson);
-    // return transactionJson.result.transaction.actions[0].FunctionCall.method_name;
     const base64args = transactionJson.result.transaction.actions[0].FunctionCall.args;
     const args = JSON.parse(atob(base64args)).args;
     console.log(args);
@@ -36,4 +35,31 @@ export const debounce = (func: Function, delay = 1000) => {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => func.apply(context, args), delay);
     };
+};
+
+export const convertPropertyIdsToIdString = (ids: string[]) => {
+    if (!ids!.length) return '';
+    return ids
+        .map((value) => +value)
+        .sort((a, b) => a - b)
+        .reduce((acc: number[][], cur, i) => {
+            if (i === 0) {
+                return [...acc, [cur]];
+            }
+            const last = acc[acc.length - 1];
+            if (cur === last[last.length - 1] + 1) {
+                const lastItems = last.length > 1 ? last.slice(0, -1) : last;
+                return [...acc.slice(0, -1), [...lastItems, cur]];
+            } else {
+                return [...acc, [cur]];
+            }
+        }, [])
+        .map((token) =>
+            token.length > 1
+                ? token[0] === token[1] - 1
+                    ? token.join('; ')
+                    : `${token[0]}-${token[token.length - 1]}`
+                : token[0]
+        )
+        .join('; ');
 };
