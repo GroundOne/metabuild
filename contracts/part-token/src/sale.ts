@@ -15,22 +15,22 @@ export function internalMintSale({
 }) {
   // TODO: Make it possible to mint directly after presale has finished
   // without having to wait for lifetime methods to be finished
-  // assert(
-  //   contract.isPresaleDone(),
-  //   `Please wait until the presale is finished ${contract.saleOpening}`
-  // )
+  assert(
+    contract.isPresaleDone(),
+    `Please wait until the presale is finished ${contract.saleOpening}`
+  )
 
-  // assert(!contract.isSaleDone(), `The sale is finished ${contract.saleClose}`)
+  assert(!contract.isSaleDone(), `The sale is finished ${contract.saleClose}`)
 
-  // assert(
-  //   contract.currentTokenId <= contract.totalSupply,
-  //   `Total amount of tokens already minted ${contract.totalSupply}`
-  // )
+  assert(
+    contract.currentTokenId <= contract.totalSupply,
+    `Total amount of tokens already minted ${contract.totalSupply}`
+  )
 
-  // assert(
-  //   contract.contractStatus === ContractStatusEnum.SALE,
-  //   `Can only be called when saleOpening, distribution, cashout and presale minting finished and status \`sale\`, is ${contract.contractStatus}`
-  // )
+  assert(
+    contract.contractStatus === ContractStatusEnum.SALE,
+    `Can only be called when saleOpening, distribution, cashout and presale minting finished and status \`sale\`, is ${contract.contractStatus}`
+  )
 
   assert(
     near.signerAccountId() != contract.ownerId &&

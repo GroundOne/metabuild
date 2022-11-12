@@ -27,22 +27,22 @@ export function internalInitProperties(
 ) {
   const contract = initArgs.contract
 
-  // assert(
-  //   near.signerAccountId() === contract.ownerId,
-  //   `Only owner can distribute after presale`
-  // )
+  assert(
+    near.signerAccountId() === contract.ownerId,
+    `Only owner can distribute after presale`
+  )
 
-  // assert(
-  //   contract.isSaleDone(),
-  //   `Sale has to be finished to initialize properties, currently ${near.blockTimestamp()} is ending ${
-  //     contract.saleClose
-  //   }`
-  // )
+  assert(
+    contract.isSaleDone(),
+    `Sale has to be finished to initialize properties, currently ${near.blockTimestamp()} is ending ${
+      contract.saleClose
+    }`
+  )
 
-  // assert(
-  //   BigInt(contract.saleClose) < BigInt(initArgs.distributionStart),
-  //   `Distribution should happen before sale end. Distribution start is ${contract.distributionStart}, sale end ${contract.saleClose}`
-  // )
+  assert(
+    BigInt(contract.saleClose) < BigInt(initArgs.distributionStart),
+    `Distribution should happen before sale end. Distribution start is ${contract.distributionStart}, sale end ${contract.saleClose}`
+  )
   contract.contractStatus = ContractStatusEnum.PROPERTY_SELECTION
 
   contract.distributionStart = BigInt(initArgs.distributionStart).toString()
@@ -189,12 +189,12 @@ export function internalSetPropertyPreferences({
     `Properties not yet initialized. Please wait for it.`
   )
 
-  // assert(
-  //   !contract.isDistributionDone(),
-  //   `Property selection is already finished is ${near.blockTimestamp()} ended ${
-  //     contract.distributionStart
-  //   }`
-  // )
+  assert(
+    !contract.isDistributionDone(),
+    `Property selection is already finished is ${near.blockTimestamp()} ended ${
+      contract.distributionStart
+    }`
+  )
 
   const propertyPreference = new PropertyPreference(propertyPreferenceIds)
   contract.propertyPreferenceByTokenId.set(tokenKeys[0], propertyPreference)
@@ -205,17 +205,17 @@ export function internalDistributeProperties({
 }: {
   contract: Contract
 }) {
-  // assert(
-  //   contract.isDistributionDone(),
-  //   `Property Selection is not yet finished is ${near.blockTimestamp()} will end ${
-  //     contract.distributionStart
-  //   }`
-  // )
+  assert(
+    contract.isDistributionDone(),
+    `Property Selection is not yet finished is ${near.blockTimestamp()} will end ${
+      contract.distributionStart
+    }`
+  )
 
-  // assert(
-  //   contract.contractStatus === ContractStatusEnum.PROPERTY_SELECTION,
-  //   `Properties not yet initialized. Please initialize them first.`
-  // )
+  assert(
+    contract.contractStatus === ContractStatusEnum.PROPERTY_SELECTION,
+    `Properties not yet initialized. Please initialize them first.`
+  )
   contract.contractStatus = ContractStatusEnum.PROPERTY_DISTRIBUTION
 
   const sortedPartTokens = internalNftTokens({ contract }).sort((a, b) => {
