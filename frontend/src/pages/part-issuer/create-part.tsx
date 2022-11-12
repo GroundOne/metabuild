@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import AppHeader from '../../components/App/AppHeader';
-import CreatePart from '../../components/App/CreatePart';
+import AppHeader from '../../components/ui-components/AppHeader';
+import CreatePart from '../../components/part-issuer/CreatePart';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
 import AppCard from '../../components/ui-components/AppCard';
 

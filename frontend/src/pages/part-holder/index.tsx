@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import AppHeader from '../../components/App/AppHeader';
+import AppHeader from '../../components/ui-components/AppHeader';
 import PartHolderHowTo from '../../components/part-holder/PartHolderHowTo';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
 

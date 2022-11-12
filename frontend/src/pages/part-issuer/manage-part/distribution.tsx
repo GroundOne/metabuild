@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import AppHeader from '../../../components/App/AppHeader';
-import PropertyDistribution from '../../../components/App/PropertyDistribution';
+import AppHeader from '../../../components/ui-components/AppHeader';
+import PropertyDistribution from '../../../components/part-issuer/PropertyDistribution';
 import { ErrorBoundary } from '../../../components/ErrorBoundary';
 import AppCard from '../../../components/ui-components/AppCard';
 

@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import AppHeader from '../../components/App/AppHeader';
+import AppHeader from '../../components/ui-components/AppHeader';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
 
 const App: NextPage = () => {
