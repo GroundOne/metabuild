@@ -62,7 +62,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         if (isFullWidth) classNameList.push('w-full');
 
         if (isInvertedColor) {
-            classNameList.push('bg-[#C3CED8]', 'text-white', 'hover:text-white');
+            classNameList.push('bg-[#9eafbf]', 'text-white', 'hover:text-white');
         } else {
             classNameList.push('bg-white', 'text-gray-700', 'hover:text-black');
         }
