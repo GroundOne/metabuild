@@ -7,12 +7,16 @@ import { NearContext, WalletState } from '../walletContext';
 import CreatePartForm, { PartFormValue } from './CreatePartForm';
 import Modal from '../ui-components/Modal';
 import { getContractIdFromTransactionId } from '../../utils/common';
+import { ContractVarsParsed } from '../../utils/near-interface';
 
 export default function CreatePart() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [contractDeployed, setContractDeployed] = useState({ deployed: false, data: null });
+    const [contractDeployed, setContractDeployed] = useState<{ deployed: boolean; data: null | ContractVarsParsed }>({
+        deployed: false,
+        data: null,
+    });
 
-    const { wallet, walletState, contract } = useContext(NearContext);
+    const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
     const router = useRouter();
 
     // Handle redirect after deploying the contract
@@ -29,8 +33,16 @@ export default function CreatePart() {
                 const errorMessage = decodeURIComponent(urlParams.errorMessage as string) ?? 'Unknown error';
                 setErrorMessage(errorMessage);
             } else {
-                const projectId = getContractIdFromTransactionId(urlParams.transactionHashes as string);
-                console.log('projectId', projectId);
+                getContractIdFromTransactionId(urlParams.transactionHashes as string)
+                    .then((contractId) => {
+                        console.log('projectId', contractId);
+                        return tokenContract.contract_vars(contractId);
+                    })
+                    .then((contractVars) => {
+                        console.log('contractVars', contractVars);
+                        setContractDeployed({ deployed: true, data: contractVars });
+                    });
+                //http://localhost:3000/part-issuer/create-part?transactionHashes=6mfYjuwQCxs4UVAB3voVH66HF4aAEsYpJwKfURsCXf4t
                 // transactionHashes=EBz4gvA9v4ezc59ZnvyfEBUB9ZsXskrxcA2x5aS84G3G
             }
             // router.replace(router.pathname);

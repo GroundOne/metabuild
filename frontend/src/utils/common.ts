@@ -17,9 +17,7 @@ export async function getContractIdFromTransactionId(transactionId: string): Pro
     const args = JSON.parse(atob(base64args)).args;
     console.log(args);
     console.log(args.projectName);
-    return args.projectName;
-
-    // projectAddress
+    return args.projectAddress + '.part_factory.groundone.testnet';
 }
 
 export const debounce = (func: Function, delay = 1000) => {

@@ -14,10 +14,15 @@ export default function ManagePart() {
     const locale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
 
     const getContracts = async (forDate: Date) => {
-        const ownerContractIDs = await contract.contractsForOwner();
-        const contractsPromise = ownerContractIDs.map(async (contractId: string) => {
-            return tokenContract.contract_vars(contractId, forDate);
-        });
+        const ownerContractIDs: string[] = await contract.contractsForOwner();
+        console.log('ownerContractIDs', ownerContractIDs);
+
+        const contractsPromise = ownerContractIDs
+            // TODO: Check why this contract is giving error
+            .filter((contractId) => contractId !== 'demo_old.part_factory.groundone.testnet')
+            .map(async (contractId: string) => {
+                return tokenContract.contract_vars(contractId, forDate);
+            });
         const ownerContracts = await Promise.all(contractsPromise);
         setContracts(ownerContracts);
     };
@@ -25,7 +30,7 @@ export default function ManagePart() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadContracts = useCallback(
         debounce(getContracts, 400),
-        // add function dependencies in the useEffect hook for loadContracts()
+        // add function dependencies in the useEffect hook for loadContracts() otherwise debounce will not work
         []
     );
 
