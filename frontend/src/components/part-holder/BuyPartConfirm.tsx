@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
+import constants from '../../constants';
 import { convertPropertiesStringToIds } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
 import Button from '../ui-components/Button';
 import { NearContext, WalletState } from '../walletContext';
 
-export default function PartSaleStatistics() {
+export default function BuyPartConfirm() {
     const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
 
     const router = useRouter();
@@ -14,8 +15,16 @@ export default function PartSaleStatistics() {
     const [contractVars, setContractVars] = useState<null | ContractVarsParsed>(null);
 
     useEffect(() => {
-        tokenContract.contract_vars(urlParams.project as string).then((contractInfo) => setContractVars(contractInfo));
+        const contractAddress = urlParams.project + constants.CONTRACT_ADDRESS_SUFFIX;
+        tokenContract.contract_vars(contractAddress).then((contractInfo) => {
+            console.log(contractInfo);
+            setContractVars(contractInfo);
+        });
     }, [urlParams.project, tokenContract]);
+
+    const handlePurchase = async () => {
+        console.log('handlePurchase for ' + contractVars?.projectAddress);
+    };
 
     return (
         <>
@@ -60,11 +69,9 @@ export default function PartSaleStatistics() {
                     </div>
                 </div>
             </div>
-            <Link href="/part-issuer/manage-part">
-                <Button isInvertedColor size="md" className="mt-10">
-                    Back
-                </Button>
-            </Link>
+            <Button isInvertedColor size="md" className="mt-10" onClick={handlePurchase}>
+                CONFIRM PART PURCHASE FOR {contractVars?.priceLabel} NEAR
+            </Button>
         </>
     );
 }

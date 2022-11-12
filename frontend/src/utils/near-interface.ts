@@ -50,6 +50,7 @@ export type ContractVarsParsed = ContractVars & {
     reservedTokens: string;
     saleOpeningDate: Date;
     saleCloseDate: Date;
+    priceLabel: string;
     status: 'Presale' | 'PostPresale_Distribution' | 'PostPresale_ProceedToSale' | 'Sale' | 'Closed';
 };
 
@@ -339,6 +340,7 @@ export class PartTokenInterface extends InterfaceFields {
             const reservedTokens = convertPropertyIdsToIdString(contractVars.reservedTokenIds ?? []);
             const saleOpeningDate = new Date(+contractVars.saleOpening / 1e6);
             const saleCloseDate = new Date(+contractVars.saleClose / 1e6);
+            const priceLabel = (+(contractVars?.price ?? 1e26) / 1e24).toFixed(2);
             const status =
                 currentDate < saleOpeningDate
                     ? 'Presale'
@@ -351,6 +353,7 @@ export class PartTokenInterface extends InterfaceFields {
                 ...contractVars,
                 saleOpeningDate,
                 saleCloseDate,
+                priceLabel,
                 status,
             };
 

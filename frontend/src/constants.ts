@@ -31,6 +31,8 @@ const constants = {
     NFT_METADATA_SPEC: 'nft-1.0.0',
     MAX_PART_PRICE: 1_000_000,
     MIN_PART_PRICE: 0.01,
+    CONTRACT_ADDRESS_SUFFIX:
+        process.env.NODE_ENV === 'development' ? '.part_factory.groundone.testnet' : '.part_factory.groundone.near',
 };
 
 export default constants;

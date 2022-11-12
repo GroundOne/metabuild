@@ -10,6 +10,7 @@ const redirects = {
         ['/part-issuer/manage-part/part-sale-statistics']: '/part-issuer',
         ['/part-issuer/create-pvt']: '/part-issuer',
         ['/part-holder/buy']: '/part-holder',
+        ['/part-holder/buy/confirm']: '/part-holder',
         ['/part-holder/account']: '/part-holder',
     },
     [WalletState.Loading]: {},
