@@ -1,8 +1,9 @@
-import { assert, near } from "near-sdk-js"
+import { assert, near, Vector } from "near-sdk-js"
 import { internalNftTokens } from "./enumeration"
 import { Contract, ContractStatusEnum } from "./index"
 import { restoreOwners } from "./internal"
 import { InitializePropertiesArgs } from "./types"
+import { getValuesInVector } from "./utils"
 
 export class Property {
   id: string
@@ -14,27 +15,34 @@ export class Property {
   }
 }
 
+export class PropertyPreference {
+  constructor(
+    public propertyPreferenceIds: string[],
+    public whichPreferenceIsServed: string = ""
+  ) {}
+}
+
 export function internalInitProperties(
   initArgs: InitializePropertiesArgs & { contract: Contract }
 ) {
   const contract = initArgs.contract
 
-  assert(
-    near.signerAccountId() === contract.ownerId,
-    `Only owner can distribute after presale`
-  )
+  // assert(
+  //   near.signerAccountId() === contract.ownerId,
+  //   `Only owner can distribute after presale`
+  // )
 
-  assert(
-    contract.isSaleDone(),
-    `Sale has to be finished to initialize properties, currently ${near.blockTimestamp()} is ending ${
-      contract.saleClose
-    }`
-  )
+  // assert(
+  //   contract.isSaleDone(),
+  //   `Sale has to be finished to initialize properties, currently ${near.blockTimestamp()} is ending ${
+  //     contract.saleClose
+  //   }`
+  // )
 
-  assert(
-    BigInt(contract.saleClose) < BigInt(initArgs.distributionStart),
-    `Distribution should happen before sale end. Distribution start is ${contract.distributionStart}, sale end ${contract.saleClose}`
-  )
+  // assert(
+  //   BigInt(contract.saleClose) < BigInt(initArgs.distributionStart),
+  //   `Distribution should happen before sale end. Distribution start is ${contract.distributionStart}, sale end ${contract.saleClose}`
+  // )
   contract.contractStatus = ContractStatusEnum.PROPERTY_SELECTION
 
   contract.distributionStart = BigInt(initArgs.distributionStart).toString()
@@ -154,16 +162,6 @@ export function internalPropertyInfo({
 //   refundDeposit(requiredStorageInBytes)
 // }
 
-export class PropertyPreference {
-  constructor(
-    public propertyPreferenceIds: string[],
-    public isPreferenceServed: boolean = false
-  ) {
-    this.propertyPreferenceIds = propertyPreferenceIds
-    this.isPreferenceServed = isPreferenceServed
-  }
-}
-
 export function internalSetPropertyPreferences({
   propertyPreferenceIds,
   contract,
@@ -171,12 +169,19 @@ export function internalSetPropertyPreferences({
   propertyPreferenceIds: string[]
   contract: Contract
 }) {
-  let tokens = restoreOwners(
+  const tokenKeys = restoreOwners(
     contract.tokensPerOwner.get(near.signerAccountId())
-  )
+  ).toArray()
+
   assert(
-    tokens.length == 1,
+    tokenKeys.length === 0,
     `Current account doesn't own any PART Tokens ${near.signerAccountId()}`
+  )
+  // TODO: Actually the address of the reserved tokens can have multiple tokens
+  // Fix to account for that
+  assert(
+    tokenKeys.length > 1,
+    `Current account owns more than 1 PART Token ${near.signerAccountId()}, no preferences allowed`
   )
 
   assert(
@@ -184,17 +189,15 @@ export function internalSetPropertyPreferences({
     `Properties not yet initialized. Please wait for it.`
   )
 
-  assert(
-    !contract.isDistributionDone(),
-    `Property selection is already finished is ${near.blockTimestamp()} ended ${
-      contract.distributionStart
-    }`
-  )
+  // assert(
+  //   !contract.isDistributionDone(),
+  //   `Property selection is already finished is ${near.blockTimestamp()} ended ${
+  //     contract.distributionStart
+  //   }`
+  // )
 
-  contract.propertyPreferenceByTokenId.set(
-    near.signerAccountId(),
-    new PropertyPreference(propertyPreferenceIds)
-  )
+  const propertyPreference = new PropertyPreference(propertyPreferenceIds)
+  contract.propertyPreferenceByTokenId.set(tokenKeys[0], propertyPreference)
 }
 
 export function internalDistributeProperties({
@@ -202,18 +205,27 @@ export function internalDistributeProperties({
 }: {
   contract: Contract
 }) {
-  const partTokens = internalNftTokens({ contract })
+  // assert(
+  //   contract.isDistributionDone(),
+  //   `Property Selection is not yet finished is ${near.blockTimestamp()} will end ${
+  //     contract.distributionStart
+  //   }`
+  // )
 
-  assert(
-    contract.isDistributionDone(),
-    `Propert Selection is not yet finished is ${near.blockTimestamp()} will end ${
-      contract.distributionStart
-    }`
-  )
+  // assert(
+  //   contract.contractStatus === ContractStatusEnum.PROPERTY_SELECTION,
+  //   `Properties not yet initialized. Please initialize them first.`
+  // )
   contract.contractStatus = ContractStatusEnum.PROPERTY_DISTRIBUTION
 
+  const sortedPartTokens = internalNftTokens({ contract }).sort((a, b) => {
+    return +a.token_id - +b.token_id
+  })
+
+  const reservedProperties = getValuesInVector(contract.reservedProperties)
+
   // loop through all token holders
-  for (const partToken of partTokens) {
+  for (const partToken of sortedPartTokens) {
     const propertyPreference = contract.propertyPreferenceByTokenId.get(
       partToken.token_id
     ) as PropertyPreference | null
@@ -222,23 +234,37 @@ export function internalDistributeProperties({
       !propertyPreference ||
       propertyPreference.propertyPreferenceIds?.length === 0
     ) {
+      near.log(`No preference found for token ${partToken.token_id}, skipping`)
       continue
     }
 
     // loop through all preferences until unoccupied property found
-    for (const preference of propertyPreference.propertyPreferenceIds) {
-      const isOccupied = contract.tokenIdByProperty.get(preference)
+    for (const prefPropertyId of propertyPreference.propertyPreferenceIds) {
+      if (reservedProperties.includes(prefPropertyId)) {
+        // skip reserved properties
+        continue
+      }
+
+      if (!contract.tokensById.get(prefPropertyId)) {
+        // token for this preference does not exist
+        continue
+      }
+
+      const isOccupied = contract.tokenIdByProperty.get(prefPropertyId)
 
       if (!isOccupied) {
-        contract.tokenIdByProperty.set(preference, partToken.token_id)
-        propertyPreference.isPreferenceServed = true
+        contract.tokenIdByProperty.set(prefPropertyId, partToken.token_id)
+        propertyPreference.whichPreferenceIsServed = partToken.token_id
+        contract.propertyPreferenceByTokenId.set(
+          partToken.token_id,
+          propertyPreference
+        )
+        near.log(
+          `Distributing Property ${prefPropertyId} to TokenId ${partToken.token_id}`
+        )
         break
       }
     }
-
-    near.log(
-      `No preference were unoccupied for token id: ${partToken.token_id}`
-    )
   }
 
   contract.contractStatus = ContractStatusEnum.ENDED

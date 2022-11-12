@@ -141,7 +141,7 @@ export class Contract {
     if (initArgs.saleClose) {
       if (initArgs.saleOpening) {
         assert(
-          initArgs.saleOpening < initArgs.saleClose,
+          BigInt(initArgs.saleOpening) < BigInt(initArgs.saleClose),
           `Sale opening must be before SaleClose, sale opening is ${initArgs.saleOpening}, sale close ${initArgs.saleClose}`
         )
       }
@@ -240,7 +240,11 @@ export class Contract {
   // }
 
   @call({})
-  set_preferences_properties(propertyPreferenceIds: string[]) {
+  set_preferences_properties({
+    propertyPreferenceIds,
+  }: {
+    propertyPreferenceIds: string[]
+  }) {
     return internalSetPropertyPreferences({
       propertyPreferenceIds,
       contract: this,
@@ -374,6 +378,11 @@ export class Contract {
   @view({})
   current_properties() {
     return getValuesInHashMap(this.properties)
+  }
+
+  @view({})
+  property_preferences() {
+    return getValuesInHashMap(this.propertyPreferenceByTokenId)
   }
 
   @view({})

@@ -23,7 +23,7 @@ export function internalNftTokens({
   fromIndex?: string
   limit?: number
 }): JsonToken[] {
-  let tokens:JsonToken[] = []
+  let tokens: JsonToken[] = []
 
   //where to start pagination - if we have a fromIndex, we'll use that - otherwise start from 0 index
   let start = fromIndex ? parseInt(fromIndex) : 0
