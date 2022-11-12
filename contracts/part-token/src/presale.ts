@@ -42,9 +42,10 @@ export function internalDistributeAfterPresale({
 }: {
   contract: Contract
 }) {
-  // anyone can call this method
-  // however, it makes most sense have this done by an account associated with the owner
-  // as it requires gas to do so
+  assert(
+    near.predecessorAccountId() === contract.ownerId,
+    `Only owner can distribute presale tokens among participants`
+  )
 
   // check that presale is finished
   assert(
@@ -55,7 +56,7 @@ export function internalDistributeAfterPresale({
   // check that it can only be called once
   assert(
     contract.contractStatus === ContractStatusEnum.PRESALE,
-    `Can only be called when saleOpening finished and status \`presale\`, is ${contract.contractStatus}`
+    `Can only be called when ${ContractStatusEnum.PRESALE}, is ${contract.contractStatus}`
   )
   contract.contractStatus = ContractStatusEnum.POSTPRESALE_DISTRIBUTION
 
@@ -88,9 +89,10 @@ export function internalCashoutUnluckyPresaleParticipants({
 }: {
   contract: Contract
 }) {
-  // anyone can call this method
-  // however, it makes most sense have this done by an account associated with the owner
-  // as it requires gas to do so
+  assert(
+    near.predecessorAccountId() === contract.ownerId,
+    `Only owner can cashout unlucky presale participants`
+  )
 
   // participants who were unlucky get cashed out
   assert(
@@ -100,7 +102,7 @@ export function internalCashoutUnluckyPresaleParticipants({
 
   assert(
     contract.contractStatus === ContractStatusEnum.POSTPRESALE_DISTRIBUTION,
-    `Can only be called when saleOpening and distribution finished and status \`presaledistribution\` is ${contract.contractStatus}`
+    `Can only be called when status ${ContractStatusEnum.POSTPRESALE_DISTRIBUTION} is ${contract.contractStatus}`
   )
   contract.contractStatus = ContractStatusEnum.POSTPRESALE_CASHOUT
 
@@ -129,13 +131,13 @@ export function internalMintForPresaleParticipants({
   metadata: TokenMetadata
 }) {
   assert(
-    near.signerAccountId() === contract.ownerId,
+    near.predecessorAccountId() === contract.ownerId,
     `Only owner can mint for presale participants after presale`
   )
 
   assert(
     contract.contractStatus === ContractStatusEnum.POSTPRESALE_CASHOUT,
-    `Can only be called when saleOpening, distribution and cashout finished and status \`presalecashout\`, is ${contract.contractStatus}`
+    `Can only be called when status ${ContractStatusEnum.POSTPRESALE_CASHOUT}, is ${contract.contractStatus}`
   )
   contract.contractStatus = ContractStatusEnum.SALE
 

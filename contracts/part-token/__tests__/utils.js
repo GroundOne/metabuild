@@ -1,8 +1,10 @@
 export const SaleStatusEnum = {
   UNSET: "unset",
   PRESALE: "presale",
-  PRESALEDISTRIBUTION: "presaledistribution",
-  PRESALECASHOUT: "presalecashout",
+  POSTPRESALE_DISTRIBUTION: "postpresale_distribution",
+  POSTPRESALE_CASHOUT: "postpresale_cashout",
   SALE: "sale",
-  POSTSALE: "postsale",
+  PROPERTY_SELECTION: "property_selection",
+  PROPERTY_DISTRIBUTION: "property_distribution",
+  ENDED: "ended",
 }
