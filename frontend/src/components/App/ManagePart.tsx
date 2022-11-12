@@ -17,12 +17,9 @@ export default function ManagePart() {
         const ownerContractIDs: string[] = await contract.contractsForOwner();
         console.log('ownerContractIDs', ownerContractIDs);
 
-        const contractsPromise = ownerContractIDs
-            // TODO: Check why this contract is giving error
-            .filter((contractId) => contractId !== 'demo_old.part_factory.groundone.testnet')
-            .map(async (contractId: string) => {
-                return tokenContract.contract_vars(contractId, forDate);
-            });
+        const contractsPromise = ownerContractIDs.map(async (contractId: string) => {
+            return tokenContract.contract_vars(contractId, forDate);
+        });
         const ownerContracts = await Promise.all(contractsPromise);
         setContracts(ownerContracts);
     };
@@ -38,13 +35,10 @@ export default function ManagePart() {
         loadContracts(currentDate);
     }, [contract, tokenContract, currentDate, loadContracts]);
 
-    const handleInitiatePresale = useCallback(
+    const handlePostPresaleProceedToSale = useCallback(
         async (contractId: string) => {
             if (walletState === WalletState.SignedIn) {
-                // distribute_after_presale
                 await tokenContract.distributeAfterPresale(contractId);
-                // cashout_unlucky_presale_participants
-                // mint_for_presale_participants
             }
         },
         [tokenContract, walletState]
@@ -94,19 +88,27 @@ export default function ManagePart() {
                         <div>
                             Contract Status: <span className="font-semibold">{contract.contractStatus}</span>
                         </div>
-                        <div>
-                            Calculated Status: <span className="font-semibold">{contract.status}</span>
+                        <div className="bg-yellow-500">
+                            <i>
+                                Calculated Status: <span className="font-semibold">{contract.status}</span>
+                            </i>
                         </div>
+                        {/* 'Presale' | 'PostPresale_Distribution' | 'PostPresale_ProceedToSale' | 'Sale'  */}
                         <div className="flex justify-end gap-2">
                             <Button
                                 size="sm"
                                 isInvertedColor
                                 className="w-32"
-                                onClick={() => handleInitiatePresale(contract.projectAddress)}
+                                onClick={() =>
+                                    router.push(
+                                        router.pathname + '/part-sale-statistics?project=' + contract.projectAddress
+                                    )
+                                }
                             >
-                                Initiate pre-sale
+                                PART Sale
                             </Button>
                             <Button
+                                isDisabled={!(contract.status === 'PostPresale_Distribution')}
                                 size="sm"
                                 isInvertedColor
                                 onClick={() =>
@@ -116,14 +118,13 @@ export default function ManagePart() {
                                 Property Distribution...
                             </Button>
                             <Button
+                                isDisabled={!(contract.status === 'PostPresale_ProceedToSale')}
                                 size="sm"
                                 isInvertedColor
                                 className="w-32"
-                                onClick={() => {
-                                    console.log('clicked');
-                                }}
+                                onClick={() => handlePostPresaleProceedToSale(contract.projectAddress)}
                             >
-                                Manage
+                                Proceed to sale
                             </Button>
                         </div>
                     </section>

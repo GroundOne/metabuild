@@ -43,14 +43,14 @@ type ContractVars = {
     reservedTokenIds: string[];
     saleOpening: string;
     saleClose: string;
-    contractStatus: string;
+    contractStatus: 'presale' | 'ended' | string;
 };
 
 export type ContractVarsParsed = ContractVars & {
     reservedTokens: string;
     saleOpeningDate: Date;
     saleCloseDate: Date;
-    status: 'Presale' | 'Open' | 'Closed';
+    status: 'Presale' | 'PostPresale_Distribution' | 'PostPresale_ProceedToSale' | 'Sale' | 'Closed';
 };
 
 export class InterfaceFields {
@@ -176,13 +176,27 @@ export class PartTokenInterface extends InterfaceFields {
     ) {
         try {
             return await this.wallet.callMethod({
-                contractId: this.contractId,
+                contractId,
                 method: 'init_properties',
                 // method: 'init_property',
                 args,
             });
         } catch (error) {
             console.error('initProperty Error:', error);
+            throw error;
+        }
+    }
+
+    // Create Property Distribution Scheme
+    async postPresaleProceedToSale(contractId: string) {
+        try {
+            return await this.wallet.callMethod({
+                contractId,
+                method: 'postpresale_proceed_to_sale',
+                args: {},
+            });
+        } catch (error) {
+            console.error('postpresale_proceed_to_sale Error:', error);
             throw error;
         }
     }
@@ -325,7 +339,12 @@ export class PartTokenInterface extends InterfaceFields {
             const reservedTokens = convertPropertyIdsToIdString(contractVars.reservedTokenIds ?? []);
             const saleOpeningDate = new Date(+contractVars.saleOpening / 1e6);
             const saleCloseDate = new Date(+contractVars.saleClose / 1e6);
-            const status = currentDate < saleOpeningDate ? 'Presale' : currentDate < saleCloseDate ? 'Open' : 'Closed';
+            const status =
+                currentDate < saleOpeningDate
+                    ? 'Presale'
+                    : currentDate < saleCloseDate
+                    ? 'PostPresale_Distribution'
+                    : 'PostPresale_ProceedToSale';
 
             const contractVarsParsed: ContractVarsParsed = {
                 reservedTokens,

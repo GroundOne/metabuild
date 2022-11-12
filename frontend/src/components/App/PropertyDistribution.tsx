@@ -19,7 +19,7 @@ export default function PropertyDistribution() {
     const onPropertyDistribution = (dist: DistributionFormValue) => {
         const reservedPropertyIds = convertPropertiesStringToIds(dist.reservedProperties);
         if (walletState === WalletState.SignedIn) {
-            tokenContract.initProperty(dist.projectAddress, {
+            tokenContract.initProperty(contractVars!.projectAddress, {
                 totalSupply: dist.totalProperties,
                 distributionStart: (dist.distributionDate.getTime() * 1e6).toString(),
                 reservedTokenIds: reservedPropertyIds,
