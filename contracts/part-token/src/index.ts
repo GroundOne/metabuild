@@ -202,9 +202,9 @@ export class Contract {
   @call({ payableFunction: true })
   postpresale_proceed_to_sale({ metadata }: { metadata: TokenMetadata }) {
     // combines the methods for convenience
-    this.distribute_after_presale()
-    this.cashout_unlucky_presale_participants()
-    this.mint_for_presale_participants({ metadata })
+    internalDistributeAfterPresale({ contract: this })
+    internalCashoutUnluckyPresaleParticipants({ contract: this })
+    return internalMintForPresaleParticipants({ contract: this, metadata })
   }
 
   @call({})
