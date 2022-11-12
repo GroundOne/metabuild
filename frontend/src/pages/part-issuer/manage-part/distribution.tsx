@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import AppHeader from '../../../components/App/AppHeader';
-import PartDistribution from '../../../components/App/PartDistribution';
+import PropertyDistribution from '../../../components/App/PropertyDistribution';
 import { ErrorBoundary } from '../../../components/ErrorBoundary';
 import AppCard from '../../../components/ui-components/AppCard';
 
@@ -22,7 +22,7 @@ const App: NextPage = (props: any) => {
                         ]}
                     />
                     <AppCard>
-                        <PartDistribution />
+                        <PropertyDistribution />
                     </AppCard>
                 </ErrorBoundary>
             </div>

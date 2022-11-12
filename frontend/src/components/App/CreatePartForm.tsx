@@ -30,13 +30,13 @@ const partFormSchema = yup.object({
         .required()
         .min(1)
         .max(1_000_000),
-    saleOpeningDate: yup.date().label('Sale opening block').typeError('Sale opening block is required').required(),
+    saleOpeningDate: yup.date().label('Sale opening time').typeError('Sale opening time is required').required(),
     saleCloseDate: yup
         .date()
-        .label('Sale close block')
-        .typeError('Sale close block is required')
+        .label('Sale close time')
+        .typeError('Sale close time is required')
         .required()
-        .min(yup.ref('saleOpeningDate'), 'Sale close block must be after sale opening block'),
+        .min(yup.ref('saleOpeningDate'), 'Sale close time must be after sale opening time'),
     partPrice: yup
         .number()
         .label('PART price')
@@ -174,7 +174,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     type="datetime-local"
                     min={new Date().toISOString().split('T')[0]}
                     isDisabled={isSubmitting}
-                    placeholder="Sale Opening Block"
+                    placeholder="Sale Opening Time"
                     isInvalid={!!errors.saleOpeningDate}
                     errorText={errors.saleOpeningDate?.message as string | undefined}
                     {...register('saleOpeningDate')}
@@ -184,7 +184,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     type="datetime-local"
                     min={new Date().toISOString().split('T')[0]}
                     isDisabled={isSubmitting}
-                    placeholder="Sale Close Block"
+                    placeholder="Sale Close Time"
                     isInvalid={!!errors.saleCloseDate}
                     errorText={errors.saleCloseDate?.message as string | undefined}
                     {...register('saleCloseDate')}

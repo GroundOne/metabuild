@@ -100,11 +100,16 @@ export class PartTokenFactoryInterface extends InterfaceFields {
 
         console.log('Requesting contracts for account:', account_id);
 
-        return await this.wallet.viewMethod({
-            contractId: this.contractId,
-            method: 'contracts_for_owner',
-            args: { account_id },
-        });
+        try {
+            return await this.wallet.viewMethod({
+                contractId: this.contractId,
+                method: 'contracts_for_owner',
+                args: { account_id },
+            });
+        } catch (error) {
+            console.error('contractsForOwner Error:', error);
+            return [];
+        }
     }
 
     async getRequiredDeposit() {
@@ -162,6 +167,24 @@ export class PartTokenInterface extends InterfaceFields {
             method: 'init',
             args,
         });
+    }
+
+    // Create Property Distribution Scheme
+    async initProperty(
+        contractId: string,
+        args: { totalSupply: number; distributionStart: string; reservedTokenIds: string[] }
+    ) {
+        try {
+            return await this.wallet.callMethod({
+                contractId: this.contractId,
+                method: 'init_properties',
+                // method: 'init_property',
+                args,
+            });
+        } catch (error) {
+            console.error('initProperty Error:', error);
+            throw error;
+        }
     }
 
     async participatePresale() {
@@ -292,26 +315,31 @@ export class PartTokenInterface extends InterfaceFields {
     }
 
     async contract_vars(contractId?: string, currentDate = new Date()) {
-        const contractVars: ContractVars = await this.wallet.viewMethod({
-            contractId: contractId ?? this.contractId, // 'fff_demo_project.part_factory.groundone.testnet',
-            method: 'contract_vars',
-            args: {},
-        });
+        try {
+            const contractVars: ContractVars = await this.wallet.viewMethod({
+                contractId: contractId ?? this.contractId, // 'fff_demo_project.part_factory.groundone.testnet',
+                method: 'contract_vars',
+                args: {},
+            });
 
-        const reservedTokens = convertPropertyIdsToIdString(contractVars.reservedTokenIds ?? []);
-        const saleOpeningDate = new Date(+contractVars.saleOpening / 1e6);
-        const saleCloseDate = new Date(+contractVars.saleClose / 1e6);
-        const status = currentDate < saleOpeningDate ? 'Presale' : currentDate < saleCloseDate ? 'Open' : 'Closed';
+            const reservedTokens = convertPropertyIdsToIdString(contractVars.reservedTokenIds ?? []);
+            const saleOpeningDate = new Date(+contractVars.saleOpening / 1e6);
+            const saleCloseDate = new Date(+contractVars.saleClose / 1e6);
+            const status = currentDate < saleOpeningDate ? 'Presale' : currentDate < saleCloseDate ? 'Open' : 'Closed';
 
-        const contractVarsParsed: ContractVarsParsed = {
-            reservedTokens,
-            ...contractVars,
-            saleOpeningDate,
-            saleCloseDate,
-            status,
-        };
+            const contractVarsParsed: ContractVarsParsed = {
+                reservedTokens,
+                ...contractVars,
+                saleOpeningDate,
+                saleCloseDate,
+                status,
+            };
 
-        return contractVarsParsed;
+            return contractVarsParsed;
+        } catch (error) {
+            console.log('contract_vars error', error);
+            throw error;
+        }
     }
 
     async property_vars() {

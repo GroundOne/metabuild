@@ -6,7 +6,7 @@ import { DeployArgs, NFTContractMetadata } from '../../utils/partToken';
 import { NearContext, WalletState } from '../walletContext';
 import CreatePartForm, { PartFormValue } from './CreatePartForm';
 import Modal from '../ui-components/Modal';
-import { getContractIdFromTransactionId } from '../../utils/common';
+import { convertPropertiesStringToIds, getContractIdFromTransactionId } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
 
 export default function CreatePart() {
@@ -67,16 +67,7 @@ export default function CreatePart() {
     };
 
     const onCreatePart = (part: PartFormValue) => {
-        const reservedTokenIds = (part.reserveParts ?? '')
-            .replace(/\s+/g, '') // remove spaces
-            .split(';')
-            .flatMap((range) => {
-                const [from, to] = range.split('-').map((num) => parseInt(num, 10));
-                return to ? Array.from({ length: to - from + 1 }, (_, i) => from + i) : [from];
-            })
-            .filter((value, index, self) => self.indexOf(value) === index)
-            .sort((a, b) => a - b)
-            .map((value) => value.toString());
+        const reservedTokenIds = convertPropertiesStringToIds(part.reserveParts);
 
         const projectAddress = part.projectAddress.toLowerCase();
 
