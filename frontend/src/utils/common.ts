@@ -23,17 +23,15 @@ export async function getContractIdFromTransactionId(transactionId: string): Pro
     // projectAddress
 }
 
-export const debounce = (func: Function, delay: number) => {
+export const debounce = (func: Function, delay = 1000) => {
     let firstCall = true;
     let debounceTimer: NodeJS.Timeout;
-    return function () {
+    return function (...args: any): any {
         // @ts-ignore
         const context = this;
-        const args = arguments;
         if (firstCall) {
-            func.apply(context, args);
             firstCall = false;
-            return;
+            return func.apply(context, args);
         }
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => func.apply(context, args), delay);

@@ -11,7 +11,7 @@ export default function PartDistribution() {
 
     useEffect(() => {
         tokenContract.contract_vars(urlParams.project as string).then((contractInfo) => setContractInfo(contractInfo));
-    }, [urlParams.project]);
+    }, [urlParams.project, tokenContract]);
 
     return (
         <div>

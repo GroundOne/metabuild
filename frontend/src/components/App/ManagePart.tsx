@@ -37,27 +37,34 @@ export default function ManagePart() {
             .join('; ');
     };
 
+    const getContracts = async () => {
+        const ownerContractIDs = await contract.contractsForOwner();
+        const contractsPromise = ownerContractIDs.map(async (contractId: string) => {
+            const contract = await tokenContract.contract_vars(contractId);
+            const tokens = convertIdsToIdString(contract.reservedTokenIds as number[]);
+            // console.log(`Contract info for ${contractId}: ${JSON.stringify(contractInfo)}`);
+            const saleOpeningDate = new Date(contract.saleOpening / 1e6);
+            const saleCloseDate = new Date(contract.saleClose / 1e6);
+            const status =
+                currentDate < contract.saleOpeningDate
+                    ? 'Presale'
+                    : currentDate < contract.saleCloseDate
+                    ? 'Open'
+                    : 'Closed';
+            return { ...contract, tokens, saleOpeningDate, saleCloseDate, status };
+        });
+        const ownerContracts = await Promise.all(contractsPromise);
+        setContracts(ownerContracts);
+    };
+
+    const loadContracts = useCallback(
+        debounce(getContracts, 400),
+        // add function dependencies in the useEffect hook below
+        []
+    );
+
     useEffect(() => {
-        const loadContracts = async () => {
-            const ownerContractIDs = await contract.contractsForOwner();
-            const ownerContracts = [];
-            for await (const contractId of ownerContractIDs) {
-                const contract = await tokenContract.contract_vars(contractId);
-                const tokens = convertIdsToIdString(contract.reservedTokenIds as number[]);
-                // console.log(`Contract info for ${contractId}: ${JSON.stringify(contractInfo)}`);
-                const saleOpeningDate = new Date(contract.saleOpening / 1e6);
-                const saleCloseDate = new Date(contract.saleClose / 1e6);
-                const status =
-                    currentDate < contract.saleOpeningDate
-                        ? 'Presale'
-                        : currentDate < contract.saleCloseDate
-                        ? 'Open'
-                        : 'Closed';
-                ownerContracts.push({ ...contract, tokens, saleOpeningDate, saleCloseDate, status });
-            }
-            setContracts(ownerContracts);
-        };
-        debounce(loadContracts, 500)();
+        loadContracts();
     }, [contract, tokenContract, currentDate]);
 
     const handleInitiatePresale = useCallback(
