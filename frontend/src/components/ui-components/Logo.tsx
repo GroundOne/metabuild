@@ -6,6 +6,7 @@ export default function Logo() {
         <div className="flex justify-start lg:w-0 lg:flex-1">
             <Link href="/" passHref>
                 <Image
+                    priority
                     className="h-8 w-auto cursor-pointer sm:h-10"
                     src="/ground-one.svg"
                     alt=""
