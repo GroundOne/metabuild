@@ -18,7 +18,7 @@ export function getValuesInHashMap(hashmap: UnorderedMap) {
   const values = []
 
   for (const key of hashmap.keys.toArray().sort()) {
-    const value = hashmap[key as string]
+    const value = hashmap.get(key as string)
 
     values.push({ [key as string]: value })
   }
