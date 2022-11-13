@@ -78,7 +78,7 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
                         </div>
                         <div className="flex flex-row">
                             <div className="w-1/3">Parts Sold</div>
-                            <div className="w-2/3 text-black">{contractVars?.currentTokenId ?? 1 - 1}</div>
+                            <div className="w-2/3 text-black">{(contractVars?.currentTokenId ?? 1) - 1}</div>
                         </div>
                         <div className="flex flex-row">
                             <div className="w-1/3">Price of PART</div>
