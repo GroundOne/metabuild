@@ -141,7 +141,7 @@ const CreatePartReceipt: React.FC<{ contractVars: ContractVarsParsed; transactio
                                 size="sm"
                                 className="mt-10"
                             >
-                                Send Email
+                                {emailSent.status === 'sending' ? `Sending…` : `Send Email`}
                             </Button>
                         </div>
                     </div>
