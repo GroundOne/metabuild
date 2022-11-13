@@ -8,12 +8,18 @@ import CreatePartForm, { PartFormValue } from './CreatePartForm';
 import Modal from '../ui-components/Modal';
 import { convertPropertiesStringToIds, getContractIdFromTransactionId } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
+import CreatePartReceipt from './CreatePartReceipt';
 
 export default function CreatePart() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [contractDeployed, setContractDeployed] = useState<{ deployed: boolean; data: null | ContractVarsParsed }>({
+    const [contractDeployed, setContractDeployed] = useState<{
+        deployed: boolean;
+        data: null | ContractVarsParsed;
+        transactionHashes: null | string;
+    }>({
         deployed: false,
         data: null,
+        transactionHashes: null,
     });
 
     const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
@@ -21,6 +27,9 @@ export default function CreatePart() {
 
     // Handle redirect after deploying the contract
     useEffect(() => {
+        setErrorMessage(null);
+        setContractDeployed({ deployed: false, data: null, transactionHashes: null });
+
         const urlParams = router.query;
         // if (urlParams.transactionHashes) {
         if (urlParams.transactionHashes || urlParams.errorCode) {
@@ -40,17 +49,16 @@ export default function CreatePart() {
                     })
                     .then((contractVars) => {
                         console.log('contractVars', contractVars);
-                        setContractDeployed({ deployed: true, data: contractVars });
+                        setContractDeployed({
+                            deployed: true,
+                            data: contractVars,
+                            transactionHashes: urlParams.transactionHashes as string,
+                        });
                     });
-                //http://localhost:3000/part-issuer/create-part?transactionHashes=6mfYjuwQCxs4UVAB3voVH66HF4aAEsYpJwKfURsCXf4t
-                // transactionHashes=EBz4gvA9v4ezc59ZnvyfEBUB9ZsXskrxcA2x5aS84G3G
+                //http://localhost:3000/part-issuer/create-part?transactionHashes=48iBkvpn3TMGdYVZmFdPvZAsg864S1svdXznY5uhdPBP
             }
-            // router.replace(router.pathname);
-        } else {
-            setErrorMessage(null);
-            setContractDeployed({ deployed: false, data: null });
         }
-    }, [wallet, router, router.query]);
+    }, [wallet, router, router.query, tokenContract]);
 
     const deployAndInitTokenContract = async (args: DeployArgs) => {
         console.log('deployAndInitTokenContract', walletState);
@@ -62,7 +70,7 @@ export default function CreatePart() {
 
     const handleCloseModal = () => {
         setErrorMessage(null);
-        setContractDeployed({ deployed: false, data: null });
+        setContractDeployed({ deployed: false, data: null, transactionHashes: null });
         router.replace(router.pathname);
     };
 
@@ -93,16 +101,31 @@ export default function CreatePart() {
 
     return (
         <>
-            <Modal
+            {contractDeployed.data && (
+                <CreatePartReceipt
+                    contractVars={contractDeployed.data}
+                    transactionHashes={contractDeployed.transactionHashes!}
+                />
+            )}
+            {/* <Modal
                 show={contractDeployed.deployed}
                 onClose={handleCloseModal}
-                title=" Contract deployed successfully"
-            />
+                title="Your contract has been deployed successfully"
+            >
+                <div className="flex flex-col items-center">
+                    <div className="text-center text-2xl font-bold">Your contract has been deployed successfully</div>
+                    <div className="text-center text-lg">You can now mint your parts and start selling them</div>
+                </div>
+            </Modal> */}
             <Modal show={!!errorMessage} onClose={handleCloseModal} title="Contract deployment failed">
                 <p>{errorMessage}</p>
             </Modal>
-            <div className="font-semibold">Create PART Scheme</div>
-            <CreatePartForm onCreatePartRequest={onCreatePart} />
+            {!contractDeployed.deployed && (
+                <>
+                    <div className="font-semibold">Create PART Scheme</div>
+                    <CreatePartForm onCreatePartRequest={onCreatePart} />
+                </>
+            )}
         </>
     );
 }

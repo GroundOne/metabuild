@@ -15,6 +15,8 @@ export default function SendMail() {
                 body: JSON.stringify({
                     to: 'frangiskos@gmail.com',
                     template: 'testMail',
+                    subject: 'GroundOne: Test mail',
+                    message: 'This is a test mail',
                 }),
             });
 
