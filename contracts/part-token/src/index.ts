@@ -61,6 +61,7 @@ export enum ContractStatusEnum {
 export class Contract {
   ownerId: string
   projectName: string
+  projectBackgroundUrl: string
 
   // Part Metrics
   currentTokenId: number = 1 // start token IDs with `1`
@@ -94,6 +95,7 @@ export class Contract {
 
     this.ownerId = ""
     this.projectName = "PART Token"
+    this.projectBackgroundUrl = ""
 
     // PART Metrics
     this.totalSupply = 3
@@ -131,6 +133,9 @@ export class Contract {
   @initialize({})
   init(initArgs: InitializeArgs) {
     this.projectName = initArgs.projectName
+    if (initArgs.projectBackgroundUrl)
+      this.projectBackgroundUrl = initArgs.projectBackgroundUrl
+
     this.ownerId = initArgs.ownerId
     this.totalSupply = initArgs.totalSupply
     this.price = initArgs.price
@@ -339,6 +344,7 @@ export class Contract {
       ownerId: this.ownerId,
       currentTokenId: this.currentTokenId,
       projectName: this.projectName,
+      projectBackgroundUrl: this.projectBackgroundUrl,
       projectAddress: near.currentAccountId(),
       totalSupply: this.totalSupply,
       price: this.price,
