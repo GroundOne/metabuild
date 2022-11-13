@@ -6,7 +6,7 @@ Additionally, the corresponding frontend is also included. It's written in TypeS
 
 [Design](https://xd.adobe.com/view/f751c412-8537-4f9d-803f-1f00b938c413-a202/grid?hints=off)
 
-[Landing page](https://www.groundone.io/)
+[Landing page](https://www.groundone.io/)  
 [GitBook of the project](https://documentation.groundone.io/)
 
 [Deployed Project App](https://metabuild-dev.vercel.app/)
