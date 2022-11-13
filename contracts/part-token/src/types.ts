@@ -3,6 +3,7 @@ import { Property } from "./property"
 
 export type InitializeArgs = {
   projectName: string
+  projectBackgroundUrl?: string
   ownerId: string
   totalSupply: number
   price: string

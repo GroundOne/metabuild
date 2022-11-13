@@ -15,7 +15,7 @@ import {
   internalTokensForOwner,
   internalTotalSupply,
 } from "./enumeration"
-import { internalPayoutNear } from "./internal"
+import { internalArchiveContract, internalPayoutNear } from "./internal"
 import {
   internalNftMetadata,
   NFTContractMetadata,
@@ -61,6 +61,8 @@ export enum ContractStatusEnum {
 export class Contract {
   ownerId: string
   projectName: string
+  projectBackgroundUrl: string
+  isArchived: boolean
 
   // Part Metrics
   currentTokenId: number = 1 // start token IDs with `1`
@@ -94,6 +96,8 @@ export class Contract {
 
     this.ownerId = ""
     this.projectName = "PART Token"
+    this.projectBackgroundUrl = ""
+    this.isArchived = false
 
     // PART Metrics
     this.totalSupply = 3
@@ -131,6 +135,9 @@ export class Contract {
   @initialize({})
   init(initArgs: InitializeArgs) {
     this.projectName = initArgs.projectName
+    if (initArgs.projectBackgroundUrl)
+      this.projectBackgroundUrl = initArgs.projectBackgroundUrl
+
     this.ownerId = initArgs.ownerId
     this.totalSupply = initArgs.totalSupply
     this.price = initArgs.price
@@ -257,6 +264,11 @@ export class Contract {
     return internalDistributeProperties({ contract: this })
   }
 
+  @call({})
+  archive_contract({ isArchived }: { isArchived: boolean }) {
+    return internalArchiveContract({ isArchived, contract: this })
+  }
+
   /*
     OWNER
   */
@@ -339,6 +351,7 @@ export class Contract {
       ownerId: this.ownerId,
       currentTokenId: this.currentTokenId,
       projectName: this.projectName,
+      projectBackgroundUrl: this.projectBackgroundUrl,
       projectAddress: near.currentAccountId(),
       totalSupply: this.totalSupply,
       price: this.price,
@@ -346,6 +359,7 @@ export class Contract {
       saleOpening: this.saleOpening,
       saleClose: this.saleClose,
       contractStatus: this.contractStatus,
+      isArchived: this.isArchived,
     }
   }
 

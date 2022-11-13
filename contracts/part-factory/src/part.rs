@@ -8,6 +8,7 @@ use near_sdk::serde::{Deserialize, Serialize};
 pub struct InitializeArgs {
     pub projectAddress: String, // will be subaccount name of factory
     pub projectName: String,
+    pub projectBackgroundUrl: Option<String>,
     pub ownerId: String,
     pub totalSupply: u128,
     pub price: String, // yoctoNear
@@ -22,6 +23,7 @@ pub struct InitializeArgs {
 #[allow(non_snake_case)] // TODO rename fields when rust part contract is set up
 pub struct DeployArgs {
     pub projectName: String,
+    pub projectBackgroundUrl: Option<String>,
     pub ownerId: String,
     pub totalSupply: u128,
     pub price: String, // yoctoNear
@@ -35,6 +37,7 @@ impl DeployArgs {
     pub fn from_init_args(args: InitializeArgs) -> Self {
         DeployArgs {
             projectName: args.projectName,
+            projectBackgroundUrl: args.projectBackgroundUrl,
             ownerId: args.ownerId,
             totalSupply: args.totalSupply,
             price: args.price,
