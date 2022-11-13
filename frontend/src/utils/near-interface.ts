@@ -41,6 +41,7 @@ type ContractVars = {
     projectBackgroundUrl?: string;
     totalSupply: number;
     price: string;
+    isArchived?: boolean;
     reservedTokenIds: string[];
     saleOpening: string;
     saleClose: string;
@@ -214,6 +215,21 @@ export class PartTokenInterface extends InterfaceFields {
             });
         } catch (error) {
             console.error('postpresale_proceed_to_sale Error:', error);
+            throw error;
+        }
+    }
+
+    async archiveContract(contractId: string, isArchived = true) {
+        try {
+            return await this.wallet.callMethod({
+                contractId,
+                method: 'archive_contract',
+                args: {
+                    isArchived,
+                },
+            });
+        } catch (error) {
+            console.error('archive_contract Error:', error);
             throw error;
         }
     }

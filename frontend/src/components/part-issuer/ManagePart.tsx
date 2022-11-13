@@ -21,7 +21,19 @@ export default function ManagePart() {
             return tokenContract.contract_vars(contractId, forDate);
         });
         const ownerContracts = await Promise.all(contractsPromise);
-        setContracts(ownerContracts);
+        const availableContracts = ownerContracts
+            .filter((contract) => !contract.isArchived)
+            .filter(
+                (contract) =>
+                    ![
+                        'demo_project_test.part_factory.groundone.testnet',
+                        'demo_project_test_12.part_factory.groundone.testnet',
+                        'test_1.part_factory.groundone.testnet',
+                    ].includes(contract.projectAddress)
+            );
+        console.log('ownerContracts', ownerContracts);
+        console.log('availableContracts', availableContracts);
+        setContracts(availableContracts);
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,6 +56,24 @@ export default function ManagePart() {
         [tokenContract, walletState]
     );
 
+    const handleArchiveContract = useCallback(
+        async (contractId: string) => {
+            if (walletState === WalletState.SignedIn) {
+                if (
+                    confirm(
+                        'Are you sure you want to archive this project? If you proceed you will loose access to this project forever.'
+                    ) == true
+                ) {
+                    await tokenContract.archiveContract(contractId);
+                    console.log('archiving contract', contractId);
+                } else {
+                    console.log('NOT archiving contract', contractId);
+                }
+            }
+        },
+        [tokenContract, walletState]
+    );
+
     return (
         <>
             <div className="mr-12 flex justify-between">
@@ -61,7 +91,7 @@ export default function ManagePart() {
             {contracts.map((contract) => {
                 return (
                     <section
-                        className="m2 my-4 mr-12 flex flex-col gap-3 rounded-3xl border border-black py-4 px-6"
+                        className="m2 relative my-4 mr-12 flex flex-col gap-3 rounded-3xl border border-black py-4 px-6"
                         key={contract.projectAddress}
                     >
                         <div>
@@ -92,6 +122,13 @@ export default function ManagePart() {
                             <i>
                                 Calculated Status: <span className="font-semibold">{contract.status}</span>
                             </i>
+                        </div>
+                        {/* rounded close button */}
+                        <div
+                            onClick={() => handleArchiveContract(contract.projectAddress)}
+                            className="absolute top-3 right-3 w-8 rounded-full border border-black bg-slate-100 text-center hover:bg-slate-300"
+                        >
+                            x
                         </div>
                         {/* 'Presale' | 'PostPresale_Distribution' | 'PostPresale_ProceedToSale' | 'Sale'  */}
                         <div className="flex justify-end gap-2">
