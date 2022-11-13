@@ -14,7 +14,11 @@ export default function PartSaleStatistics() {
     const [contractVars, setContractVars] = useState<null | ContractVarsParsed>(null);
 
     useEffect(() => {
-        tokenContract.contract_vars(urlParams.project as string).then((contractInfo) => setContractVars(contractInfo));
+        tokenContract.contract_vars(urlParams.project as string).then((contractInfo) => {
+            console.log(contractInfo);
+
+            setContractVars(contractInfo);
+        });
     }, [urlParams.project, tokenContract]);
 
     return (

@@ -1,3 +1,5 @@
+import constants from '../constants';
+
 export async function getContractIdFromTransactionId(transactionId: string): Promise<string> {
     const transactionData = await fetch('https://archival-rpc.testnet.near.org', {
         method: 'POST',
@@ -17,7 +19,7 @@ export async function getContractIdFromTransactionId(transactionId: string): Pro
     const args = JSON.parse(atob(base64args)).args;
     console.log(args);
     console.log(args.projectName);
-    return args.projectAddress + '.part_factory.groundone.testnet';
+    return args.projectAddress + constants.CONTRACT_ADDRESS_SUFFIX;
 }
 
 export const debounce = (func: Function, delay = 1000) => {

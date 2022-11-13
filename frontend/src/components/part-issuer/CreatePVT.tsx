@@ -11,7 +11,6 @@ const methods = {
             { getContracts: [] },
             { supplyForOwner: [] },
             { contractsForOwner: [] },
-            // { contractsForOwner: ['fff_demo_project.part_factory.groundone.testnet'] }, // Trying with this contract id
             { getRequiredDeposit: [] },
         ],
         call: [{ new: [] }, { createToken: [] }, { storageDeposit: [] }],

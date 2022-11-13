@@ -27,17 +27,10 @@ const BuyPart: React.FC = () => {
         register,
         handleSubmit,
         formState: { errors },
-        setValue,
         setError,
     } = useForm<DistributionFormValue>({ resolver: yupResolver(distributionFormSchema) });
 
     const contractSuffix = constants.CONTRACT_ADDRESS_SUFFIX;
-
-    // useEffect(() => {
-    //     if (process.env.NODE_ENV === 'development') {
-    //         setValue('projectAddress', 'demo_project_test_2.part_factory.groundone.testnet');
-    //     }
-    // }, [setValue]);
 
     const onSubmit = async (data: DistributionFormValue) => {
         try {
