@@ -284,3 +284,18 @@ export function internalPayoutNear({
   near.promiseBatchActionTransfer(transferPromiseId, amountBigInt)
   return near.promiseReturn(transferPromiseId)
 }
+
+export function internalArchiveContract({
+  isArchived,
+  contract,
+}: {
+  isArchived: boolean
+  contract: Contract
+}) {
+  assert(
+    near.predecessorAccountId() === contract.ownerId,
+    `Only owner can set contract to archive`
+  )
+
+  contract.isArchived = isArchived
+}
