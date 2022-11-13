@@ -36,9 +36,9 @@ export default function ManagePart() {
     }, [contract, tokenContract, currentDate, loadContracts]);
 
     const handlePostPresaleProceedToSale = useCallback(
-        async (contractId: string) => {
+        async (contractId: string, projectName: string) => {
             if (walletState === WalletState.SignedIn) {
-                await tokenContract.distributeAfterPresale(contractId);
+                await tokenContract.postPresaleProceedToSale(contractId, projectName);
             }
         },
         [tokenContract, walletState]
@@ -105,7 +105,7 @@ export default function ManagePart() {
                                     )
                                 }
                             >
-                                PART Sale
+                                Project Info
                             </Button>
                             <Button
                                 isDisabled={!(contract.status === 'PostPresale_Distribution')}
@@ -122,7 +122,9 @@ export default function ManagePart() {
                                 size="sm"
                                 isInvertedColor
                                 className="w-32"
-                                onClick={() => handlePostPresaleProceedToSale(contract.projectAddress)}
+                                onClick={() =>
+                                    handlePostPresaleProceedToSale(contract.projectAddress, contract.projectName)
+                                }
                             >
                                 Proceed to sale
                             </Button>

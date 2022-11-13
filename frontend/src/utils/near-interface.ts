@@ -44,7 +44,18 @@ type ContractVars = {
     reservedTokenIds: string[];
     saleOpening: string;
     saleClose: string;
-    contractStatus: 'presale' | 'ended' | string;
+    contractStatus: /** Buyer & Architect: show Project Info */
+    | 'presale'
+        /** (After Opening, Before Sale Close time) Architect: Show Proceed to sale */
+        | 'postpresale_distribution'
+        /** (After Sale Close Time) Architect: Show Proceed to sale */
+        | 'postpresale_cashout'
+        /** d */
+        | 'sale'
+        /** d */
+        | 'property_selection'
+        /** d */
+        | 'ended';
 };
 
 export type ContractVarsParsed = ContractVars & {
@@ -190,12 +201,16 @@ export class PartTokenInterface extends InterfaceFields {
     }
 
     // Create Property Distribution Scheme
-    async postPresaleProceedToSale(contractId: string) {
+    async postPresaleProceedToSale(contractId: string, projectTitle: string) {
         try {
             return await this.wallet.callMethod({
                 contractId,
                 method: 'postpresale_proceed_to_sale',
-                args: {},
+                args: {
+                    title: `${projectTitle} PART Token`,
+                    description: 'Token ID is your ranking.',
+                    media: 'https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif',
+                },
             });
         } catch (error) {
             console.error('postpresale_proceed_to_sale Error:', error);
@@ -342,6 +357,8 @@ export class PartTokenInterface extends InterfaceFields {
             const saleOpeningDate = new Date(+contractVars.saleOpening / 1e6);
             const saleCloseDate = new Date(+contractVars.saleClose / 1e6);
             const priceLabel = (+(contractVars?.price ?? 1e26) / 1e24).toFixed(2);
+            // const userStatus = contractVars?.contractStatus === 'presale' ? 'presale'
+            //     : contractVars?.contractStatus === 'sale' ? 'sale'
             const status =
                 currentDate < saleOpeningDate
                     ? 'Presale'
