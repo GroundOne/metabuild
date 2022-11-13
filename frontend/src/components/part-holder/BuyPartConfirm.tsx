@@ -9,7 +9,7 @@ import AppCard from '../ui-components/AppCard';
 import Button from '../ui-components/Button';
 import { NearContext, WalletState } from '../walletContext';
 
-export default function BuyPartConfirm() {
+export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) => void }) {
     const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
 
     const router = useRouter();
@@ -21,8 +21,9 @@ export default function BuyPartConfirm() {
         tokenContract.contract_vars(contractAddress).then((contractInfo) => {
             console.log(contractInfo);
             setContractVars(contractInfo);
+            props.hasBgImage(!!contractVars?.projectBackgroundUrl);
         });
-    }, [urlParams.project, tokenContract]);
+    }, [urlParams.project, tokenContract, props, contractVars]);
 
     const handlePurchase = async () => {
         console.log('handlePurchase for ' + contractVars?.projectAddress);
@@ -30,15 +31,19 @@ export default function BuyPartConfirm() {
 
     return (
         <>
-            <Image
-                id="project-image"
-                className="fixed top-0 left-0 z-[-100] h-full w-full object-cover"
-                alt=""
-                object-fit="cover"
-                width={1920}
-                height={1080}
-                src="https://images.squarespace-cdn.com/content/v1/63283ec16922c81dc0f97e2f/e3150b7f-bfc8-4251-ad50-3344f4b21b3d/image.jpg"
-            />
+            {contractVars?.projectBackgroundUrl && (
+                <Image
+                    priority
+                    id="project-image"
+                    className="fixed top-0 left-0 z-[-100] h-full w-full object-cover"
+                    alt=""
+                    object-fit="cover"
+                    width={1920}
+                    height={1080}
+                    src={contractVars?.projectBackgroundUrl}
+                    // src="https://images.squarespace-cdn.com/content/v1/63283ec16922c81dc0f97e2f/e3150b7f-bfc8-4251-ad50-3344f4b21b3d/image.jpg"
+                />
+            )}
             <AppCard>
                 <div className="font-semibold">PART Sale Statistics</div>
                 <div className="mt-4">

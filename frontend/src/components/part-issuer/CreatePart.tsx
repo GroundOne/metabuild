@@ -80,6 +80,7 @@ export default function CreatePart() {
             reservedTokenIds,
             saleOpening: (part.saleOpeningDate.getTime() * 1e6).toString(),
             saleClose: (part.saleCloseDate.getTime() * 1e6).toString(),
+            projectBackgroundUrl: part.backgroundImageLink,
             metadata: new NFTContractMetadata({
                 spec: constants.NFT_METADATA_SPEC,
                 name: part.projectName,

@@ -38,6 +38,7 @@ type ContractVars = {
     currentTokenId: number;
     projectName: string;
     projectAddress: string;
+    projectBackgroundUrl?: string;
     totalSupply: number;
     price: string;
     reservedTokenIds: string[];

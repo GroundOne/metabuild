@@ -7,6 +7,7 @@ export type DeployArgs = {
     reservedTokenIds?: string[];
     saleOpening?: string; // unix timestamp in nanosecods (1e-9)
     saleClose?: string; // unix timestamp in nanosecods (1e-9)
+    projectBackgroundUrl?: string;
     metadata: NFTContractMetadata;
 };
 

@@ -19,10 +19,6 @@ a {
     box-sizing: border-box;
 }
 
-img + section {
-    background-color: transparent !important;
-    background-image: none !important;
-}
 /* @layer components {
     .btn-primary {
         @apply inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-full border border-transparent bg-white px-12 py-4 text-xl text-gray-700 shadow-sm hover:text-black;
