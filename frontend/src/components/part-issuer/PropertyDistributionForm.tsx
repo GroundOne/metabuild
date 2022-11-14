@@ -58,6 +58,8 @@ const PropertyDistributionForm: React.FC<DistributionFormSchemaProps> = ({
         setError,
     } = useForm<DistributionFormValue>({ resolver: yupResolver(distributionFormSchema) });
 
+    const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
+
     useEffect(() => {
         if (values) {
             values.projectAddress && setValue('projectAddress', values.projectAddress);
@@ -97,7 +99,7 @@ const PropertyDistributionForm: React.FC<DistributionFormSchemaProps> = ({
                 setError('distributionDate', {
                     type: 'manual',
                     message: `Distribution date must be later than close date (${minDistributionDate.toLocaleString(
-                        constants.USER_LOCALE,
+                        userLocale,
                         {
                             timeZoneName: 'short',
                         }

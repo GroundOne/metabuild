@@ -16,6 +16,8 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
     const urlParams = router.query;
     const [contractVars, setContractVars] = useState<null | ContractVarsParsed>(null);
 
+    const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
+
     useEffect(() => {
         const contractAddress = urlParams.project + constants.CONTRACT_ADDRESS_SUFFIX;
         tokenContract.contract_vars(contractAddress).then((contractInfo) => {
@@ -71,7 +73,7 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
                         <div className="flex flex-row">
                             <div className="w-1/3">Sale Opening</div>
                             <div className="w-2/3 text-black">
-                                {contractVars?.saleOpeningDate.toLocaleString(constants.USER_LOCALE, {
+                                {contractVars?.saleOpeningDate.toLocaleString(userLocale, {
                                     timeZoneName: 'short',
                                 })}
                             </div>
@@ -79,7 +81,7 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
                         <div className="flex flex-row">
                             <div className="w-1/3">Sale Close</div>
                             <div className="w-2/3 text-black">
-                                {contractVars?.saleCloseDate.toLocaleString(constants.USER_LOCALE, {
+                                {contractVars?.saleCloseDate.toLocaleString(userLocale, {
                                     timeZoneName: 'short',
                                 })}
                             </div>

@@ -14,6 +14,8 @@ export default function PartSaleStatistics() {
     const urlParams = router.query;
     const [contractVars, setContractVars] = useState<null | ContractVarsParsed>(null);
 
+    const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
+
     useEffect(() => {
         tokenContract.contract_vars(urlParams.project as string).then((contractInfo) => {
             console.log(contractInfo);
@@ -50,7 +52,7 @@ export default function PartSaleStatistics() {
                     <div className="flex flex-row">
                         <div className="w-1/3">Sale Opening (IRD)</div>
                         <div className="w-2/3 text-black">
-                            {contractVars?.saleOpeningDate.toLocaleString(constants.USER_LOCALE, {
+                            {contractVars?.saleOpeningDate.toLocaleString(userLocale, {
                                 timeZoneName: 'short',
                             })}
                         </div>
@@ -58,7 +60,7 @@ export default function PartSaleStatistics() {
                     <div className="flex flex-row">
                         <div className="w-1/3">Sale Close</div>
                         <div className="w-2/3 text-black">
-                            {contractVars?.saleCloseDate.toLocaleString(constants.USER_LOCALE, {
+                            {contractVars?.saleCloseDate.toLocaleString(userLocale, {
                                 timeZoneName: 'short',
                             })}
                         </div>

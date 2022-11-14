@@ -12,6 +12,8 @@ export default function ManagePart() {
     const { walletState, contract, tokenContract } = useContext(NearContext);
     const [contracts, setContracts] = useState<ContractVarsParsed[]>([]);
 
+    const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
+
     const getContracts = async (forDate: Date) => {
         const ownerContractIDs: string[] = await contract.contractsForOwner();
         console.log('ownerContractIDs', ownerContractIDs);
@@ -109,7 +111,7 @@ export default function ManagePart() {
                         <div>
                             Sale Opening:{' '}
                             <span className="font-semibold">
-                                {contract.saleOpeningDate.toLocaleString(constants.USER_LOCALE, {
+                                {contract.saleOpeningDate.toLocaleString(userLocale, {
                                     timeZoneName: 'short',
                                 })}
                             </span>
@@ -117,7 +119,7 @@ export default function ManagePart() {
                         <div>
                             Sale Close:{' '}
                             <span className="font-semibold">
-                                {contract.saleCloseDate.toLocaleString(constants.USER_LOCALE, {
+                                {contract.saleCloseDate.toLocaleString(userLocale, {
                                     timeZoneName: 'short',
                                 })}
                             </span>
