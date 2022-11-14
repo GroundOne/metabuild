@@ -4,7 +4,7 @@ import Logo from './Logo';
 import HeaderMenu from './HeaderMenu';
 import Section from './Section';
 
-const AppHeader: React.FC<{ buttons?: Array<{ name: string; url: string }>; connectButtonName?: string }> = ({
+const AppHeader: React.FC<{ buttons?: Array<{ name: string; url: string }>; connectButtonName?: string | null }> = ({
     buttons,
     connectButtonName,
 }) => {

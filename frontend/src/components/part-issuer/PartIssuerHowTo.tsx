@@ -24,8 +24,19 @@ const PartIssuerHowTo: React.FC = () => {
                         PART owners can then choose their favourite properties and finally, the properties are
                         distributed to PART owners according to their preferences.
                     </p>
+                    <p className="py-2 text-lg text-black">
+                        For more information, please visit{' '}
+                        <a
+                            className="hoover:text-blue-600 text-blue-800"
+                            href="https://documentation.groundone.io/whitepaper/"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            https://documentation.groundone.io/whitepaper/
+                        </a>
+                    </p>
                     <div className="mt-10 flex w-full items-center justify-center">
-                        <ConnectWalletButton buttonName="Connect Wallet and create PART Scheme" />
+                        <ConnectWalletButton buttonName="Connect Wallet" />
                     </div>
                 </div>
             </div>

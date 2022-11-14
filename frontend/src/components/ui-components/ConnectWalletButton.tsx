@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { WalletState, NearContextProps, NearContext } from '../walletContext';
 import Button from './Button';
 
-const ConnectWalletButton: React.FC<{ buttonName?: string }> = ({ buttonName }) => {
+const ConnectWalletButton: React.FC<{ buttonName?: string | null }> = ({ buttonName }) => {
     const { wallet, walletState } = useContext(NearContext);
 
     const handleClick = async (e: React.MouseEvent) => {
@@ -14,6 +14,10 @@ const ConnectWalletButton: React.FC<{ buttonName?: string }> = ({ buttonName }) 
             wallet.signOut();
         }
     };
+
+    if (buttonName === null) {
+        return null;
+    }
 
     return (
         <Button onClick={handleClick} isLoading={walletState === WalletState.Loading}>

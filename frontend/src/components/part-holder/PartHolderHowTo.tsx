@@ -23,6 +23,17 @@ const PartHolderHowTo: React.FC = () => {
                         If you already own a PART and your project is being built, go to the MANAGE section of the app
                         in order to select your favourite properties for the Property Distribution.
                     </p>
+                    <p className="py-2 text-lg text-black">
+                        For more information, please visit{' '}
+                        <a
+                            className="hoover:text-blue-600 text-blue-800"
+                            href="https://documentation.groundone.io/whitepaper/"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            https://documentation.groundone.io/whitepaper/
+                        </a>
+                    </p>
                     <div className="mt-10 flex w-full items-center justify-center">
                         <ConnectWalletButton />
                     </div>
