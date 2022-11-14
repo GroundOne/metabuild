@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
+import constants from '../../constants';
 import { convertPropertiesStringToIds } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
 import Button from '../ui-components/Button';
@@ -47,12 +48,20 @@ export default function PartSaleStatistics() {
                         </div>
                     </div>
                     <div className="flex flex-row">
-                        <div className="w-1/3">Sale Opening</div>
-                        <div className="w-2/3 text-black">{contractVars?.saleOpeningDate.toLocaleDateString()}</div>
+                        <div className="w-1/3">Sale Opening (IRD)</div>
+                        <div className="w-2/3 text-black">
+                            {contractVars?.saleOpeningDate.toLocaleString(constants.USER_LOCALE, {
+                                timeZoneName: 'short',
+                            })}
+                        </div>
                     </div>
                     <div className="flex flex-row">
                         <div className="w-1/3">Sale Close</div>
-                        <div className="w-2/3 text-black">{contractVars?.saleCloseDate.toLocaleDateString()}</div>
+                        <div className="w-2/3 text-black">
+                            {contractVars?.saleCloseDate.toLocaleString(constants.USER_LOCALE, {
+                                timeZoneName: 'short',
+                            })}
+                        </div>
                     </div>
                     <div className="flex flex-row">
                         <div className="w-1/3">Parts Sold</div>

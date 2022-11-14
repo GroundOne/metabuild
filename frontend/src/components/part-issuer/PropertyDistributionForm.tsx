@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Input from '../ui-components/Input';
 import Button from '../ui-components/Button';
 import * as yup from 'yup';
+import constants from '../../constants';
 
 const distributionFormSchema = yup.object({
     projectName: yup.string().label('Project name').trim().required().min(3).max(50),
@@ -95,7 +96,12 @@ const PropertyDistributionForm: React.FC<DistributionFormSchemaProps> = ({
             if (minDistributionDate && minDistributionDate > data.distributionDate) {
                 setError('distributionDate', {
                     type: 'manual',
-                    message: `Distribution date must be later than close date (${minDistributionDate.toLocaleDateString()})`,
+                    message: `Distribution date must be later than close date (${minDistributionDate.toLocaleString(
+                        constants.USER_LOCALE,
+                        {
+                            timeZoneName: 'short',
+                        }
+                    )})`,
                 });
             } else {
                 setIsSubmitting(true);

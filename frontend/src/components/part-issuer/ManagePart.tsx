@@ -4,14 +4,13 @@ import { NearContext, WalletState } from '../walletContext';
 import { useRouter } from 'next/router';
 import { debounce } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
+import constants from '../../constants';
 
 export default function ManagePart() {
     const router = useRouter();
     const [currentDate, setCurrentDate] = useState(new Date());
     const { walletState, contract, tokenContract } = useContext(NearContext);
     const [contracts, setContracts] = useState<ContractVarsParsed[]>([]);
-
-    const locale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
 
     const getContracts = async (forDate: Date) => {
         const ownerContractIDs: string[] = await contract.contractsForOwner();
@@ -109,11 +108,19 @@ export default function ManagePart() {
                         </div>
                         <div>
                             Sale Opening:{' '}
-                            <span className="font-semibold">{contract.saleOpeningDate.toLocaleDateString(locale)}</span>
+                            <span className="font-semibold">
+                                {contract.saleOpeningDate.toLocaleString(constants.USER_LOCALE, {
+                                    timeZoneName: 'short',
+                                })}
+                            </span>
                         </div>
                         <div>
                             Sale Close:{' '}
-                            <span className="font-semibold">{contract.saleCloseDate.toLocaleDateString(locale)}</span>
+                            <span className="font-semibold">
+                                {contract.saleCloseDate.toLocaleString(constants.USER_LOCALE, {
+                                    timeZoneName: 'short',
+                                })}
+                            </span>
                         </div>
                         <div>
                             Contract Status: <span className="font-semibold">{contract.contractStatus}</span>

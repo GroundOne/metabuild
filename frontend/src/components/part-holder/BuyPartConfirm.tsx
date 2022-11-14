@@ -70,11 +70,19 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
                         </div>
                         <div className="flex flex-row">
                             <div className="w-1/3">Sale Opening</div>
-                            <div className="w-2/3 text-black">{contractVars?.saleOpeningDate.toLocaleDateString()}</div>
+                            <div className="w-2/3 text-black">
+                                {contractVars?.saleOpeningDate.toLocaleString(constants.USER_LOCALE, {
+                                    timeZoneName: 'short',
+                                })}
+                            </div>
                         </div>
                         <div className="flex flex-row">
                             <div className="w-1/3">Sale Close</div>
-                            <div className="w-2/3 text-black">{contractVars?.saleCloseDate.toLocaleDateString()}</div>
+                            <div className="w-2/3 text-black">
+                                {contractVars?.saleCloseDate.toLocaleString(constants.USER_LOCALE, {
+                                    timeZoneName: 'short',
+                                })}
+                            </div>
                         </div>
                         <div className="flex flex-row">
                             <div className="w-1/3">Parts Sold</div>
