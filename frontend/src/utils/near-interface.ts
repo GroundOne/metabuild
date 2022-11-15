@@ -48,14 +48,8 @@ type ContractVars = {
     contractStatus: /** Buyer & Architect: show Project Info */
     | 'presale'
         /** (After Opening, Before Sale Close time) Architect: Show Proceed to sale */
-        | 'postpresale_distribution'
-        /** (After Sale Close Time) Architect: Show Proceed to sale */
-        | 'postpresale_cashout'
-        /** d */
         | 'sale'
-        /** d */
         | 'property_selection'
-        /** d */
         | 'ended';
 };
 
@@ -64,7 +58,6 @@ export type ContractVarsParsed = ContractVars & {
     saleOpeningDate: Date;
     saleCloseDate: Date;
     priceLabel: string;
-    status: 'Presale' | 'PostPresale_Distribution' | 'PostPresale_ProceedToSale' | 'Sale' | 'Closed';
 };
 
 export class InterfaceFields {
@@ -373,8 +366,7 @@ export class PartTokenInterface extends InterfaceFields {
             const saleOpeningDate = new Date(+contractVars.saleOpening / 1e6);
             const saleCloseDate = new Date(+contractVars.saleClose / 1e6);
             const priceLabel = (+(contractVars?.price ?? 1e26) / 1e24).toFixed(2);
-            // const userStatus = contractVars?.contractStatus === 'presale' ? 'presale'
-            //     : contractVars?.contractStatus === 'sale' ? 'sale'
+
             const status =
                 currentDate < saleOpeningDate
                     ? 'Presale'
@@ -388,7 +380,6 @@ export class PartTokenInterface extends InterfaceFields {
                 saleOpeningDate,
                 saleCloseDate,
                 priceLabel,
-                status,
             };
 
             return contractVarsParsed;

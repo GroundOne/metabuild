@@ -79,7 +79,7 @@ export default function ManagePart() {
         <>
             <div className="mr-12 flex justify-between">
                 <div className="mb-4 text-lg font-semibold">Your Projects</div>
-                <div>
+                {/* <div>
                     <span>As of Date: </span>
                     <input
                         className="rounded-full"
@@ -87,7 +87,7 @@ export default function ManagePart() {
                         value={currentDate.toISOString().split('T')[0]}
                         onChange={(e) => setCurrentDate(new Date(e.currentTarget.value || Date.now()))}
                     />
-                </div>
+                </div> */}
             </div>
             {contracts.map((contract) => {
                 return (
@@ -127,12 +127,11 @@ export default function ManagePart() {
                         <div>
                             Contract Status: <span className="font-semibold">{contract.contractStatus}</span>
                         </div>
-                        <div className="bg-yellow-500">
+                        {/* <div className="bg-yellow-500">
                             <i>
                                 Calculated Status: <span className="font-semibold">{contract.status}</span>
                             </i>
-                        </div>
-                        {/* rounded close button */}
+                        </div> */}
                         <div
                             onClick={() => handleArchiveContract(contract.projectAddress)}
                             className="absolute top-3 right-3 w-8 rounded-full border border-black bg-slate-100 text-center hover:bg-slate-300"
@@ -154,7 +153,7 @@ export default function ManagePart() {
                                 Project Info
                             </Button>
                             <Button
-                                isDisabled={!(contract.status === 'PostPresale_Distribution')}
+                                // isDisabled={!(contract.statusText === 'PostPresale_Distribution')}
                                 size="sm"
                                 isInvertedColor
                                 onClick={() =>
@@ -164,7 +163,7 @@ export default function ManagePart() {
                                 Property Distribution...
                             </Button>
                             <Button
-                                isDisabled={!(contract.status === 'PostPresale_ProceedToSale')}
+                                // isDisabled={!(contract.statusText === 'PostPresale_ProceedToSale')}
                                 size="sm"
                                 isInvertedColor
                                 className="w-32"
