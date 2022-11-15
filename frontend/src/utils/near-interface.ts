@@ -354,14 +354,13 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async contract_vars(contractId?: string, currentDate = new Date()) {
+    async contract_vars(contractId: string, currentDate = new Date()) {
         try {
             const contractVars: ContractVars = await this.wallet.viewMethod({
-                contractId: contractId ?? this.contractId, // 'fff_demo_project.part_factory.groundone.testnet',
+                contractId: contractId, // 'fff_demo_project.part_factory.groundone.testnet',
                 method: 'contract_vars',
                 args: {},
             });
-
             const reservedTokens = convertPropertyIdsToIdString(contractVars.reservedTokenIds ?? []);
             const saleOpeningDate = new Date(+contractVars.saleOpening / 1e6);
             const saleCloseDate = new Date(+contractVars.saleClose / 1e6);
@@ -429,7 +428,7 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async distributed_properties() {
+    async distributed_properties(contractId: string) {
         return await this.wallet.viewMethod({
             contractId: this.contractId,
             method: 'distributed_properties',

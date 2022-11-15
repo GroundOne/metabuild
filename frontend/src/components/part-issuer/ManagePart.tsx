@@ -134,9 +134,9 @@ export default function ManagePart() {
                         </div> */}
                         <div
                             onClick={() => handleArchiveContract(contract.projectAddress)}
-                            className="absolute top-3 right-3 w-8 rounded-full border border-black bg-slate-100 text-center hover:bg-slate-300"
+                            className="absolute top-3 right-3 w-8 cursor-pointer rounded-full border border-gray-300 bg-slate-100 py-1 text-center text-xs hover:bg-slate-300"
                         >
-                            x
+                            X
                         </div>
                         {/* 'Presale' | 'PostPresale_Distribution' | 'PostPresale_ProceedToSale' | 'Sale'  */}
                         <div className="flex justify-end gap-2">
@@ -153,7 +153,12 @@ export default function ManagePart() {
                                 Project Info
                             </Button>
                             <Button
-                                // isDisabled={!(contract.statusText === 'PostPresale_Distribution')}
+                                isDisabled={
+                                    !(
+                                        contract.contractStatus === 'property_selection' &&
+                                        contract.saleCloseDate < currentDate
+                                    )
+                                }
                                 size="sm"
                                 isInvertedColor
                                 onClick={() =>
@@ -163,7 +168,9 @@ export default function ManagePart() {
                                 Property Distribution...
                             </Button>
                             <Button
-                                // isDisabled={!(contract.statusText === 'PostPresale_ProceedToSale')}
+                                isDisabled={
+                                    !(contract.contractStatus === 'presale' && contract.saleOpeningDate < currentDate)
+                                }
                                 size="sm"
                                 isInvertedColor
                                 className="w-32"

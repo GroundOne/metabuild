@@ -1,27 +1,55 @@
 import constants from '../constants';
 
-export async function getContractIdFromTransactionId(transactionId: string): Promise<string | null> {
+export type DistributionVars = {
+    totalSupply: number;
+    distributionStart: string;
+    reservedTokenIds: string[];
+    reservedTokens: string;
+    distributionStartDate: Date;
+};
+
+const NEAR_RPC_ENDPOINT = 'https://archival-rpc.testnet.near.org';
+// const NEAR_RPC_ENDPOINT = 'https://rpc.testnet.near.org';
+
+async function getNearTransactionData(transactionHash: string) {
+    const transactionData = await fetch(NEAR_RPC_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 'dontcare',
+            method: 'tx',
+            params: [transactionHash, 'frangiskos.testnet'],
+        }),
+    });
+    const transactionJson = await transactionData.json();
+    console.log('transactionJson', transactionJson);
+    const base64args = transactionJson.result.transaction.actions[0].FunctionCall.args;
+    const data = JSON.parse(atob(base64args));
+    console.log('testnet.near.org', data);
+    return data;
+}
+
+export async function getContractIdFromTransactionId(transactionHash: string): Promise<string | null> {
     try {
-        // const transactionData = await fetch('https://archival-rpc.testnet.near.org', {
-        const transactionData = await fetch('https://rpc.testnet.near.org', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 'dontcare',
-                method: 'tx',
-                params: [transactionId, 'frangiskos.testnet'],
-            }),
-        });
-        const transactionJson = await transactionData.json();
-        console.log('transactionJson', transactionJson);
-        const base64args = transactionJson.result.transaction.actions[0].FunctionCall.args;
-        console.log('base64args', JSON.parse(atob(base64args)));
-        const args = JSON.parse(atob(base64args)).args;
-        console.log('testnet.near.org', args);
-        return args.projectAddress + constants.CONTRACT_ADDRESS_SUFFIX;
+        const transactionData = await getNearTransactionData(transactionHash);
+        return transactionData.args.projectAddress + constants.CONTRACT_ADDRESS_SUFFIX;
+    } catch (error) {
+        console.log('error', error);
+        return null;
+    }
+}
+
+export async function getPropertyDistributionFromTransactionId(
+    transactionHash: string
+): Promise<DistributionVars | null> {
+    try {
+        const transactionData = await getNearTransactionData(transactionHash);
+        transactionData.reservedTokens = convertPropertyIdsToIdString(transactionData.reservedTokenIds ?? []);
+        transactionData.distributionStartDate = new Date(+transactionData.distributionStart / 1e6);
+        return transactionData;
     } catch (error) {
         console.log('error', error);
         return null;

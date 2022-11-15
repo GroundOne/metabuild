@@ -112,16 +112,6 @@ export default function CreatePart() {
                     transactionHashes={contractDeployed.transactionHashes!}
                 />
             )}
-            {/* <Modal
-                show={contractDeployed.deployed}
-                onClose={handleCloseModal}
-                title="Your contract has been deployed successfully"
-            >
-                <div className="flex flex-col items-center">
-                    <div className="text-center text-2xl font-bold">Your contract has been deployed successfully</div>
-                    <div className="text-center text-lg">You can now mint your parts and start selling them</div>
-                </div>
-            </Modal> */}
             <Modal show={!!errorMessage} onClose={handleCloseModal} title="Contract deployment failed">
                 <p>{errorMessage}</p>
             </Modal>
