@@ -227,11 +227,18 @@ export class PartTokenInterface extends InterfaceFields {
         }
     }
 
-    async participatePresale() {
+    async participatePresale(contractId: string, price: string) {
+        const THREE_HUNDRED_TGAS = (300 * 1e12).toString();
+        const SIX_NEAR = parseNearAmount(price)!;
+
         return await this.wallet.callMethod({
-            contractId: this.contractId,
+            contractId: contractId,
+            //@ts-ignore
+            // depositYocto: price,
             method: 'participate_presale',
             args: {},
+            gas: THREE_HUNDRED_TGAS,
+            deposit: SIX_NEAR,
         });
     }
 
@@ -319,10 +326,9 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async nft_tokens_for_owner() {
-        // console.log(this.wallet.account_id);
+    async nft_tokens_for_owner(contractId: string) {
         return await this.wallet.viewMethod({
-            contractId: this.contractId,
+            contractId: contractId,
             method: 'nft_tokens_for_owner',
             args: {},
         });

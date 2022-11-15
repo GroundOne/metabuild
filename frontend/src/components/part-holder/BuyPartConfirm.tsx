@@ -8,31 +8,96 @@ import { ContractVarsParsed } from '../../utils/near-interface';
 import AppCard from '../ui-components/AppCard';
 import Button from '../ui-components/Button';
 import { NearContext, WalletState } from '../walletContext';
+import Modal from '../ui-components/Modal';
 
 export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) => void }) {
     const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [partPurchased, setPartPurchased] = useState<{
+        purchased: boolean;
+        data: null | ContractVarsParsed;
+        transactionHashes: null | string;
+    }>({
+        purchased: false,
+        data: null,
+        transactionHashes: null,
+    });
 
     const router = useRouter();
     const urlParams = router.query;
     const [contractVars, setContractVars] = useState<null | ContractVarsParsed>(null);
+    const isPurchaseClosed = contractVars?.saleOpeningDate && contractVars?.saleOpeningDate < new Date();
 
     const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
 
     useEffect(() => {
-        const contractAddress = urlParams.project + constants.CONTRACT_ADDRESS_SUFFIX;
-        tokenContract.contract_vars(contractAddress).then((contractInfo) => {
-            console.log(contractInfo);
-            setContractVars(contractInfo);
-            props.hasBgImage(!!contractVars?.projectBackgroundUrl);
-        });
+        if (!contractVars) {
+            const contractAddress = urlParams.project + constants.CONTRACT_ADDRESS_SUFFIX;
+            tokenContract.contract_vars(contractAddress).then((contractInfo) => {
+                console.log(contractInfo);
+                setContractVars(contractInfo);
+                props.hasBgImage(!!(contractInfo.projectBackgroundUrl && contractInfo.projectBackgroundUrl.length));
+            });
+        }
     }, [urlParams.project, tokenContract, props, contractVars]);
+
+    // Handle redirect after deploying the contract
+    useEffect(() => {
+        setErrorMessage(null);
+        setPartPurchased({ purchased: false, data: null, transactionHashes: null });
+
+        const urlParams = router.query;
+        // if (urlParams.transactionHashes) {
+        if (urlParams.transactionHashes || urlParams.errorCode) {
+            // callback from deploy contract
+
+            if (urlParams.errorCode) {
+                // http://localhost:3000/part-holder/buy/confirm?project=demo_project_for_sale&errorCode=Error&errorMessage=Contract%2520method%2520is%2520not%2520found
+                const errorMessage = decodeURIComponent(urlParams.errorMessage as string) ?? 'Unknown error';
+                setErrorMessage(errorMessage);
+            } else {
+                // http://localhost:3000/part-holder/buy/confirm?project=demo_project_test15&transactionHashes=BuiugUHJBKpsHFwiHuWg1meEVQWy14zrtRDTLGqfLcNS
+                console.log('Purchase urlParams.transactionHashes', urlParams.transactionHashes);
+                // getContractIdFromTransactionId(urlParams.transactionHashes as string)
+                //     .then((contractId) => {
+                //         console.log('projectId', contractId);
+                //         if (contractId) {
+                //             return tokenContract.contract_vars(contractId);
+                //         }
+                //         console.log('contractId not found!!');
+                //         return null;
+                //     })
+                //     .then((contractVars) => {
+                //         console.log('contractVars', contractVars);
+                //         contractVars &&
+                //             setPartPurchased({
+                //                 purchased: true,
+                //                 data: contractVars,
+                //                 transactionHashes: urlParams.transactionHashes as string,
+                //             });
+                //     });
+            }
+        }
+    }, [wallet, router, router.query, tokenContract]);
 
     const handlePurchase = async () => {
         console.log('handlePurchase for ' + contractVars?.projectAddress);
+        if (walletState === WalletState.SignedIn) {
+            await tokenContract.participatePresale(contractVars!.projectAddress, contractVars!.priceLabel);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setErrorMessage(null);
+        setPartPurchased({ purchased: false, data: null, transactionHashes: null });
+        router.replace(router.pathname + `?project=${urlParams.project}`, undefined, { shallow: true });
     };
 
     return (
         <>
+            <Modal show={!!errorMessage} onClose={handleCloseModal} title="PART purchase failed">
+                <p>{errorMessage}</p>
+            </Modal>
             {contractVars?.projectBackgroundUrl && (
                 <Image
                     priority
@@ -47,58 +112,48 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
                 />
             )}
             <AppCard>
-                <div className="font-semibold">PART Sale Statistics</div>
+                <div className="font-semibold">Buy a PART</div>
                 <div className="mt-4">
                     <div className="flex flex-col">
-                        <div className="flex flex-row">
-                            <div className="w-1/3">Project Name</div>
-                            <div className="w-2/3 text-black">{contractVars?.projectName}</div>
-                        </div>
-                        <div className="flex flex-row">
-                            <div className="w-1/3">Project Address</div>
-                            <div className="w-2/3 text-black">{contractVars?.projectAddress}</div>
-                        </div>
-                        <div className="flex flex-row">
-                            <div className="w-1/3">Total PARTs for sale</div>
-                            <div className="w-2/3 text-black">{contractVars?.totalSupply}</div>
-                        </div>
-                        <div className="flex flex-row">
-                            <div className="w-1/3">PARTs Reserved</div>
-                            <div className="w-2/3 text-black">
-                                {contractVars?.reservedTokenIds?.length
-                                    ? contractVars.reservedTokenIds.length + ' (' + contractVars?.reservedTokens + ')'
-                                    : 'None'}
-                            </div>
-                        </div>
-                        <div className="flex flex-row">
-                            <div className="w-1/3">Sale Opening</div>
-                            <div className="w-2/3 text-black">
+                        <p className="mt-4">
+                            Project name: <b>{contractVars?.projectName}</b>
+                        </p>
+                        <p className="mt-4">
+                            Project address: <b>{contractVars?.projectAddress}</b>
+                        </p>
+                        <p className="mt-4">
+                            There are <b>{contractVars?.totalSupply} PARTs</b> in this scheme. The following PARTs have
+                            been excluded from the sale by the issuer: <b>{contractVars?.reservedTokens}</b>
+                        </p>
+                        <p className="mt-4">
+                            All available PARTs are priced at <b>{contractVars?.priceLabel} Ⓝ</b> each.
+                        </p>
+                        <p className="mt-4">
+                            Users can now register for the IRD (Initial Random Distribution) happening on{' '}
+                            <b>
                                 {contractVars?.saleOpeningDate.toLocaleString(userLocale, {
                                     timeZoneName: 'short',
                                 })}
-                            </div>
-                        </div>
-                        <div className="flex flex-row">
-                            <div className="w-1/3">Sale Close</div>
-                            <div className="w-2/3 text-black">
-                                {contractVars?.saleCloseDate.toLocaleString(userLocale, {
-                                    timeZoneName: 'short',
-                                })}
-                            </div>
-                        </div>
-                        <div className="flex flex-row">
-                            <div className="w-1/3">Parts Sold</div>
-                            <div className="w-2/3 text-black">{(contractVars?.currentTokenId ?? 1) - 1}</div>
-                        </div>
-                        <div className="flex flex-row">
-                            <div className="w-1/3">Price of PART</div>
-                            <div className="w-2/3 text-black">{contractVars?.priceLabel} NEAR</div>
-                        </div>
+                            </b>
+                        </p>
                     </div>
                 </div>
-                <Button isInvertedColor size="md" className="mt-10" onClick={handlePurchase}>
-                    CONFIRM PART PURCHASE FOR {contractVars?.priceLabel} NEAR
-                </Button>
+                <div className="text-center">
+                    <Button
+                        isDisabled={isPurchaseClosed}
+                        isInvertedColor
+                        size="md"
+                        className="mt-10"
+                        onClick={handlePurchase}
+                    >
+                        CONFIRM PART PURCHASE FOR {contractVars?.priceLabel} NEAR
+                    </Button>
+                </div>
+                {isPurchaseClosed && (
+                    <div className="mt-4 text-center text-yellow-600">
+                        <p>PART purchase is closed.</p>
+                    </div>
+                )}
             </AppCard>
         </>
     );
