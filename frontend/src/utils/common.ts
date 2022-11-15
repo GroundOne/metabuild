@@ -1,25 +1,31 @@
 import constants from '../constants';
 
-export async function getContractIdFromTransactionId(transactionId: string): Promise<string> {
-    const transactionData = await fetch('https://archival-rpc.testnet.near.org', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 'dontcare',
-            method: 'tx',
-            params: [transactionId, 'frangiskos.testnet'],
-        }),
-    });
-    const transactionJson = await transactionData.json();
-    console.log('transactionJson', transactionJson);
-    const base64args = transactionJson.result.transaction.actions[0].FunctionCall.args;
-    const args = JSON.parse(atob(base64args)).args;
-    console.log(args);
-    console.log(args.projectName);
-    return args.projectAddress + constants.CONTRACT_ADDRESS_SUFFIX;
+export async function getContractIdFromTransactionId(transactionId: string): Promise<string | null> {
+    try {
+        // const transactionData = await fetch('https://archival-rpc.testnet.near.org', {
+        const transactionData = await fetch('https://rpc.testnet.near.org', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                jsonrpc: '2.0',
+                id: 'dontcare',
+                method: 'tx',
+                params: [transactionId, 'frangiskos.testnet'],
+            }),
+        });
+        const transactionJson = await transactionData.json();
+        console.log('transactionJson', transactionJson);
+        const base64args = transactionJson.result.transaction.actions[0].FunctionCall.args;
+        console.log('base64args', JSON.parse(atob(base64args)));
+        const args = JSON.parse(atob(base64args)).args;
+        console.log('testnet.near.org', args);
+        return args.projectAddress + constants.CONTRACT_ADDRESS_SUFFIX;
+    } catch (error) {
+        console.log('error', error);
+        return null;
+    }
 }
 
 export const debounce = (func: Function, delay = 1000) => {

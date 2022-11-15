@@ -45,15 +45,20 @@ export default function CreatePart() {
                 getContractIdFromTransactionId(urlParams.transactionHashes as string)
                     .then((contractId) => {
                         console.log('projectId', contractId);
-                        return tokenContract.contract_vars(contractId);
+                        if (contractId) {
+                            return tokenContract.contract_vars(contractId);
+                        }
+                        console.log('contractId not found!!');
+                        return null;
                     })
                     .then((contractVars) => {
                         console.log('contractVars', contractVars);
-                        setContractDeployed({
-                            deployed: true,
-                            data: contractVars,
-                            transactionHashes: urlParams.transactionHashes as string,
-                        });
+                        contractVars &&
+                            setContractDeployed({
+                                deployed: true,
+                                data: contractVars,
+                                transactionHashes: urlParams.transactionHashes as string,
+                            });
                     });
                 //http://localhost:3000/part-issuer/create-part?transactionHashes=48iBkvpn3TMGdYVZmFdPvZAsg864S1svdXznY5uhdPBP
             }
