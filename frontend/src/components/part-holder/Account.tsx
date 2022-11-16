@@ -13,27 +13,23 @@ export default function Account() {
 
     const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
 
-    // TEST CODE
-    useEffect(() => {
-        const myTokens = async () => {
-            const tokens = await tokenContract.nft_tokens_for_owner(
-                'demo_project_test15.part_factory.groundone.testnet'
-            );
-            console.log('TEST tokens', tokens);
-        };
-        myTokens();
-    }, [tokenContract]);
-
     const getContracts = async (forDate: Date) => {
-        const allContracts: Array<{ projectAddress: string }> = await contract.getContracts();
+        const allContracts = await contract.getContracts();
         console.log('allContracts', allContracts);
-        const ownerTokens = await Promise.all(
+        let ownerTokens = await Promise.all(
             allContracts.map((c) =>
                 tokenContract.nft_tokens_for_owner(c.projectAddress + constants.CONTRACT_ADDRESS_SUFFIX)
             )
         );
-        console.log('ownerTokens', ownerTokens, ownerTokens.flat());
-        setTokens(ownerTokens.flat());
+        console.log('ownerTokens', ownerTokens);
+        const allTokens = ownerTokens.flat();
+        // const projectsWithOwnerTokens = allContracts.filter((c) => allContracts.find  )
+        const purchasedTokens = allTokens.filter(
+            (t) =>
+                !allContracts.find((c) => c.projectAddress === t.metadata.symbol)!.reservedTokenIds.includes(t.token_id)
+        );
+        console.log('purchasedTokens', purchasedTokens);
+        setTokens(allTokens);
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

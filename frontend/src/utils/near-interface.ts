@@ -80,7 +80,28 @@ export class PartTokenFactoryInterface extends InterfaceFields {
         });
     }
 
-    async getContracts() {
+    async getContracts(): Promise<
+        Array<{
+            projectAddress: string;
+            projectName: string;
+            projectBackgroundUrl: string;
+            ownerId: string;
+            totalSupply: number;
+            price: string;
+            metadata: {
+                spec: string;
+                name: string;
+                symbol: string;
+                icon: null;
+                base_uri: null;
+                reference: null;
+                reference_hash: null;
+            };
+            reservedTokenIds: string[];
+            saleOpening: string;
+            saleClose: string;
+        }>
+    > {
         console.log('Requesting all contracts');
 
         return await this.wallet.viewMethod({
@@ -326,11 +347,27 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async nft_tokens_for_owner(contractId: string) {
+    async nft_tokens_for_owner(contractId: string): Promise<
+        Array<{
+            token_id: string;
+            owner_id: string;
+            metadata: {
+                spec: string;
+                name: string;
+                symbol: string;
+                icon: null;
+                base_uri: null;
+                reference: null;
+                reference_hash: null;
+                description: string;
+            };
+            approved_account_ids: {};
+        }>
+    > {
         return await this.wallet.viewMethod({
             contractId: contractId,
             method: 'nft_tokens_for_owner',
-            args: {},
+            args: { account_id: this.wallet.accountId },
         });
     }
 
