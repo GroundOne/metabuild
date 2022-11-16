@@ -15,11 +15,11 @@ const emailSchema = yup.object({
 });
 type EmailFormValue = yup.InferType<typeof emailSchema>;
 
-const PropertyDistributionReceipt: React.FC<{
+const PropertyInitialisationReceipt: React.FC<{
     contractVars?: ContractVarsParsed;
     transactionHashes?: string;
-    distributionVars?: InitialisationVars;
-}> = ({ contractVars, transactionHashes, distributionVars }) => {
+    initialisationVars?: InitialisationVars;
+}> = ({ contractVars, transactionHashes, initialisationVars }) => {
     const [emailSent, setEmailSent] = useState<{
         status: 'not_send' | 'send' | 'sending';
         error: boolean;
@@ -48,7 +48,7 @@ const PropertyDistributionReceipt: React.FC<{
                 body: JSON.stringify({
                     to: data.email,
                     template: 'transactionalEmail',
-                    subject: 'GroundOne: Property Distribution Scheme',
+                    subject: 'GroundOne: Property Initialisation Scheme',
                     message: renderToStaticMarkup(receiptInfo),
                 }),
             });
@@ -68,27 +68,27 @@ const PropertyDistributionReceipt: React.FC<{
 
     const receiptInfo = (
         <div>
-            <h1 className="text-lg font-semibold">Property Distribution Scheme Creation Receipt</h1>
+            <h1 className="text-lg font-semibold">Property Initialisation Scheme Creation Receipt</h1>
             <p className="mt-4">
-                Your Property Distribution scheme for project <b>{contractVars?.projectName}</b> is now live on the NEAR
-                blockchain.
+                Your Property Initialisation scheme for project <b>{contractVars?.projectName}</b> is now live on the
+                NEAR blockchain.
             </p>
             <p className="mt-4">
                 Your scheme is registered in the PART contract <b>{contractVars?.projectAddress}</b>.
             </p>
             <p className="mt-4">
-                There are <b>{distributionVars?.totalSupply} properties</b> in your scheme numbered from{' '}
-                <b>#001 to #{('' + (distributionVars?.totalSupply ?? '')).padStart(3, '0')}</b>.
+                There are <b>{initialisationVars?.totalSupply} properties</b> in your scheme numbered from{' '}
+                <b>#001 to #{('' + (initialisationVars?.totalSupply ?? '')).padStart(3, '0')}</b>.
             </p>
             <p className="mt-4">
-                The following properties will be excluded from the distribution{' '}
+                The following properties will be excluded from the initialisation{' '}
                 <b>{contractVars?.reservedTokenIds.map((x) => '#' + x.padStart(3, '0')).join(', ')}</b>.
             </p>
             <p className="mt-4">
-                Distribution of the properties according to PART Scheme <b>{contractVars?.projectAddress}</b> will take
-                place on{' '}
+                Initialisation of the properties according to PART Scheme <b>{contractVars?.projectAddress}</b> will
+                take place on{' '}
                 <b>
-                    {distributionVars?.distributionStartDate.toLocaleString(userLocale, {
+                    {initialisationVars?.distributionStartDate.toLocaleString(userLocale, {
                         timeZoneName: 'short',
                     })}
                 </b>
@@ -173,4 +173,4 @@ const PropertyDistributionReceipt: React.FC<{
         </>
     );
 };
-export default PropertyDistributionReceipt;
+export default PropertyInitialisationReceipt;

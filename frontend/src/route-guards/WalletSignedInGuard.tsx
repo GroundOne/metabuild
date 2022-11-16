@@ -7,6 +7,7 @@ const redirects = {
         ['/part-issuer/create-part']: '/part-issuer',
         ['/part-issuer/manage-part']: '/part-issuer',
         ['/part-issuer/manage-part/distribution']: '/part-issuer',
+        ['/part-issuer/manage-part/initialisation']: '/part-issuer',
         ['/part-issuer/manage-part/part-sale-statistics']: '/part-issuer',
         ['/part-issuer/create-pvt']: '/part-issuer',
         ['/part-holder/buy']: '/part-holder',

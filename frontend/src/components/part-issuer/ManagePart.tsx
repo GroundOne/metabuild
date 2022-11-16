@@ -49,9 +49,9 @@ export default function ManagePart() {
     }, [contract, tokenContract, currentDate, loadContracts]);
 
     const handlePostPresaleProceedToSale = useCallback(
-        async (contractId: string, projectName: string) => {
+        async (contractId: string, projectName: string, price: string) => {
             if (walletState === WalletState.SignedIn) {
-                await tokenContract.postPresaleProceedToSale(contractId, projectName);
+                await tokenContract.postPresaleProceedToSale(contractId, projectName, price);
             }
         },
         [tokenContract, walletState]
@@ -74,6 +74,12 @@ export default function ManagePart() {
         },
         [tokenContract, walletState]
     );
+
+    const handlePropertyDistribution = (contractId: string) => {
+        if (walletState === WalletState.SignedIn) {
+            tokenContract.distributed_properties(contractId);
+        }
+    };
 
     return (
         <>
@@ -154,31 +160,48 @@ export default function ManagePart() {
                             </Button>
                             <Button
                                 isDisabled={
-                                    !(
-                                        contract.contractStatus === 'property_selection' &&
-                                        contract.saleCloseDate < currentDate
-                                    )
-                                }
-                                size="sm"
-                                isInvertedColor
-                                onClick={() =>
-                                    router.push(router.pathname + '/distribution?project=' + contract.projectAddress)
-                                }
-                            >
-                                Property Distribution...
-                            </Button>
-                            <Button
-                                isDisabled={
                                     !(contract.contractStatus === 'presale' && contract.saleOpeningDate < currentDate)
                                 }
                                 size="sm"
                                 isInvertedColor
                                 className="w-32"
                                 onClick={() =>
-                                    handlePostPresaleProceedToSale(contract.projectAddress, contract.projectName)
+                                    handlePostPresaleProceedToSale(
+                                        contract.projectAddress,
+                                        contract.projectName,
+                                        contract.price
+                                    )
                                 }
                             >
                                 Proceed to sale
+                            </Button>
+                        </div>
+                        <div className="flex justify-end gap-2">
+                            <Button
+                                isDisabled={
+                                    !(contract.contractStatus === 'sale' && contract.saleCloseDate < currentDate)
+                                }
+                                size="sm"
+                                isInvertedColor
+                                onClick={() =>
+                                    router.push(router.pathname + '/initialisation?project=' + contract.projectAddress)
+                                }
+                            >
+                                Property Initialisation...
+                            </Button>
+                            <Button
+                                isDisabled={
+                                    !(
+                                        contract.contractStatus === 'property_selection' &&
+                                        contract.distributionStartDate &&
+                                        contract.distributionStartDate < currentDate
+                                    )
+                                }
+                                size="sm"
+                                isInvertedColor
+                                onClick={() => handlePropertyDistribution(contract.projectAddress)}
+                            >
+                                Property Distribution
                             </Button>
                         </div>
                     </section>

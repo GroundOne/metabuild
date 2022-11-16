@@ -1,6 +1,6 @@
 import constants from '../constants';
 
-export type DistributionVars = {
+export type InitialisationVars = {
     totalSupply: number;
     distributionStart: string;
     reservedTokenIds: string[];
@@ -42,9 +42,9 @@ export async function getContractIdFromTransactionId(transactionHash: string): P
     }
 }
 
-export async function getPropertyDistributionFromTransactionId(
+export async function getPropertyInitialisationFromTransactionId(
     transactionHash: string
-): Promise<DistributionVars | null> {
+): Promise<InitialisationVars | null> {
     try {
         const transactionData = await getNearTransactionData(transactionHash);
         transactionData.reservedTokens = convertPropertyIdsToIdString(transactionData.reservedTokenIds ?? []);
