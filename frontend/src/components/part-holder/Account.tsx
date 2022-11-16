@@ -13,7 +13,7 @@ export default function Account() {
 
     const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
 
-    const getContracts = async (forDate: Date) => {
+    const getContracts = async () => {
         const allContracts = await contract.getContracts();
         console.log('allContracts', allContracts);
         let ownerTokens = await Promise.all(

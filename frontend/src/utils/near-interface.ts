@@ -131,16 +131,14 @@ export class PartTokenFactoryInterface extends InterfaceFields {
         });
     }
 
-    async contractsForOwner(accountId?: string) {
-        const account_id = accountId ?? this.wallet.accountId;
-
-        console.log('Requesting contracts for account:', account_id);
+    async contractsForOwner(accountId: string) {
+        console.log('Requesting contracts for account:', accountId);
 
         try {
             return await this.wallet.viewMethod({
                 contractId: this.contractId,
                 method: 'contracts_for_owner',
-                args: { account_id },
+                args: { account_id: accountId },
             });
         } catch (error) {
             console.error('contractsForOwner Error:', error);
@@ -298,12 +296,24 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async nftMint(args: { metadata: TokenMetadata; receiver_id: string }) {
-        return await this.wallet.callMethod({
-            contractId: this.contractId,
-            method: 'nft_mint',
-            args,
-        });
+    async nftMint(contractId: string, projectTitle: string, price: string) {
+        try {
+            return await this.wallet.callMethod({
+                contractId,
+                method: 'nft_mint',
+                args: {
+                    metadata: {
+                        title: `${projectTitle} PART Token`,
+                        description: 'Token ID is your ranking.',
+                        media: 'https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif',
+                    },
+                },
+                deposit: price,
+            });
+        } catch (error) {
+            console.error('nft_mint Error:', error);
+            throw error;
+        }
     }
 
     async initProperties(initArgs: InitializePropertiesArgs) {

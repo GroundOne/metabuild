@@ -16,8 +16,9 @@ type EmailFormValue = yup.InferType<typeof emailSchema>;
 
 const BuyPartReceipt: React.FC<{
     contractVars: ContractVarsParsed;
+    purchaseOptions: 'participateIRD' | 'buyPart';
     transactionHashes: string;
-}> = ({ contractVars, transactionHashes }) => {
+}> = ({ contractVars, purchaseOptions, transactionHashes }) => {
     const [emailSent, setEmailSent] = useState<{
         status: 'not_send' | 'send' | 'sending';
         error: boolean;
@@ -66,23 +67,44 @@ const BuyPartReceipt: React.FC<{
 
     const receiptInfo = (
         <div>
-            <h1 className="text-lg font-semibold">IRD Registration Confirmed</h1>
-            <p className="mt-4">
-                You are now registered in the IRD of the project <b>{contractVars?.projectName}</b>.
-            </p>
-            <p className="mt-4">
-                The IRD (Initial Random Distribution) will be happening on
-                <b>
-                    {contractVars?.saleOpeningDate.toLocaleString(userLocale, {
-                        timeZoneName: 'short',
-                    })}
-                </b>
-            </p>
-            <p className="mt-4">Please check your account after the IRD to see which ranking you have been assigned.</p>
-            <p className="mt-4">
-                If there are more registered users in the IRD than available PARTs, you will be refunded the price of
-                the PART and the Ground One transaction fees.
-            </p>
+            {purchaseOptions === 'participateIRD' && (
+                <>
+                    {' '}
+                    <h1 className="text-lg font-semibold">IRD Registration Confirmed</h1>
+                    <p className="mt-4">
+                        You are now registered in the IRD of the project <b>{contractVars?.projectName}</b>.
+                    </p>
+                    <p className="mt-4">
+                        The IRD (Initial Random Distribution) will be happening on
+                        <b>
+                            {contractVars?.saleOpeningDate.toLocaleString(userLocale, {
+                                timeZoneName: 'short',
+                            })}
+                        </b>
+                    </p>
+                    <p className="mt-4">
+                        Please check your account after the IRD to see which ranking you have been assigned.
+                    </p>
+                    <p className="mt-4">
+                        If there are more registered users in the IRD than available PARTs, you will be refunded the
+                        price of the PART and the Ground One transaction fees.
+                    </p>
+                </>
+            )}
+            {purchaseOptions === 'buyPart' && (
+                <>
+                    {' '}
+                    <h1 className="text-lg font-semibold">PART Purchase Confirmed</h1>
+                    <p className="mt-4">
+                        You have purchased a PART in the project <b>{contractVars?.projectName}</b>.
+                    </p>
+                    <p className="mt-4">
+                        {/* TODO: Fetch the assigned ranking from the newly minted part */}
+                        You have been assigned the ranking <b>{contractVars?.currentTokenId}</b>.
+                    </p>
+                    <p className="mt-4">Your PART is now in your wallet.</p>
+                </>
+            )}
             <p className="mt-4">
                 The transaction number is <b>{transactionHashes}</b>.
             </p>

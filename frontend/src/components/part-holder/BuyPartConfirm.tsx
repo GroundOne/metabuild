@@ -9,21 +9,34 @@ import { NearContext, WalletState } from '../walletContext';
 import Modal from '../ui-components/Modal';
 import BuyPartReceipt from './BuyPartReceipt';
 
+type PurchaseOptions = 'closed' | 'participateIRD' | 'pendingSaleOpening' | 'buyPart' | null;
+
 export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) => void }) {
     const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [partPurchased, setPartPurchased] = useState<{
         purchased: boolean;
+        purchaseOptions: PurchaseOptions;
         transactionHashes: null | string;
     }>({
         purchased: false,
+        purchaseOptions: null,
         transactionHashes: null,
     });
 
     const router = useRouter();
     const urlParams = router.query;
     const [contractVars, setContractVars] = useState<null | ContractVarsParsed>(null);
-    const isPurchaseClosed = contractVars?.saleOpeningDate && contractVars?.saleOpeningDate < new Date();
+    let purchaseOptions: PurchaseOptions = null;
+    if (contractVars && contractVars.saleOpeningDate > new Date() && contractVars.contractStatus === 'presale') {
+        purchaseOptions = 'participateIRD';
+    } else if (contractVars && contractVars.saleOpeningDate < new Date() && contractVars.contractStatus === 'presale') {
+        purchaseOptions = 'pendingSaleOpening';
+    } else if (contractVars && contractVars.contractStatus === 'sale') {
+        purchaseOptions = 'buyPart';
+    } else {
+        purchaseOptions = 'closed';
+    }
 
     const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
 
@@ -41,7 +54,7 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
     // Handle redirect after deploying the contract
     useEffect(() => {
         setErrorMessage(null);
-        setPartPurchased({ purchased: false, transactionHashes: null });
+        setPartPurchased({ purchased: false, purchaseOptions: null, transactionHashes: null });
 
         const urlParams = router.query;
         // if (urlParams.transactionHashes) {
@@ -57,22 +70,29 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
                 console.log('Purchase urlParams.transactionHashes', urlParams.transactionHashes);
                 setPartPurchased({
                     purchased: true,
+                    purchaseOptions: purchaseOptions,
                     transactionHashes: urlParams.transactionHashes as string,
                 });
             }
         }
-    }, [wallet, router, router.query, tokenContract]);
+    }, [router.query, purchaseOptions]);
 
     const handlePurchase = async () => {
         console.log('handlePurchase for ' + contractVars?.projectAddress);
-        if (walletState === WalletState.SignedIn) {
+        if (purchaseOptions === 'buyPart') {
+            await tokenContract.nftMint(
+                contractVars!.projectAddress,
+                contractVars!.projectName,
+                contractVars!.priceLabel
+            );
+        } else if (purchaseOptions === 'participateIRD') {
             await tokenContract.participatePresale(contractVars!.projectAddress, contractVars!.priceLabel);
         }
     };
 
     const handleCloseModal = () => {
         setErrorMessage(null);
-        setPartPurchased({ purchased: false, transactionHashes: null });
+        setPartPurchased({ purchased: false, purchaseOptions: null, transactionHashes: null });
         router.replace(router.pathname + `?project=${urlParams.project}`, undefined, { shallow: true });
     };
 
@@ -95,7 +115,11 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
             <>
                 {BackgroundImage}
                 <AppCard>
-                    <BuyPartReceipt contractVars={contractVars!} transactionHashes={partPurchased.transactionHashes!} />
+                    <BuyPartReceipt
+                        contractVars={contractVars!}
+                        purchaseOptions={partPurchased.purchaseOptions as 'participateIRD' | 'buyPart'}
+                        transactionHashes={partPurchased.transactionHashes!}
+                    />
                 </AppCard>
             </>
         );
@@ -124,19 +148,42 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
                         <p className="mt-4">
                             All available PARTs are priced at <b>{contractVars?.priceLabel} Ⓝ</b> each.
                         </p>
-                        <p className="mt-4">
-                            Users can now register for the IRD (Initial Random Distribution) happening on{' '}
-                            <b>
-                                {contractVars?.saleOpeningDate.toLocaleString(userLocale, {
-                                    timeZoneName: 'short',
-                                })}
-                            </b>
-                        </p>
+                        {purchaseOptions === 'buyPart' && (
+                            <>
+                                <p className="mt-4">
+                                    Sale available until{' '}
+                                    <b>
+                                        {contractVars?.saleCloseDate.toLocaleString(userLocale, {
+                                            timeZoneName: 'short',
+                                        })}
+                                    </b>
+                                </p>
+                                <p>
+                                    Current highest ranking available: <b>{(contractVars?.currentTokenId ?? 1) - 1}</b>
+                                </p>
+                                <p>
+                                    You will be assigned the highest ranking available at the moment of the transaction.
+                                    Please note that your final ranking may differ from the ranking mentioned above in
+                                    case sales have happened in the meantime. Refresh your browser to get the latest
+                                    available ranking.
+                                </p>
+                            </>
+                        )}
+                        {purchaseOptions === 'participateIRD' && (
+                            <p className="mt-4">
+                                Users can now register for the IRD (Initial Random Distribution) happening on{' '}
+                                <b>
+                                    {contractVars?.saleOpeningDate.toLocaleString(userLocale, {
+                                        timeZoneName: 'short',
+                                    })}
+                                </b>
+                            </p>
+                        )}
                     </div>
                 </div>
                 <div className="text-center">
                     <Button
-                        isDisabled={isPurchaseClosed}
+                        isDisabled={purchaseOptions === 'closed' || purchaseOptions === 'pendingSaleOpening'}
                         isInvertedColor
                         size="md"
                         className="mt-10"
@@ -145,9 +192,14 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
                         CONFIRM PART PURCHASE FOR {contractVars?.priceLabel} NEAR
                     </Button>
                 </div>
-                {isPurchaseClosed && (
+                {purchaseOptions === 'closed' && (
                     <div className="mt-4 text-center text-yellow-600">
                         <p>PART purchase is closed.</p>
+                    </div>
+                )}
+                {purchaseOptions === 'pendingSaleOpening' && (
+                    <div className="mt-4 text-center text-yellow-600">
+                        <p>Waiting for the PART Issuer to initiate the sale.</p>
                     </div>
                 )}
             </AppCard>

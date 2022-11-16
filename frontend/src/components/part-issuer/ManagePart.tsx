@@ -9,13 +9,13 @@ import constants from '../../constants';
 export default function ManagePart() {
     const router = useRouter();
     const [currentDate, setCurrentDate] = useState(new Date());
-    const { walletState, contract, tokenContract } = useContext(NearContext);
+    const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
     const [contracts, setContracts] = useState<ContractVarsParsed[]>([]);
 
     const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
 
     const getContracts = async (forDate: Date) => {
-        const ownerContractIDs: string[] = await contract.contractsForOwner();
+        const ownerContractIDs: string[] = await contract.contractsForOwner(wallet.accountId!);
         console.log('ownerContractIDs', ownerContractIDs);
 
         const contractsPromise = ownerContractIDs.map(async (contractId: string) => {
@@ -32,7 +32,7 @@ export default function ManagePart() {
                         'test_1.part_factory.groundone.testnet',
                     ].includes(contract.projectAddress)
             );
-        console.log('ownerContracts', ownerContracts);
+        console.log('ownerContractss', ownerContracts);
         console.log('availableContracts', availableContracts);
         setContracts(availableContracts);
     };
