@@ -18,7 +18,7 @@ const App: NextPage = (props: any) => {
                         buttons={[
                             { name: 'CREATE', url: '/part-issuer/create-part' },
                             { name: 'MANAGE', url: '/part-issuer/manage-part' },
-                            { name: 'TEST', url: '/part-issuer/create-pvt' },
+                            // { name: 'TEST', url: '/part-issuer/create-pvt' },
                         ]}
                     />
                     <AppCard>
