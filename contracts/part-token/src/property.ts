@@ -174,7 +174,7 @@ export function internalSetPropertyPreferences({
   ).toArray()
 
   assert(
-    tokenKeys.length === 0,
+    tokenKeys.length !== 0,
     `Current account doesn't own any PART Tokens ${near.signerAccountId()}`
   )
   // TODO: Actually the address of the reserved tokens can have multiple tokens
