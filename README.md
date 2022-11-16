@@ -15,15 +15,15 @@ Additionally, the corresponding frontend is also included. It's written in TypeS
 
 ### Frontend
 
-`cd frontend && yarn` - install deps
-`cd frontend && cp .env.example .env` - copy environment variables
+`cd frontend && yarn` - install deps  
+`cd frontend && cp .env.example .env` - copy environment variables  
 `cd frontend && yarn dev` - run development version
 
 ### Smart Contracts
 
 #### Part-Token
 
-`cd contracts/part-token && yarn` - install deps
+`cd contracts/part-token && yarn` - install deps  
 `cd contracts/part-token && cp .env.example .env` - copy environment variables
 `cd contracts/part-token && yarn build && yarn deploy:dev` - build the contract as `.wasm` files and deploy a instance on a dev account
 
@@ -31,8 +31,8 @@ See the `package.json` files for example calls. Make sure to specify the correct
 
 #### Part-Factory
 
-`cd contracts/part-factory && cargo install` - install deps
-`cd contracts/part-factory && cp .env.example .env` - copy environment variables
-`cd contracts/part-factory && yarn build && yarn deploy:dev` - build the contract as `.wasm` files and deploy a instance on a dev account
+`cd contracts/part-factory && cargo install` - install deps  
+`cd contracts/part-factory && cp .env.example .env` - copy environment variables  
+`cd contracts/part-factory && yarn build && yarn deploy:dev` - build the contract as `.wasm` files and deploy an instance on a dev account
 
 See the `package.json` files for example calls. Make sure to specify the correct vars in the `.env` file. Next step would be to initialize the contract.
