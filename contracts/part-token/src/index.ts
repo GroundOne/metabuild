@@ -359,16 +359,10 @@ export class Contract {
       saleOpening: this.saleOpening,
       saleClose: this.saleClose,
       contractStatus: this.contractStatus,
-      isArchived: this.isArchived,
-    }
-  }
-
-  @view({})
-  property_vars() {
-    return {
       properties: this.current_properties(),
       reservedProperties: getValuesInVector(this.reservedProperties),
       distributionStart: this.distributionStart,
+      isArchived: this.isArchived,
     }
   }
 
