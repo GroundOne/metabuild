@@ -158,10 +158,10 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
                                         })}
                                     </b>
                                 </p>
-                                <p>
+                                <p className="mt-4">
                                     Current highest ranking available: <b>{contractVars?.currentTokenId ?? 1}</b>
                                 </p>
-                                <p>
+                                <p className="mt-4">
                                     You will be assigned the highest ranking available at the moment of the transaction.
                                     Please note that your final ranking may differ from the ranking mentioned above in
                                     case sales have happened in the meantime. Refresh your browser to get the latest
