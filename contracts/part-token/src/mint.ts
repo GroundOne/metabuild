@@ -52,7 +52,7 @@ export function internalMint({
   internalAddTokenToOwner(contract, token.owner_id, newTokenId)
 
   // increase currentTokenId
-  if (!tokenId) {
+  if (!tokenId || tokenId === contract.currentTokenId.toString()) {
     const newCurrentTokenId = internalNextTokenId({ contract })
     contract.currentTokenId = newCurrentTokenId
   }

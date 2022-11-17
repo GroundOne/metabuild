@@ -277,8 +277,8 @@ export class Contract {
     amount,
     receivingAccountId,
   }: {
-    amount: number
-    receivingAccountId: string
+    amount?: number
+    receivingAccountId?: string
   }) {
     return internalPayoutNear({ amount, receivingAccountId, contract: this })
   }

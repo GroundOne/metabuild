@@ -253,7 +253,7 @@ export function internalPayoutNear({
   receivingAccountId,
   contract,
 }: {
-  amount: number
+  amount?: number
   receivingAccountId?: string
   contract: Contract
 }) {
@@ -267,19 +267,36 @@ export function internalPayoutNear({
     `Too early to payout near, wait for SALE phase, is currently ${contract.contractStatus}`
   )
 
-  const amountBigInt = BigInt(amount)
-  assert(amountBigInt > BigInt("0"), "The amount should be a positive number")
-  assert(
-    amountBigInt <= near.accountBalance(),
-    `Not enough balance ${near.accountBalance()} to cover transfer of ${amountBigInt} yoctoNEAR`
-  )
+  const minimumBalance = BigInt(6 * 1e24)
 
   assert(
-    receivingAccountId != near.currentAccountId(),
-    "Can't transfer to the contract itself"
+    near.accountBalance() >= minimumBalance,
+    `Account doesn't have enough balance to payout Near, has ${near
+      .accountBalance()
+      .toString()}`
   )
+  const maximumPayout = near.accountBalance() - minimumBalance
 
-  const transferPromiseId = near.promiseBatchCreate(receivingAccountId)
+  let amountBigInt = maximumPayout
+  if (amount) {
+    amountBigInt = BigInt(amount)
+    assert(amountBigInt > BigInt("0"), "The amount should be a positive number")
+    assert(
+      amountBigInt <= maximumPayout,
+      `Not enough balance ${maximumPayout} to cover transfer of ${amountBigInt} yoctoNEAR`
+    )
+  }
+
+  if (receivingAccountId) {
+    assert(
+      receivingAccountId != near.currentAccountId(),
+      "Can't transfer to the contract itself"
+    )
+  }
+
+  const receiver = receivingAccountId ? receivingAccountId : contract.ownerId
+
+  const transferPromiseId = near.promiseBatchCreate(receiver)
 
   near.promiseBatchActionTransfer(transferPromiseId, amountBigInt)
   return near.promiseReturn(transferPromiseId)
