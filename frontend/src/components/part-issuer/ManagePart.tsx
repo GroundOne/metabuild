@@ -4,7 +4,6 @@ import { NearContext, WalletState } from '../walletContext';
 import { useRouter } from 'next/router';
 import { debounce } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
-import constants from '../../constants';
 
 export default function ManagePart() {
     const router = useRouter();
@@ -21,8 +20,13 @@ export default function ManagePart() {
         const contractsPromise = ownerContractIDs.map(async (contractId: string) => {
             return tokenContract.contract_vars(contractId, forDate);
         });
-        const ownerContracts = await Promise.all(contractsPromise);
-        const availableContracts = ownerContracts
+        const ownerContracts = await Promise.allSettled(contractsPromise);
+        const availableContracts = (
+            ownerContracts.filter(
+                (contract) => contract.status === 'fulfilled'
+            ) as PromiseFulfilledResult<ContractVarsParsed>[]
+        )
+            .map((contract) => contract.value)
             .filter((contract) => !contract.isArchived)
             .filter(
                 (contract) =>
@@ -32,7 +36,7 @@ export default function ManagePart() {
                         'test_1.part_factory.groundone.testnet',
                     ].includes(contract.projectAddress)
             );
-        console.log('ownerContractss', ownerContracts);
+        console.log('ownerContracts', ownerContracts);
         console.log('availableContracts', availableContracts);
         setContracts(availableContracts);
     };
