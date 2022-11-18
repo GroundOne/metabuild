@@ -253,7 +253,7 @@ export function internalPayoutNear({
   receivingAccountId,
   contract,
 }: {
-  amount?: number
+  amount?: string
   receivingAccountId?: string
   contract: Contract
 }) {
