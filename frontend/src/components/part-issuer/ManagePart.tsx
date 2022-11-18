@@ -182,9 +182,7 @@ export default function ManagePart() {
                                 Proceed to sale
                             </Button>
                             <Button
-                                // isDisabled={
-                                //     !(contract.contractStatus === 'presale' && contract.saleOpeningDate < currentDate)
-                                // }
+                                isDisabled={!(contract.contractStatus !== 'presale')}
                                 size="sm"
                                 isInvertedColor
                                 className="w-32"
