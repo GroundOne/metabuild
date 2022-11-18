@@ -81,12 +81,13 @@ const PropertyInitialisationReceipt: React.FC<{
                 <b>#001 to #{('' + (initialisationVars?.totalSupply ?? '')).padStart(3, '0')}</b>.
             </p>
             <p className="mt-4">
-                The following properties will not be distributed{' '}
+                The following properties will be excluded from the distribution and have been assigned to{' '}
+                <b>{contractVars?.ownerId}</b>{' '}
                 <b>{contractVars?.reservedProperties?.map((x) => '#' + x.padStart(3, '0')).join(', ')}</b>.
             </p>
             <p className="mt-4">
-                Initialisation of the properties according to PART Scheme <b>{contractVars?.projectAddress}</b> will
-                take place on{' '}
+                Distribution of the properties according to PART Scheme <b>{contractVars?.projectAddress}</b> will take
+                place on{' '}
                 <b>
                     {initialisationVars?.distributionStartDate.toLocaleString(userLocale, {
                         timeZoneName: 'short',
