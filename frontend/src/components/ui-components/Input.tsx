@@ -1,5 +1,7 @@
 import React, { forwardRef } from 'react';
 import clsx from 'clsx';
+// Import ReactTooltip
+import ReactTooltip from 'react-tooltip';
 
 interface InputProps extends React.HTMLProps<HTMLInputElement> {
     name: string;
@@ -9,6 +11,7 @@ interface InputProps extends React.HTMLProps<HTMLInputElement> {
     errorText?: string;
     required?: boolean;
     placeholder: string;
+    infoText?: string;
     type?: string;
     isDisabled?: boolean;
     labelRight?: string;
@@ -23,6 +26,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             isInvalid = false,
             errorText,
             placeholder,
+            infoText = '',
             required = false,
             isDisabled = false,
             labelRight = false,
@@ -58,7 +62,30 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 {isInvalid && errorText && (
                     <span className="-mb-3 block py-1 pl-4 text-left text-sm text-red-600">{errorText}</span>
                 )}
-                <span className="mt-2 inline-block pl-4 text-gray-600">{placeholder}</span>
+                {infoText && (
+                    <>
+                        <div data-tip={infoText} className="mt-2 inline-block h-4 text-xs text-gray-600">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="h-5 w-5"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                />
+                            </svg>
+                        </div>
+                    </>
+                )}
+                <span data-tip={infoText} className="mt-2 inline-block pl-4 text-gray-600">
+                    {placeholder}
+                </span>
+                {infoText && <ReactTooltip />}
             </label>
         </div>
     )

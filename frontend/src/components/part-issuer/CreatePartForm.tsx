@@ -202,6 +202,7 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     id="reserveParts"
                     type="text"
                     placeholder="Reserved PARTs"
+                    infoText='Example: "1-10; 20-30; 40; 50"'
                     isDisabled={isSubmitting}
                     isInvalid={!!errors.reserveParts}
                     errorText={errors.reserveParts?.message as string | undefined}
