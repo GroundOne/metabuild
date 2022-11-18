@@ -81,6 +81,12 @@ export default function ManagePart() {
         }
     };
 
+    const handlePayout = () => {
+        if (walletState === WalletState.SignedIn) {
+            tokenContract.payoutNear({});
+        }
+    };
+
     return (
         <>
             <div className="mr-12 flex justify-between">
@@ -174,6 +180,17 @@ export default function ManagePart() {
                                 }
                             >
                                 Proceed to sale
+                            </Button>
+                            <Button
+                                isDisabled={
+                                    !(contract.contractStatus === 'presale' && contract.saleOpeningDate < currentDate)
+                                }
+                                size="sm"
+                                isInvertedColor
+                                className="w-32"
+                                onClick={() => handlePayout()}
+                            >
+                                Payout
                             </Button>
                         </div>
                         <div className="flex justify-end gap-2">
