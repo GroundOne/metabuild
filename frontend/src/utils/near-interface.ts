@@ -325,11 +325,11 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async setPreferencesProperties(propertyPreferenceIds: string[]) {
+    async setPreferencesProperties(token_id: string, propertyPreferenceIds: string[]) {
         return await this.wallet.callMethod({
             contractId: this.contractId,
             method: 'set_preferences_properties',
-            args: propertyPreferenceIds,
+            args: { token_id, propertyPreferenceIds },
         });
     }
 
