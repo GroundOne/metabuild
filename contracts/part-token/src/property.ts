@@ -197,7 +197,7 @@ export function internalSetPropertyPreferences({
   )
 
   assert(
-    !contract.isDistributionDone(),
+    !contract.isSelectionDone(),
     `Property selection is already finished is ${near.blockTimestamp()} ended ${
       contract.distributionStart
     }`
@@ -213,7 +213,7 @@ export function internalDistributeProperties({
   contract: Contract
 }) {
   assert(
-    contract.isDistributionDone(),
+    contract.isSelectionDone(),
     `Property Selection is not yet finished is ${near.blockTimestamp()} will end ${
       contract.distributionStart
     }`
