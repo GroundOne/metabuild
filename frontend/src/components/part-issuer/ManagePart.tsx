@@ -112,7 +112,7 @@ export default function ManagePart() {
                             <span className="font-semibold"> {contract.reservedTokens}</span>
                         </div>
                         <div>
-                            PARTs sold: <span className="font-semibold">{contract.currentTokenId - 1}</span>
+                            PARTs sold: <span className="font-semibold">{contract.soldTokens}</span>
                         </div>
                         <div>
                             Sale Opening:{' '}
