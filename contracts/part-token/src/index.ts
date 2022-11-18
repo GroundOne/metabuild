@@ -248,11 +248,14 @@ export class Contract {
 
   @call({})
   set_preferences_properties({
+    token_id,
     propertyPreferenceIds,
   }: {
+    token_id: string
     propertyPreferenceIds: string[]
   }) {
     return internalSetPropertyPreferences({
+      token_id,
       propertyPreferenceIds,
       contract: this,
     })
@@ -411,7 +414,7 @@ export class Contract {
   }
 
   @view({})
-  isDistributionDone() {
+  isSelectionDone() {
     return BigInt(this.distributionStart) < near.blockTimestamp()
   }
 
