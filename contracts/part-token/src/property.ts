@@ -80,7 +80,7 @@ export function internalInitProperties(
     )
 
     reservedTokenIds.forEach((reservedTokenId) => {
-      contract.reservedProperties.push(reservedTokenId.toString())
+      contract.reservedProperties.push(reservedTokenId)
     })
   }
 }
@@ -163,9 +163,11 @@ export function internalPropertyInfo({
 // }
 
 export function internalSetPropertyPreferences({
+  token_id,
   propertyPreferenceIds,
   contract,
 }: {
+  token_id: string
   propertyPreferenceIds: string[]
   contract: Contract
 }) {
@@ -174,15 +176,20 @@ export function internalSetPropertyPreferences({
   ).toArray()
 
   assert(
+    tokenKeys.includes(token_id),
+    `Sender must be owner of token id ${token_id}, account ${near.signerAccountId()}, `
+  )
+
+  assert(
     tokenKeys.length !== 0,
     `Current account doesn't own any PART Tokens ${near.signerAccountId()}`
   )
   // TODO: Actually the address of the reserved tokens can have multiple tokens
   // Fix to account for that
-  assert(
-    tokenKeys.length > 1,
-    `Current account owns more than 1 PART Token ${near.signerAccountId()}, no preferences allowed`
-  )
+  // assert(
+  //   tokenKeys.length >= 1,
+  //   `Current account owns more than 1 PART Token ${near.signerAccountId()}, no preferences allowed`
+  // )
 
   assert(
     contract.contractStatus === ContractStatusEnum.PROPERTY_SELECTION,
@@ -197,7 +204,7 @@ export function internalSetPropertyPreferences({
   )
 
   const propertyPreference = new PropertyPreference(propertyPreferenceIds)
-  contract.propertyPreferenceByTokenId.set(tokenKeys[0], propertyPreference)
+  contract.propertyPreferenceByTokenId.set(token_id, propertyPreference)
 }
 
 export function internalDistributeProperties({
@@ -222,7 +229,9 @@ export function internalDistributeProperties({
     return +a.token_id - +b.token_id
   })
 
-  const reservedProperties = getValuesInVector(contract.reservedProperties)
+  const reservedProperties: string[] = getValuesInVector(
+    contract.reservedProperties
+  )
 
   // loop through all token holders
   for (const partToken of sortedPartTokens) {
@@ -245,8 +254,8 @@ export function internalDistributeProperties({
         continue
       }
 
-      if (!contract.tokensById.get(prefPropertyId)) {
-        // token for this preference does not exist
+      if (!contract.properties.get(prefPropertyId)) {
+        // property for this preference does not exist
         continue
       }
 
