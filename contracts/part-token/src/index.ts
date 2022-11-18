@@ -192,7 +192,12 @@ export class Contract {
 
         internalMint({
           contract: this,
-          metadata: this.metadata,
+          metadata: {
+            title: `${this.projectName} PART Token`,
+            description: "Token ID is your ranking.",
+            media:
+              "https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif",
+          },
           receiver_id: this.ownerId,
           tokenId: reservedTokenId,
         })

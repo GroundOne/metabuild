@@ -37,10 +37,6 @@ export function internalMint({
     `Total supply reached ${contract.totalSupply}`
   )
 
-  metadata.description =
-    `${metadata.description ? `${metadata.description}\n` : ""}` +
-    `Token Id ${newTokenId}`
-
   //insert the token ID and token struct and make sure that the token doesn't exist
   assert(!contract.tokensById.containsKey(newTokenId), "Token already exists")
   contract.tokensById.set(newTokenId, token)
