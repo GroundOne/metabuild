@@ -160,6 +160,7 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
                                 </p>
                                 <p className="mt-4">
                                     Current highest ranking available:{' '}
+                                    {/* TODO: ADD the reserved tokens below the current number of the sold tokens to find the highest ranking available */}
                                     <b>{contractVars?.soldTokens ? contractVars.soldTokens + 1 : 1}</b>
                                 </p>
                                 <p className="mt-4">

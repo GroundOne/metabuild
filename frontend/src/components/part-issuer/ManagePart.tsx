@@ -83,7 +83,7 @@ export default function ManagePart() {
 
     const handlePayout = () => {
         if (walletState === WalletState.SignedIn) {
-            tokenContract.payoutNear({});
+            tokenContract.payoutNear({ contractId: wallet.accountId! });
         }
     };
 

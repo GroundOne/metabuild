@@ -140,8 +140,8 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                 <Input
                     id="projectAddress"
                     type="text"
-                    placeholder="Project Address"
-                    labelRight=".near"
+                    placeholder="Project Account"
+                    // labelRight=".near"
                     isDisabled={isSubmitting}
                     isInvalid={!!errors.projectAddress}
                     errorText={errors.projectAddress?.message as string | undefined}

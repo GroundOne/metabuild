@@ -79,7 +79,7 @@ const CreatePartReceipt: React.FC<{ contractVars: ContractVarsParsed; transactio
             </p>
             <p className="mt-4">
                 Users can now register for the IRD (Initial Random Distribution) happening on{' '}
-                <b>{contractVars.saleCloseDate.toUTCString()}</b>.
+                <b>{contractVars.saleOpeningDate.toUTCString()}</b>.
             </p>
             <p className="mt-4">
                 Any unsold PARTs will be sent to your address <b>{contractVars.projectAddress}</b>.
