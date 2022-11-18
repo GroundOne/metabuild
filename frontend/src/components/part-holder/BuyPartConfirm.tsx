@@ -32,7 +32,7 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
         purchaseOptions = 'participateIRD';
     } else if (contractVars && contractVars.saleOpeningDate < new Date() && contractVars.contractStatus === 'presale') {
         purchaseOptions = 'pendingSaleOpening';
-    } else if (contractVars && contractVars.saleCloseDate < new Date() && contractVars.contractStatus === 'sale') {
+    } else if (contractVars && contractVars.saleCloseDate > new Date() && contractVars.contractStatus === 'sale') {
         purchaseOptions = 'buyPart';
     } else {
         purchaseOptions = 'closed';
