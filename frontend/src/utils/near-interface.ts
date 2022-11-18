@@ -68,6 +68,7 @@ export type ContractVarsParsed = ContractVars & {
     priceLabel: string;
     properties?: Property[];
     reservedProperties?: string[];
+    highestAvailableRanking: number;
 };
 export class InterfaceFields {
     constructor(public readonly contractId: string, public readonly wallet: NearWallet) {}
@@ -298,6 +299,8 @@ export class PartTokenInterface extends InterfaceFields {
     }
 
     async nftMint(contractId: string, projectTitle: string, price: string) {
+        console.log('nftMint', contractId, projectTitle, price);
+
         try {
             return await this.wallet.callMethod({
                 contractId,
@@ -309,7 +312,7 @@ export class PartTokenInterface extends InterfaceFields {
                         media: 'https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif',
                     },
                 },
-                deposit: price,
+                // deposit: price,
             });
         } catch (error) {
             console.error('nft_mint Error:', error);
@@ -448,6 +451,15 @@ export class PartTokenInterface extends InterfaceFields {
                 distributionStartDate = new Date(+contractVars.distributionStart / 1e6);
             }
 
+            let highestAvailableRanking = 0;
+            const reservedTokenList = contractVars.reservedTokenIds.map((tokenId) => +tokenId);
+            for (let i = 0; i <= contractVars.soldTokens; i++) {
+                highestAvailableRanking++;
+                while (reservedTokenList.includes(highestAvailableRanking)) {
+                    highestAvailableRanking++;
+                }
+            }
+
             const status =
                 currentDate < saleOpeningDate
                     ? 'Presale'
@@ -462,6 +474,7 @@ export class PartTokenInterface extends InterfaceFields {
                 saleCloseDate,
                 distributionStartDate,
                 priceLabel,
+                highestAvailableRanking,
             };
 
             return contractVarsParsed;
@@ -487,7 +500,7 @@ export class PartTokenInterface extends InterfaceFields {
                 distributionStartDate,
             };
         } catch (error) {
-            console.log('contract_vars error', error);
+            console.log('property_vars error', error);
             throw error;
         }
     }

@@ -82,20 +82,25 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
             const nowPlus5Days = new Date(new Date().setDate(new Date().getDate() + 5));
             const nowPlus10Days = new Date(new Date().setDate(new Date().getDate() + 10));
 
-            setValue('projectAddress', 'demo_project_test');
-            setValue('projectName', 'Village Utopia');
-            setValue('partAmount', 100);
-            setValue('partPrice', 5);
+            const projectCode = new Date()
+                .toISOString()
+                .slice(0, -8)
+                .replaceAll('-', '_')
+                .replaceAll(':', '_')
+                .replaceAll('T', '_');
+            setValue('projectAddress', 'demo_' + projectCode);
+            setValue('projectName', 'Demo ' + projectCode);
+            setValue('partAmount', 50);
+            setValue('partPrice', 0.1);
             setValue('saleOpeningDate', (nowPlus5Days.toISOString().split('T')[0] + 'T10:00') as unknown as Date);
-            setValue(
-                'saleCloseDate',
-                (nowPlus10Days.toISOString().split('T')[0] + 'T10:00') as unknown as Date as unknown as Date
-            );
+            setValue('saleOpeningDate', new Date().toISOString().slice(0, -8) as unknown as Date);
+            setValue('saleCloseDate', (nowPlus10Days.toISOString().split('T')[0] + 'T10:00') as unknown as Date);
+            setValue('saleCloseDate', new Date().toISOString().slice(0, -8) as unknown as Date);
             setValue(
                 'backgroundImageLink',
                 'https://images.squarespace-cdn.com/content/v1/63283ec16922c81dc0f97e2f/e3150b7f-bfc8-4251-ad50-3344f4b21b3d/image.jpg'
             );
-            setValue('reserveParts', '1-10; 20-30; 40; 50');
+            setValue('reserveParts', '3-4;40');
         }
     }, [values, setValue]);
 
