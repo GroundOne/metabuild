@@ -349,6 +349,7 @@ export class Contract {
   contract_vars() {
     return {
       ownerId: this.ownerId,
+      soldTokens: this.tokenMetadataById.length - this.reservedTokenIds.length,
       currentTokenId: this.currentTokenId,
       projectName: this.projectName,
       projectBackgroundUrl: this.projectBackgroundUrl,

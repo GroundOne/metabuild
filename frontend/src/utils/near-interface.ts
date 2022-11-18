@@ -35,6 +35,7 @@ type InitializePropertiesArgs = {
 
 type ContractVars = {
     ownerId: string;
+    soldTokens: number;
     currentTokenId: number;
     projectName: string;
     projectAddress: string;
