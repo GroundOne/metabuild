@@ -27,11 +27,13 @@ export default function Account() {
             token: t,
             contract: allContracts.find((c) => c.projectAddress === t.metadata.symbol),
         }));
-        const purchasedTokens = allTokens.filter(
-            (t) =>
-                !allContracts.find((c) => c.projectAddress === t.metadata.symbol)!.reservedTokenIds.includes(t.token_id)
-        );
-        console.log('purchasedTokens', purchasedTokens);
+        // const purchasedTokens = allTokens.filter(
+        //     (t) =>
+        //         !allContracts.find((c) => c.projectAddress === t.metadata.symbol)!.reservedTokenIds.includes(t.token_id)
+        // );
+        // console.log('purchasedTokens', purchasedTokens);
+        console.log('tokenInfo', tokenInfo);
+
         setTokens(tokenInfo);
     };
 
@@ -58,16 +60,16 @@ export default function Account() {
                         key={i}
                     >
                         <p>
-                            Project name: <span className="font-semibold">{tokenInfo.token.metadata.name}</span>
+                            Project name: <span className="font-semibold">{tokenInfo.token.metadata?.name}</span>
                         </p>
                         <p>
-                            Project address: <span className="font-semibold">{tokenInfo.token.metadata.symbol}</span>
+                            Project address: <span className="font-semibold">{tokenInfo.token.metadata?.symbol}</span>
                         </p>
                         <p>
-                            Your PART ranking: <span className="font-semibold">{tokenInfo.token.token_id}</span>
+                            Your PART ranking: <span className="font-semibold">{tokenInfo.token?.token_id}</span>
                         </p>
                         <p>
-                            Status: <span className="font-semibold">{tokenInfo.contract.metadata.status}</span>
+                            Status: <span className="font-semibold">{tokenInfo.contract?.metadata?.status}</span>
                         </p>
 
                         {/* <div>
