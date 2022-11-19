@@ -81,7 +81,7 @@ export default function ManagePart() {
 
     const handlePropertyDistribution = (contractId: string) => {
         if (walletState === WalletState.SignedIn) {
-            tokenContract.distributed_properties(contractId);
+            tokenContract.distributeProperties(contractId);
         }
     };
 
