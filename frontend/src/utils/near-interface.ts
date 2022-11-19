@@ -344,24 +344,13 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async payoutNear({
-        amount,
-        receivingAccountId,
-        contractId,
-    }: {
-        amount?: string;
-        receivingAccountId?: string;
-        contractId: string;
-    }) {
-        const args: { amount?: string; receivingAccountId?: string } = {};
-
-        if (amount) args.amount = amount;
-        if (receivingAccountId) args.receivingAccountId = receivingAccountId;
-
+    async payoutNear(contractId: string, receivingAccountId: string) {
         return await this.wallet.callMethod({
             contractId: contractId,
             method: 'payout_near',
-            args,
+            args: {
+                receivingAccountId,
+            },
         });
     }
 

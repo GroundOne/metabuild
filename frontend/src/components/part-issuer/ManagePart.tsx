@@ -85,9 +85,9 @@ export default function ManagePart() {
         }
     };
 
-    const handlePayout = () => {
+    const handlePayout = (contract: ContractVarsParsed) => {
         if (walletState === WalletState.SignedIn) {
-            tokenContract.payoutNear({ contractId: wallet.accountId! });
+            tokenContract.payoutNear(contract.projectAddress, wallet.accountId!);
         }
     };
 
@@ -190,7 +190,7 @@ export default function ManagePart() {
                                 size="sm"
                                 isInvertedColor
                                 className="w-32"
-                                onClick={() => handlePayout()}
+                                onClick={() => handlePayout(contract)}
                             >
                                 Payout
                             </Button>
