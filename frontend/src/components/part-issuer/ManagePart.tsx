@@ -141,7 +141,7 @@ export default function ManagePart() {
                                 })}
                             </span>
                         </div>
-                        {contract?.distributionStartDate && (
+                        {contract?.distributionStart.length > 2 && (
                             <div>
                                 Property Distribution:{' '}
                                 <span className="font-semibold">
