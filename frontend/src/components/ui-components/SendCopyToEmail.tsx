@@ -40,7 +40,7 @@ const SendCopyToEmail: React.FC<{
                 body: JSON.stringify({
                     to: data.email,
                     template: 'transactionalEmail',
-                    subject,
+                    subject, //'GroundOne: Your part has been issued',
                     message: renderToStaticMarkup(children),
                 }),
             });
