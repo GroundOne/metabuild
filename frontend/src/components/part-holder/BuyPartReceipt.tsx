@@ -73,12 +73,13 @@ const BuyPartReceipt: React.FC<{
                         You are now registered in the IRD of the project <b>{contractVars?.projectName}</b>.
                     </p>
                     <p className="mt-4">
-                        The IRD (Initial Random Distribution) will be happening on
+                        The IRD (Initial Random Distribution) will be happening on{' '}
                         <b>
                             {contractVars?.saleOpeningDate.toLocaleString(userLocale, {
                                 timeZoneName: 'short',
                             })}
                         </b>
+                        .
                     </p>
                     <p className="mt-4">
                         Please check your account after the IRD to see which ranking you have been assigned.

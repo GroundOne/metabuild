@@ -29,6 +29,7 @@ const CreatePartReceipt: React.FC<{ contractVars: ContractVarsParsed; transactio
         handleSubmit,
         formState: { errors },
     } = useForm<EmailFormValue>({ resolver: yupResolver(emailSchema) });
+    const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
 
     const onSubmit = async (data: EmailFormValue) => {
         try {
@@ -77,7 +78,12 @@ const CreatePartReceipt: React.FC<{ contractVars: ContractVarsParsed; transactio
             </p>
             <p className="mt-4">
                 Users can now register for the IRD (Initial Random Distribution) happening on{' '}
-                <b>{contractVars.saleOpeningDate.toUTCString()}</b>.
+                <b>
+                    {contractVars.saleOpeningDate.toLocaleString(userLocale, {
+                        timeZoneName: 'short',
+                    })}
+                </b>
+                .
             </p>
             <p className="mt-4">
                 Any unsold PARTs will be sent to your address <b>{contractVars.projectAddress}</b>.
