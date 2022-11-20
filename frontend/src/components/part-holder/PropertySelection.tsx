@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { convertPropertiesStringToIds } from '../../utils/common';
@@ -58,6 +59,7 @@ export default function PropertySelection(props: { hasBgImage: (hasBgImg: boolea
                 .contract_vars(`${urlParams.project as string}${constants.CONTRACT_ADDRESS_SUFFIX}`)
                 .then((contractInfo) => {
                     setContractVars(contractInfo);
+                    props.hasBgImage(!!(contractInfo.projectBackgroundUrl && contractInfo.projectBackgroundUrl.length));
                     return tokenContract.nft_tokens_for_owner(contractInfo.projectAddress);
                 })
                 .then((tokens) => {
@@ -65,7 +67,7 @@ export default function PropertySelection(props: { hasBgImage: (hasBgImg: boolea
                     setToken(token!);
                 });
         }
-    }, [urlParams.project, tokenContract, contractVars, urlParams.token]);
+    }, [contractVars, props, tokenContract, urlParams.project, urlParams.token]);
 
     const onPropertySelection = (dist: SelectionFormValue) => {
         const selectedPropertyIds = convertPropertiesStringToIds(dist.selectedProperties);
@@ -83,15 +85,32 @@ export default function PropertySelection(props: { hasBgImage: (hasBgImg: boolea
         router.replace(router.pathname.slice(0, router.pathname.lastIndexOf('/')));
     };
 
+    const BackgroundImage: JSX.Element | null = contractVars?.projectBackgroundUrl ? (
+        <Image
+            priority
+            id="project-image"
+            className="fixed top-0 left-0 z-[-100] h-full w-full object-cover"
+            alt=""
+            object-fit="cover"
+            width={1920}
+            height={1080}
+            src={contractVars?.projectBackgroundUrl}
+            // src="https://images.squarespace-cdn.com/content/v1/63283ec16922c81dc0f97e2f/e3150b7f-bfc8-4251-ad50-3344f4b21b3d/image.jpg"
+        />
+    ) : null;
+
     if (propertySelection) {
         return (
-            <AppCard>
-                <PropertySelectionReceipt
-                    contractVars={contractVars!}
-                    transactionHashes={transactionHash!}
-                    selectedProperties={propertySelection}
-                />
-            </AppCard>
+            <>
+                {BackgroundImage}
+                <AppCard>
+                    <PropertySelectionReceipt
+                        contractVars={contractVars!}
+                        transactionHashes={transactionHash!}
+                        selectedProperties={propertySelection}
+                    />
+                </AppCard>
+            </>
         );
     }
 
@@ -101,6 +120,7 @@ export default function PropertySelection(props: { hasBgImage: (hasBgImg: boolea
                 <Modal show={!!errorMessage} onClose={handleCloseModal} title="Property selection failed">
                     <p>{errorMessage}</p>
                 </Modal>
+                {BackgroundImage}
                 <div className="mb-4 text-lg font-semibold">Select favourite Properties</div>
                 <p className="mt-4">
                     Project Name: <b>{contractVars?.projectName}</b>

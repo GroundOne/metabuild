@@ -80,7 +80,7 @@ const PropertySelectionReceipt: React.FC<{
             <p className="mt-4">
                 PVTs (Property Voucher Tokens) will be distributed on{' '}
                 <b>
-                    {contractVars.distributionStartDate?.toLocaleString(userLocale, {
+                    {contractVars?.distributionStartDate?.toLocaleString(userLocale, {
                         timeZoneName: 'short',
                     })}
                 </b>
