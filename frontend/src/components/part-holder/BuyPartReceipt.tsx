@@ -99,7 +99,7 @@ const BuyPartReceipt: React.FC<{
                     </p>
                     <p className="mt-4">
                         {/* TODO: Fetch the assigned ranking from the newly minted part */}
-                        You have been assigned the ranking <b>{contractVars?.currentTokenId}</b>.
+                        You have been assigned the ranking <b>{contractVars?.currentTokenId - 1}</b>.
                     </p>
                     <p className="mt-4">Your PART is now in your wallet.</p>
                 </>
