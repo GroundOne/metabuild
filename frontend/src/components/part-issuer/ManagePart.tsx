@@ -143,7 +143,7 @@ export default function ManagePart() {
                         </div>
                         {contract?.distributionStartDate && (
                             <div>
-                                Sale Distribution:{' '}
+                                Property Distribution:{' '}
                                 <span className="font-semibold">
                                     {contract?.distributionStartDate?.toLocaleString(userLocale, {
                                         timeZoneName: 'short',
