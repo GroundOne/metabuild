@@ -75,13 +75,13 @@ const PropertySelectionReceipt: React.FC<{
                 <b>{selectedProperties.map((p) => `#${p.padStart(3, '0')}`).join(', ')}</b>.
             </p>
             <p className="mt-4">
-                PVTs (Property Voucher Tokens) will be distributed on{' '}
+                Properties will be assigned on{' '}
                 <b>
                     {contractVars?.distributionStartDate?.toLocaleString(userLocale, {
                         timeZoneName: 'short',
                     })}
                 </b>
-                . Check your wallet after this to see which PVT you have been assigned.
+                . Please check your account after this to see which property you have been assigned.
             </p>
             <p className="mt-4">
                 The transaction number is <b>{transactionHashes}</b>.

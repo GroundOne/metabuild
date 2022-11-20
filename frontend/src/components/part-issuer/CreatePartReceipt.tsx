@@ -89,6 +89,11 @@ const CreatePartReceipt: React.FC<{ contractVars: ContractVarsParsed; transactio
                 Any unsold PARTs will be sent to your address <b>{contractVars.projectAddress}</b>.
             </p>
             <p className="mt-4">
+                On sale opening date, please trigger "Proceed To Sale" transaction from your account in order to launch
+                the Initial Random Distribution (IRD) and open the regular sale. <b>(Automation not implemented yet)</b>
+                .
+            </p>
+            <p className="mt-4">
                 The transaction number is <b>{transactionHashes}</b>.
             </p>
             <div className="mt-3 text-center">

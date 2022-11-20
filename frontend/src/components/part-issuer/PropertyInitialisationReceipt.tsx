@@ -80,7 +80,7 @@ const PropertyInitialisationReceipt: React.FC<{
             </p>
             <p className="mt-4">
                 The following properties will be excluded from the distribution and have been assigned to{' '}
-                <b>{contractVars?.ownerId}</b>{' '}
+                <b>{contractVars?.ownerId}:</b>{' '}
                 <b>{contractVars?.reservedProperties?.map((x) => '#' + x.padStart(3, '0')).join(', ')}</b>.
             </p>
             <p className="mt-4">
@@ -91,6 +91,7 @@ const PropertyInitialisationReceipt: React.FC<{
                         timeZoneName: 'short',
                     })}
                 </b>
+                .
             </p>
             <p className="mt-4">
                 The transaction number is <b>{transactionHashes}</b>.
