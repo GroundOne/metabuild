@@ -328,17 +328,25 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async setPreferencesProperties(token_id: string, propertyPreferenceIds: string[]) {
+    async setPreferencesProperties({
+        contractId,
+        token_id,
+        propertyPreferenceIds,
+    }: {
+        contractId: string;
+        token_id: string;
+        propertyPreferenceIds: string[];
+    }) {
         return await this.wallet.callMethod({
-            contractId: this.contractId,
+            contractId,
             method: 'set_preferences_properties',
             args: { token_id, propertyPreferenceIds },
         });
     }
 
-    async distributeProperties() {
+    async distributeProperties(contractId: string) {
         return await this.wallet.callMethod({
-            contractId: this.contractId,
+            contractId,
             method: 'distribute_properties',
             args: {},
         });
@@ -414,13 +422,28 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async property_info() {
+    async property_info(contractId: string) {
         return await this.wallet.viewMethod({
-            contractId: this.contractId,
+            contractId,
             method: 'property_info',
             args: {
                 id: 'fff_demo_project',
             },
+        });
+    }
+
+    async property_preferences(contractId: string): Promise<
+        Array<{
+            [key: string]: {
+                propertyPreferenceIds: string[];
+                whichPreferenceIsServed: string;
+            };
+        }>
+    > {
+        return await this.wallet.viewMethod({
+            contractId,
+            method: 'property_preferences',
+            args: {},
         });
     }
 
@@ -528,7 +551,7 @@ export class PartTokenInterface extends InterfaceFields {
 
     async distributed_properties(contractId: string) {
         return await this.wallet.viewMethod({
-            contractId: this.contractId,
+            contractId,
             method: 'distributed_properties',
             args: {},
         });

@@ -7,34 +7,40 @@ import constants from '../../constants';
 
 export default function Account() {
     const router = useRouter();
-    const [currentDate, setCurrentDate] = useState(new Date());
     const { walletState, contract, tokenContract } = useContext(NearContext);
-    const [tokens, setTokens] = useState<any[]>([]);
+    const [tokens, setTokens] = useState<TokenInfo[]>([]);
 
-    const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
+    type TokenInfo = {
+        token: Awaited<ReturnType<typeof tokenContract.nft_tokens_for_owner>>[0];
+        contractVars: Awaited<ReturnType<typeof tokenContract.contract_vars>>;
+    };
 
     const getContracts = async () => {
         const allContracts = await contract.getContracts();
         console.log('allContracts', allContracts);
-        let ownerTokens = await Promise.all(
+
+        const contractVars = await Promise.all(
+            allContracts.map((c) => tokenContract.contract_vars(c.projectAddress + constants.CONTRACT_ADDRESS_SUFFIX))
+        );
+
+        const ownerTokens = await Promise.all(
             allContracts.map((c) =>
-                tokenContract.nft_tokens_for_owner(c.projectAddress + constants.CONTRACT_ADDRESS_SUFFIX)
+                tokenContract
+                    .nft_tokens_for_owner(c.projectAddress + constants.CONTRACT_ADDRESS_SUFFIX)
+                    .then((tokens) =>
+                        tokens.map((token) => ({
+                            token,
+                            contractVars: contractVars.find(
+                                (cv) => cv.projectAddress === c.projectAddress + constants.CONTRACT_ADDRESS_SUFFIX
+                            )!,
+                        }))
+                    )
             )
         );
-        console.log('ownerTokens', ownerTokens);
-        const allTokens = ownerTokens.flat();
-        const tokenInfo = allTokens.map((t) => ({
-            token: t,
-            contract: allContracts.find((c) => c.projectAddress === t.metadata.symbol),
-        }));
-        // const purchasedTokens = allTokens.filter(
-        //     (t) =>
-        //         !allContracts.find((c) => c.projectAddress === t.metadata.symbol)!.reservedTokenIds.includes(t.token_id)
-        // );
-        // console.log('purchasedTokens', purchasedTokens);
-        console.log('tokenInfo', tokenInfo);
 
-        setTokens(tokenInfo);
+        const allTokens = ownerTokens.flat().filter((t) => !t.contractVars.isArchived);
+        console.log('🚀 ~ file: Account.tsx ~ line 44 ~ //userTokenInfo ~ allTokens', allTokens);
+        setTokens(allTokens);
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,14 +51,12 @@ export default function Account() {
     );
 
     useEffect(() => {
-        loadContracts(currentDate);
-    }, [contract, tokenContract, currentDate, loadContracts]);
+        loadContracts();
+    }, [contract, tokenContract, loadContracts]);
 
     return (
         <>
-            <div className="mr-12 flex justify-between">
-                <div className="mb-4 text-lg font-semibold">Your PARTs</div>
-            </div>
+            <div className="mb-4 text-lg font-semibold">Your PARTs</div>
             {tokens.map((tokenInfo, i) => {
                 return (
                     <section
@@ -60,22 +64,36 @@ export default function Account() {
                         key={i}
                     >
                         <p>
-                            Project name: <span className="font-semibold">{tokenInfo.token.metadata?.name}</span>
+                            Project name: <span className="font-semibold">{tokenInfo.contractVars.projectName}</span>
                         </p>
                         <p>
-                            Project address: <span className="font-semibold">{tokenInfo.token.metadata?.symbol}</span>
+                            Project address:{' '}
+                            <span className="font-semibold">{tokenInfo.contractVars.projectAddress.split('.')[0]}</span>
                         </p>
                         <p>
-                            Your PART ranking: <span className="font-semibold">{tokenInfo.token?.token_id}</span>
+                            Your PART ranking: <span className="font-semibold">{tokenInfo.token.token_id}</span>
                         </p>
                         <p>
-                            Status: <span className="font-semibold">{tokenInfo.contract?.metadata?.status}</span>
+                            Status: <span className="font-semibold">{tokenInfo.contractVars.contractStatus}</span>
                         </p>
-
-                        {/* <div>
-                            Project Name:{' '}
-                            <span className="font-semibold">{JSON.stringify(tokenInfo, undefined, 2)}</span>
-                        </div> */}
+                        {tokenInfo.contractVars.contractStatus === 'property_selection' &&
+                            tokenInfo.contractVars.distributionStartDate &&
+                            tokenInfo.contractVars.distributionStartDate > new Date() && (
+                                <Button
+                                    isInvertedColor
+                                    size="sm"
+                                    className="mt-2 w-40"
+                                    onClick={() => {
+                                        router.push(
+                                            `${router.pathname}/property-selection?project=${
+                                                tokenInfo.contractVars.projectAddress.split('.')[0]
+                                            }&token=${tokenInfo.token.token_id}`
+                                        );
+                                    }}
+                                >
+                                    Select Properties
+                                </Button>
+                            )}
                     </section>
                 );
             })}

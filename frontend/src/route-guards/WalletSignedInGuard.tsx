@@ -13,6 +13,7 @@ const redirects = {
         ['/part-holder/buy']: '/part-holder',
         ['/part-holder/buy/confirm']: '/part-holder',
         ['/part-holder/account']: '/part-holder',
+        ['/part-holder/account/property-selection']: '/part-holder',
     },
     [WalletState.Loading]: {},
 };
