@@ -44,7 +44,7 @@ export default function ManagePart() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadContracts = useCallback(
-        debounce(getContracts, 400),
+        debounce(getContracts, 4000),
         // add function dependencies in the useEffect hook for loadContracts() otherwise debounce will not work
         []
     );
