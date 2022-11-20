@@ -301,7 +301,6 @@ export class PartTokenInterface extends InterfaceFields {
 
     async nftMint({ contractId, projectTitle, price }: { contractId: string; projectTitle: string; price: string }) {
         try {
-            const THREE_HUNDRED_TGAS = (300 * 1e12).toString();
             const NearAmount = parseNearAmount(price)!;
             console.log('NearAmount:', NearAmount);
 
@@ -314,9 +313,9 @@ export class PartTokenInterface extends InterfaceFields {
                         description: 'Token ID is your ranking.',
                         media: 'https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif',
                     },
+                    receiver_id: this.wallet.accountId,
                 },
                 deposit: NearAmount,
-                gas: THREE_HUNDRED_TGAS,
             });
         } catch (error) {
             console.error('nft_mint Error:', error);
