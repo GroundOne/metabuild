@@ -299,10 +299,12 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async nftMint(contractId: string, projectTitle: string, price: string) {
-        console.log('nftMint', contractId, projectTitle, price);
-
+    async nftMint({ contractId, projectTitle, price }: { contractId: string; projectTitle: string; price: string }) {
         try {
+            const THREE_HUNDRED_TGAS = (300 * 1e12).toString();
+            const NearAmount = parseNearAmount(price)!;
+            console.log('NearAmount:', NearAmount);
+
             return await this.wallet.callMethod({
                 contractId,
                 method: 'nft_mint',
@@ -313,7 +315,8 @@ export class PartTokenInterface extends InterfaceFields {
                         media: 'https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif',
                     },
                 },
-                // deposit: price,
+                deposit: NearAmount,
+                gas: THREE_HUNDRED_TGAS,
             });
         } catch (error) {
             console.error('nft_mint Error:', error);

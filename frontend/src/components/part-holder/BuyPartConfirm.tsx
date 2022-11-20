@@ -80,11 +80,11 @@ export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) 
     const handlePurchase = async () => {
         console.log('handlePurchase for ' + contractVars?.projectAddress);
         if (purchaseOptions === 'buyPart') {
-            await tokenContract.nftMint(
-                contractVars!.projectAddress,
-                contractVars!.projectName,
-                contractVars!.priceLabel
-            );
+            await tokenContract.nftMint({
+                contractId: contractVars!.projectAddress,
+                projectTitle: contractVars!.projectName,
+                price: contractVars!.priceLabel,
+            });
         } else if (purchaseOptions === 'participateIRD') {
             await tokenContract.participatePresale(contractVars!.projectAddress, contractVars!.priceLabel);
         }
