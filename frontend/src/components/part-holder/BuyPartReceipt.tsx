@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -8,6 +8,7 @@ import { env } from '../../constants';
 import { ContractVarsParsed } from '../../utils/near-interface';
 import Button from '../ui-components/Button';
 import Input from '../ui-components/Input';
+import { NearContext } from '../walletContext';
 
 const emailSchema = yup.object({
     email: yup.string().label('Email address').email().required(),
@@ -19,6 +20,8 @@ const BuyPartReceipt: React.FC<{
     purchaseOptions: 'participateIRD' | 'buyPart';
     transactionHashes: string;
 }> = ({ contractVars, purchaseOptions, transactionHashes }) => {
+    const { tokenContract } = useContext(NearContext);
+
     const [emailSent, setEmailSent] = useState<{
         status: 'not_send' | 'send' | 'sending';
         error: boolean;
@@ -31,7 +34,22 @@ const BuyPartReceipt: React.FC<{
         formState: { errors },
     } = useForm<EmailFormValue>({ resolver: yupResolver(emailSchema) });
 
+    const [tokenRank, setTokenRank] = useState<string | null>(null);
     const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
+
+    useEffect(() => {
+        if (purchaseOptions === 'buyPart') {
+            tokenContract.nft_tokens_for_owner(contractVars.projectAddress).then((tokens) => {
+                if (tokens.length) {
+                    const token = tokens
+                        .map((t) => t.token_id)
+                        .sort()
+                        .reverse()[0];
+                    setTokenRank(token);
+                }
+            });
+        }
+    }, [tokenContract, purchaseOptions]);
 
     const onSubmit = async (data: EmailFormValue) => {
         try {
@@ -98,8 +116,7 @@ const BuyPartReceipt: React.FC<{
                         You have purchased a PART in the project <b>{contractVars?.projectName}</b>.
                     </p>
                     <p className="mt-4">
-                        {/* TODO: Fetch the assigned ranking from the newly minted part */}
-                        You have been assigned the ranking <b>{contractVars?.currentTokenId - 1}</b>.
+                        You have been assigned the ranking <b>{tokenRank}</b>.
                     </p>
                     <p className="mt-4">Your PART is now in your wallet.</p>
                 </>
