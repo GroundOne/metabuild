@@ -2,7 +2,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Logo() {
-    const homeLink = window?.location?.host === 'app.groundone.io' ? 'https://www.groundone.io' : '/';
+    const isProduction = window?.location?.host === 'app.groundone.io';
+    const homepage = 'https://www.groundone.io';
+    const homeLink = isProduction ? homepage : '/';
 
     return (
         <div className="flex min-h-full justify-start lg:w-0 lg:flex-1">

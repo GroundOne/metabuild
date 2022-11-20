@@ -5,6 +5,7 @@ import Hero from '../components/Homepage/Hero';
 import HomepageHeader from '../components/Homepage/HomepageHeader';
 import StepOne from '../components/Homepage/StepOne';
 import StepTwo from '../components/Homepage/StepTwo';
+import { ProductionHomepageGuard } from '../route-guards/ProductionHomepageGuard';
 
 const Home: NextPage = () => {
     return (
@@ -15,10 +16,12 @@ const Home: NextPage = () => {
             </Head>
             <div>
                 <ErrorBoundary scope="index.tsx">
-                    <HomepageHeader />
-                    <Hero />
-                    <StepOne />
-                    <StepTwo />
+                    <ProductionHomepageGuard>
+                        <HomepageHeader />
+                        <Hero />
+                        <StepOne />
+                        <StepTwo />
+                    </ProductionHomepageGuard>
                 </ErrorBoundary>
             </div>
         </>
