@@ -378,9 +378,9 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async nft_tokens() {
+    async nft_tokens(contractId: string) {
         return await this.wallet.viewMethod({
-            contractId: this.contractId,
+            contractId: contractId,
             method: 'nft_tokens',
             args: {},
         });
@@ -553,7 +553,7 @@ export class PartTokenInterface extends InterfaceFields {
         });
     }
 
-    async distributed_properties(contractId: string) {
+    async distributed_properties(contractId: string): Promise<Array<{ [key: string]: string }>> {
         return await this.wallet.viewMethod({
             contractId,
             method: 'distributed_properties',
