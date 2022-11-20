@@ -144,7 +144,7 @@ export default function Account() {
                             Your PART ranking: <span className="font-semibold">{tokenInfo.token.token_id}</span>
                         </p>
                         <p>
-                            Your favourite Properties:{' '}
+                            Your favourite properties:{' '}
                             <span className="font-semibold">
                                 {tokenInfo.reservedProperties
                                     ? convertPropertyIdsToIdString(tokenInfo.reservedProperties)
