@@ -62,6 +62,7 @@ export type Property = {
 
 export type ContractVarsParsed = ContractVars & {
     reservedTokens: string;
+    frontEndStatus: 'Presale' | 'PostPresale_Distribution' | 'PostPresale_ProceedToSale';
     saleOpeningDate: Date;
     saleCloseDate: Date;
     distributionStartDate?: Date;
@@ -472,7 +473,7 @@ export class PartTokenInterface extends InterfaceFields {
                 }
             }
 
-            const status =
+            const frontEndStatus =
                 currentDate < saleOpeningDate
                     ? 'Presale'
                     : currentDate < saleCloseDate
@@ -482,6 +483,7 @@ export class PartTokenInterface extends InterfaceFields {
             const contractVarsParsed: ContractVarsParsed = {
                 reservedTokens,
                 ...contractVars,
+                frontEndStatus,
                 saleOpeningDate,
                 saleCloseDate,
                 distributionStartDate,
@@ -503,14 +505,13 @@ export class PartTokenInterface extends InterfaceFields {
                 method: 'property_vars',
                 args: {},
             });
-
-            // const reservedProperties =
-            // const properties =
             const distributionStartDate = new Date(+propertyVars.distributionStart / 1e6);
-
             const propertyVarsParsed = {
+                ...propertyVars,
                 distributionStartDate,
             };
+
+            return propertyVarsParsed;
         } catch (error) {
             console.log('property_vars error', error);
             throw error;

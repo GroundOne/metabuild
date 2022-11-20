@@ -1,12 +1,10 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useContext, useEffect, useState } from 'react';
-import { NearContext, WalletState } from '../walletContext';
-import Input from '../ui-components/Input';
-import Button from '../ui-components/Button';
 import * as yup from 'yup';
 import constants from '../../constants';
+import Button from '../ui-components/Button';
+import Input from '../ui-components/Input';
 
 const distributionFormSchema = yup.object({
     projectAddress: yup
@@ -22,7 +20,6 @@ export type DistributionFormValue = yup.InferType<typeof distributionFormSchema>
 
 const BuyPart: React.FC = () => {
     const router = useRouter();
-    const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
     const {
         register,
         handleSubmit,
@@ -34,7 +31,7 @@ const BuyPart: React.FC = () => {
 
     const onSubmit = async (data: DistributionFormValue) => {
         try {
-            const contract = await tokenContract.contract_vars(data.projectAddress + contractSuffix);
+            // const contract = await tokenContract.contract_vars(data.projectAddress + contractSuffix);
             router.push(router.pathname + '/confirm?project=' + data.projectAddress);
         } catch (e) {
             setError('projectAddress', { type: 'manual', message: 'Contract address does not exist' });

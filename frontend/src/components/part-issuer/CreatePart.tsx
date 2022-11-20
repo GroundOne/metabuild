@@ -2,12 +2,12 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import constants from '../../constants';
-import { DeployArgs, NFTContractMetadata } from '../../utils/partToken';
-import { NearContext, WalletState } from '../walletContext';
-import CreatePartForm, { PartFormValue } from './CreatePartForm';
-import Modal from '../ui-components/Modal';
 import { convertPropertiesStringToIds, getContractIdFromTransactionId } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
+import { DeployArgs, NFTContractMetadata } from '../../utils/partToken';
+import Modal from '../ui-components/Modal';
+import { NearContext, WalletState } from '../walletContext';
+import CreatePartForm, { PartFormValue } from './CreatePartForm';
 import CreatePartReceipt from './CreatePartReceipt';
 
 export default function CreatePart() {

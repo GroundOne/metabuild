@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
-import AppHeader from '../../components/ui-components/AppHeader';
-import PartIssuerHowTo from '../../components/part-issuer/PartIssuerHowTo';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
+import PartIssuerHowTo from '../../components/part-issuer/PartIssuerHowTo';
+import AppHeader from '../../components/ui-components/AppHeader';
 
 const PartIssuer: NextPage = () => {
     return (

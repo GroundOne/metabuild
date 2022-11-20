@@ -1,7 +1,7 @@
-import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import WalletProvider from '../components/WalletProvider';
 import { WalletSignedInGuard } from '../route-guards/WalletSignedInGuard';
+import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (

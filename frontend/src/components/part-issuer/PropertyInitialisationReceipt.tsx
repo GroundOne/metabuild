@@ -1,14 +1,14 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
 import { useState } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { env } from '../../constants';
+import { InitialisationVars } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
 import Button from '../ui-components/Button';
 import Input from '../ui-components/Input';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { env } from '../../constants';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { InitialisationVars } from '../../utils/common';
 
 const emailSchema = yup.object({
     email: yup.string().label('Email address').email().required(),
@@ -30,8 +30,6 @@ const PropertyInitialisationReceipt: React.FC<{
         register,
         handleSubmit,
         formState: { errors },
-        setValue,
-        setError,
     } = useForm<EmailFormValue>({ resolver: yupResolver(emailSchema) });
 
     const userLocale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;

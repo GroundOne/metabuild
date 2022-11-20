@@ -1,5 +1,5 @@
-import Section from '../ui-components/Section';
 import Image from 'next/image';
+import Section from '../ui-components/Section';
 
 export default function StepTwo() {
     return (

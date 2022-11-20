@@ -1,7 +1,6 @@
-import Link from 'next/link';
 import ConnectWalletButton from './ConnectWalletButton';
-import Logo from './Logo';
 import HeaderMenu from './HeaderMenu';
+import Logo from './Logo';
 import Section from './Section';
 
 const AppHeader: React.FC<{ buttons?: Array<{ name: string; url: string }>; connectButtonName?: string | null }> = ({

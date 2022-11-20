@@ -1,13 +1,12 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import HomepageHeader from '../components/Homepage/HomepageHeader';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import Hero from '../components/Homepage/Hero';
+import HomepageHeader from '../components/Homepage/HomepageHeader';
 import StepOne from '../components/Homepage/StepOne';
 import StepTwo from '../components/Homepage/StepTwo';
-import { ErrorBoundary } from '../components/ErrorBoundary';
-import SendMail from '../components/samples/SendMail';
 
-const Home: NextPage = (props: any) => {
+const Home: NextPage = () => {
     return (
         <>
             <Head>
@@ -16,7 +15,6 @@ const Home: NextPage = (props: any) => {
             </Head>
             <div>
                 <ErrorBoundary scope="index.tsx">
-                    {/* <SendMail /> */}
                     <HomepageHeader />
                     <Hero />
                     <StepOne />

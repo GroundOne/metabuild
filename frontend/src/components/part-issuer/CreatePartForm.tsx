@@ -1,10 +1,10 @@
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useContext, useEffect, useState } from 'react';
-import Input from '../ui-components/Input';
-import Button from '../ui-components/Button';
+import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import constants from '../../constants';
+import Button from '../ui-components/Button';
+import Input from '../ui-components/Input';
 import { NearContext } from '../walletContext';
 
 export type PartFormSchemaProps = {

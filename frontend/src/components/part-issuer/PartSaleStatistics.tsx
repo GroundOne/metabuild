@@ -1,14 +1,12 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
-import constants from '../../constants';
-import { convertPropertiesStringToIds } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
 import Button from '../ui-components/Button';
-import { NearContext, WalletState } from '../walletContext';
+import { NearContext } from '../walletContext';
 
 export default function PartSaleStatistics() {
-    const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
+    const { tokenContract } = useContext(NearContext);
 
     const router = useRouter();
     const urlParams = router.query;

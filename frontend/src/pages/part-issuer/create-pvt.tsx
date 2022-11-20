@@ -1,9 +1,9 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import AppHeader from '../../components/ui-components/AppHeader';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
 import CreatePVT from '../../components/part-issuer/CreatePVT';
+import AppHeader from '../../components/ui-components/AppHeader';
 
 const App: NextPage = () => {
     return (

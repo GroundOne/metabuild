@@ -25,14 +25,14 @@ class MailerInstance {
     private _mailerConfig!: MailerConfig;
 
     private _transporter!: nodemailer.Transporter;
-    private _checkConfig() {
-        if (!this._mailerConfig) {
-            throw new Error('You need to run MailerInstance.init() first');
-        }
-    }
+    // private _checkConfig() {
+    //     if (!this._mailerConfig) {
+    //         throw new Error('You need to run MailerInstance.init() first');
+    //     }
+    // }
 
     // Setting constructor to private prevents creating new instances of the mailer class
-    private constructor() { }
+    private constructor() {}
 
     static get Instance(): MailerInstance {
         return this._instance || (this._instance = new this());
@@ -98,7 +98,6 @@ class MailerInstance {
         });
     }
 }
-
 
 const Mailer = MailerInstance.Instance;
 

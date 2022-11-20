@@ -1,17 +1,17 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
+import constants from '../../constants';
 import { convertPropertiesStringToIds } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
+import AppCard from '../ui-components/AppCard';
 import Modal from '../ui-components/Modal';
 import { NearContext, WalletState } from '../walletContext';
 import PropertySelectionForm, { SelectionFormValue } from './PropertySelectionForm';
 import PropertySelectionReceipt from './PropertySelectionReceipt';
-import AppCard from '../ui-components/AppCard';
-import constants from '../../constants';
 
 export default function PropertySelection(props: { hasBgImage: (hasBgImg: boolean) => void }) {
-    const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
+    const { walletState, tokenContract } = useContext(NearContext);
     const router = useRouter();
     const urlParams = router.query;
     const [contractVars, setContractVars] = useState<null | ContractVarsParsed>(null);

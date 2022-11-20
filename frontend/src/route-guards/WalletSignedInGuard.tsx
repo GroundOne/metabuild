@@ -18,9 +18,9 @@ const redirects = {
     [WalletState.Loading]: {},
 };
 
-import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { WalletState, NearContext } from '../components/walletContext';
+import { useContext, useEffect } from 'react';
+import { NearContext, WalletState } from '../components/walletContext';
 
 export const WalletSignedInGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const router = useRouter();

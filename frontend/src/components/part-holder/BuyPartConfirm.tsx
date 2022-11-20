@@ -5,14 +5,14 @@ import constants from '../../constants';
 import { ContractVarsParsed } from '../../utils/near-interface';
 import AppCard from '../ui-components/AppCard';
 import Button from '../ui-components/Button';
-import { NearContext, WalletState } from '../walletContext';
 import Modal from '../ui-components/Modal';
+import { NearContext } from '../walletContext';
 import BuyPartReceipt from './BuyPartReceipt';
 
 type PurchaseOptions = 'closed' | 'participateIRD' | 'pendingSaleOpening' | 'buyPart' | null;
 
 export default function BuyPartConfirm(props: { hasBgImage: (hasBgImg: boolean) => void }) {
-    const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
+    const { tokenContract } = useContext(NearContext);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [partPurchased, setPartPurchased] = useState<{
         purchased: boolean;

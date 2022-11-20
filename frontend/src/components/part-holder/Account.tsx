@@ -1,13 +1,13 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
-import Button from '../ui-components/Button';
-import { NearContext, WalletState } from '../walletContext';
 import { useRouter } from 'next/router';
-import { debounce } from '../../utils/common';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import constants from '../../constants';
+import { debounce } from '../../utils/common';
+import Button from '../ui-components/Button';
+import { NearContext } from '../walletContext';
 
 export default function Account() {
     const router = useRouter();
-    const { walletState, contract, tokenContract } = useContext(NearContext);
+    const { contract, tokenContract } = useContext(NearContext);
     const [tokens, setTokens] = useState<TokenInfo[]>([]);
 
     type TokenInfo = {

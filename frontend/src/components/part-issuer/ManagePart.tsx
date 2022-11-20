@@ -1,13 +1,14 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
-import Button from '../ui-components/Button';
-import { NearContext, WalletState } from '../walletContext';
 import { useRouter } from 'next/router';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { debounce } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
+import Button from '../ui-components/Button';
+import { NearContext, WalletState } from '../walletContext';
 
 export default function ManagePart() {
     const router = useRouter();
-    const [currentDate, setCurrentDate] = useState(new Date());
+    // const [currentDate, setCurrentDate] = useState(new Date());
+    const currentDate = new Date();
     const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
     const [contracts, setContracts] = useState<ContractVarsParsed[]>([]);
 

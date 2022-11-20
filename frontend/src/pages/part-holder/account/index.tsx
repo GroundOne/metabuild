@@ -1,9 +1,9 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import AppHeader from '../../../components/ui-components/AppHeader';
 import { ErrorBoundary } from '../../../components/ErrorBoundary';
-import AppCard from '../../../components/ui-components/AppCard';
 import Account from '../../../components/part-holder/Account';
+import AppCard from '../../../components/ui-components/AppCard';
+import AppHeader from '../../../components/ui-components/AppHeader';
 
 const App: NextPage = () => {
     return (

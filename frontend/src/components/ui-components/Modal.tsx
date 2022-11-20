@@ -1,5 +1,5 @@
-import React, { forwardRef } from 'react';
 import clsx from 'clsx';
+import React, { forwardRef } from 'react';
 import Button from './Button';
 
 interface ModalProps extends React.HTMLProps<HTMLDivElement> {

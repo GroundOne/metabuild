@@ -1,6 +1,6 @@
+import { createContext, Dispatch, SetStateAction } from 'react';
 import { NearWallet } from '../utils/near-wallet';
 import { PartTokenFactoryInterface, PartTokenInterface } from './../utils/near-interface';
-import { createContext, Dispatch, SetStateAction } from 'react';
 
 export enum WalletState {
     SignedIn = 'SignedIn',

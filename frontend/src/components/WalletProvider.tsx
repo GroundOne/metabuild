@@ -1,5 +1,4 @@
-import { NetworkId } from '@near-wallet-selector/core';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { env } from '../constants';
 import { PartTokenFactoryInterface, PartTokenInterface } from '../utils/near-interface';
 import { NearWallet } from '../utils/near-wallet';
@@ -24,7 +23,7 @@ const WalletProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) 
 
     useEffect(() => {
         const init = async () => {
-            let isSignedIn = await wallet.startUp();
+            const isSignedIn = await wallet.startUp();
             if (isSignedIn) {
                 setWalletState(WalletState.SignedIn);
             } else {

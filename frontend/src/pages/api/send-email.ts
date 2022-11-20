@@ -74,7 +74,6 @@ export default async function handler(
             subject = emailTemplates[template].subject.replace('{{subject}}', subject ?? '');
             // @ts-ignore
             message = emailTemplates[template].message.replace('{{message}}', message ?? '');
-            // const { subject, message } = emailTemplates[template as keyof typeof emailTemplates];
             try {
                 await Mailer.sendMail({ to, subject, message });
                 response.status(200).json({

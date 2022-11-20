@@ -1,5 +1,5 @@
-import { useContext, useEffect } from 'react';
-import { WalletState, NearContextProps, NearContext } from '../walletContext';
+import { useContext } from 'react';
+import { NearContext, WalletState } from '../walletContext';
 import Button from './Button';
 
 const ConnectWalletButton: React.FC<{ buttonName?: string | null }> = ({ buttonName }) => {

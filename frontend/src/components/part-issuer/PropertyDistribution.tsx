@@ -1,20 +1,14 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
-import {
-    convertPropertiesStringToIds,
-    InitialisationVars,
-    getContractIdFromTransactionId,
-    getPropertyInitialisationFromTransactionId,
-} from '../../utils/common';
+import { getPropertyInitialisationFromTransactionId, InitialisationVars } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
 import Modal from '../ui-components/Modal';
 import { NearContext, WalletState } from '../walletContext';
-import PropertyDistributionForm, { DistributionFormValue } from './PropertyDistributionForm';
+import PropertyDistributionForm from './PropertyDistributionForm';
 import PropertyDistributionReceipt from './PropertyDistributionReceipt';
 
 export default function PropertyDistribution() {
-    const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
+    const { walletState, tokenContract } = useContext(NearContext);
 
     const router = useRouter();
     const urlParams = router.query;
@@ -62,7 +56,7 @@ export default function PropertyDistribution() {
         }
     }, [urlParams.project, tokenContract]);
 
-    const onPropertyDistribution = (dist: DistributionFormValue) => {
+    const onPropertyDistribution = () => {
         if (walletState === WalletState.SignedIn) {
             tokenContract.distributed_properties(contractVars!.projectAddress);
         }

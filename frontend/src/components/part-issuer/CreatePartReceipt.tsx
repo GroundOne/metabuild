@@ -1,13 +1,13 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
 import { useState } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { env } from '../../constants';
 import { ContractVarsParsed } from '../../utils/near-interface';
 import Button from '../ui-components/Button';
 import Input from '../ui-components/Input';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { env } from '../../constants';
-import { renderToStaticMarkup } from 'react-dom/server';
 
 const emailSchema = yup.object({
     email: yup.string().label('Email address').email().required(),
@@ -28,8 +28,6 @@ const CreatePartReceipt: React.FC<{ contractVars: ContractVarsParsed; transactio
         register,
         handleSubmit,
         formState: { errors },
-        setValue,
-        setError,
     } = useForm<EmailFormValue>({ resolver: yupResolver(emailSchema) });
 
     const onSubmit = async (data: EmailFormValue) => {

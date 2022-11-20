@@ -1,12 +1,10 @@
-import { useCallback, useState, } from "react";
+import { useCallback, useState } from 'react';
 
-type AsyncState = "idle" | "pending" | "success" | "error"
+type AsyncState = 'idle' | 'pending' | 'success' | 'error';
 
 // Hook
-export const useAsync = <T, I = undefined, E = string>(
-    asyncFunction: (params?: I) => Promise<T>
-) => {
-    const [status, setStatus] = useState<AsyncState>("idle");
+export const useAsync = <T, I = undefined, E = string>(asyncFunction: (params?: I) => Promise<T>) => {
+    const [status, setStatus] = useState<AsyncState>('idle');
     const [value, setValue] = useState<T | null>(null);
     const [error, setError] = useState<E | null>(null);
     // The execute function wraps asyncFunction and
@@ -15,19 +13,19 @@ export const useAsync = <T, I = undefined, E = string>(
     // on every render, but only if asyncFunction changes.
     const execute = useCallback(
         (params?: I) => {
-            setStatus("pending");
+            setStatus('pending');
             setValue(null);
             setError(null);
             return asyncFunction(params)
                 .then((response: any) => {
                     setValue(response);
-                    setStatus("success");
-                    console.log("useAsync: success");
+                    setStatus('success');
+                    console.log('useAsync: success');
                 })
                 .catch((error: any) => {
                     setError(error);
-                    setStatus("error");
-                    console.log("useAsync: error", error);
+                    setStatus('error');
+                    console.log('useAsync: error', error);
                 });
         },
         [asyncFunction]

@@ -1,5 +1,5 @@
-import Section from '../ui-components/Section';
 import ConnectWalletButton from '../ui-components/ConnectWalletButton';
+import Section from '../ui-components/Section';
 
 const PartIssuerHowTo: React.FC = () => {
     return (

@@ -1,11 +1,11 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import AppHeader from '../../../components/ui-components/AppHeader';
-import ManagePart from '../../../components/part-issuer/ManagePart';
 import { ErrorBoundary } from '../../../components/ErrorBoundary';
+import ManagePart from '../../../components/part-issuer/ManagePart';
 import AppCard from '../../../components/ui-components/AppCard';
+import AppHeader from '../../../components/ui-components/AppHeader';
 
-const App: NextPage = (props: any) => {
+const App: NextPage = () => {
     return (
         <>
             <Head>

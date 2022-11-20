@@ -1,11 +1,9 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import {
     convertPropertiesStringToIds,
-    InitialisationVars,
-    getContractIdFromTransactionId,
     getPropertyInitialisationFromTransactionId,
+    InitialisationVars,
 } from '../../utils/common';
 import { ContractVarsParsed } from '../../utils/near-interface';
 import Modal from '../ui-components/Modal';
@@ -14,7 +12,7 @@ import PropertyInitialisationForm, { InitialisationFormValue } from './PropertyI
 import PropertyInitialisationReceipt from './PropertyInitialisationReceipt';
 
 export default function PropertyInitialisation() {
-    const { wallet, walletState, contract, tokenContract } = useContext(NearContext);
+    const { walletState, tokenContract } = useContext(NearContext);
 
     const router = useRouter();
     const urlParams = router.query;

@@ -1,10 +1,9 @@
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
-import Input from '../ui-components/Input';
-import Button from '../ui-components/Button';
+import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import constants from '../../constants';
+import Button from '../ui-components/Button';
+import Input from '../ui-components/Input';
 
 const selectionFormSchema = yup.object({
     selectedProperties: yup

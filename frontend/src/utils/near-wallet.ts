@@ -4,17 +4,16 @@
 import { providers } from 'near-api-js';
 
 // wallet selector UI
-import '@near-wallet-selector/modal-ui/styles.css';
 import { setupModal } from '@near-wallet-selector/modal-ui';
+import '@near-wallet-selector/modal-ui/styles.css';
 
 // import LedgerIconUrl from '@near-wallet-selector/ledger/assets/ledger-icon.png';
 // import MyNearIconUrl from '@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png';
 
 // wallet selector options
-import { Network, NetworkId, setupWalletSelector, WalletSelector, Wallet } from '@near-wallet-selector/core';
+import { Network, NetworkId, setupWalletSelector, Wallet, WalletSelector } from '@near-wallet-selector/core';
 import { setupLedger } from '@near-wallet-selector/ledger';
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
-import { string } from 'yup';
 
 const LedgerIconUrl = '/images/icons/ledger-icon.png';
 const MyNearIconUrl = '/images/icons/my-near-wallet-icon.png';
@@ -24,7 +23,7 @@ const NO_DEPOSIT = '0';
 // Wallet that simplifies using the wallet selector
 export class NearWallet {
     walletSelector: WalletSelector | null;
-    wallet: Wallet | null = null
+    wallet: Wallet | null = null;
     network: NetworkId | Network;
     createAccessKeyFor: string | null;
     accountId: string | null;
@@ -91,7 +90,7 @@ export class NearWallet {
         const { network } = this.walletSelector.options;
         const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
-        let res = await provider.query({
+        const res = await provider.query({
             request_type: 'call_function',
             account_id: contractId,
             method_name: method,
@@ -118,7 +117,7 @@ export class NearWallet {
         deposit?: string;
     }) => {
         // Sign a transaction with the "FunctionCall" action
-        const outcome = await this.wallet!.signAndSendTransaction({
+        const outcome = (await this.wallet!.signAndSendTransaction({
             signerId: this.accountId!,
             receiverId: contractId,
             actions: [
@@ -127,7 +126,7 @@ export class NearWallet {
                     params: { methodName: method, args, gas, deposit },
                 },
             ],
-        }) as providers.FinalExecutionOutcome;
+        })) as providers.FinalExecutionOutcome;
 
         return providers.getTransactionLastResult(outcome);
     };
@@ -143,7 +142,7 @@ export class NearWallet {
         const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
         // Retrieve transaction result from the network
-        const transaction = await provider.txStatus(txhash, 'unnused');
+        const transaction = await provider.txStatus(txhash, 'unused');
         return providers.getTransactionLastResult(transaction);
     };
 }
