@@ -32,6 +32,7 @@ const constants = {
     MAX_PART_PRICE: 1_000_000,
     MIN_PART_PRICE: 0.01,
     CONTRACT_ADDRESS_SUFFIX: '.part_factory.groundone.testnet',
+    MAX_UPLOAD_FILE_SIZE: 10 * 1024 * 1024, // 10MB
     // CONTRACT_ADDRESS_SUFFIX:
     //     process.env.NODE_ENV === 'development' ? '.part_factory.groundone.testnet' : '.part_factory.groundone.near',
 };
