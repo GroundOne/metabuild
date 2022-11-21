@@ -6,7 +6,7 @@ const nextConfig = {
         dirs: ['pages', 'components', 'lib', 'utils'],
     },
     images: {
-        domains: ['images.squarespace-cdn.com'],
+        domains: ['images.squarespace-cdn.com', 'res.cloudinary.com'],
     },
 };
 

@@ -53,7 +53,7 @@ const partFormSchema = yup.object({
         .label('Background image')
         .notRequired()
         .test('fileSize', 'File too large', (value) => {
-            return value && value[0] && value[0].size <= constants.MAX_UPLOAD_FILE_SIZE;
+            return (value && value[0] && value[0].size) ?? 0 <= constants.MAX_UPLOAD_FILE_SIZE;
         }),
 
     reserveParts: yup
@@ -236,6 +236,16 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                     errorText={errors.saleCloseDate?.message as string | undefined}
                     {...register('saleCloseDate')}
                 />
+                <Input
+                    id="reserveParts"
+                    type="text"
+                    placeholder="Reserved PARTs"
+                    infoText='Example: "1-10; 20-30; 40; 50"'
+                    isDisabled={isSubmitting}
+                    isInvalid={!!errors.reserveParts}
+                    errorText={errors.reserveParts?.message as string | undefined}
+                    {...register('reserveParts')}
+                />
                 {false && (
                     <Input
                         id="backgroundImageLink"
@@ -247,41 +257,31 @@ const CreatePartForm: React.FC<PartFormSchemaProps> = ({ values, onCreatePartReq
                         {...register('backgroundImageLink')}
                     />
                 )}
-                <Input
-                    id="backgroundImage"
-                    type="file"
-                    className=" cursor-pointer rounded-l-none"
-                    accept="image/*"
-                    placeholder="Background Image"
-                    isDisabled={isSubmitting}
-                    isInvalid={!!errors.backgroundImage}
-                    errorText={errors.backgroundImage?.message as string | undefined}
-                    {...register('backgroundImage')}
-                />
-                {isSubmitting && imageSrc && (
-                    <div className="col-span-2">
-                        <div className="flex flex-col items-center justify-center">
-                            <Image
-                                priority
-                                className="h-16 w-auto cursor-pointer"
-                                src={imageSrc}
-                                alt=""
-                                width={200}
-                                height={64}
-                            />
-                        </div>
-                    </div>
+
+                {isSubmitting && imageSrc ? (
+                    <Image
+                        priority
+                        className="mt-10 w-full rounded-md text-center"
+                        src={imageSrc}
+                        alt="Project image"
+                        width={200}
+                        height={120}
+                        sizes="100vw"
+                    />
+                ) : (
+                    <Input
+                        id="backgroundImage"
+                        type="file"
+                        className=" cursor-pointer rounded-l-none"
+                        accept="image/*"
+                        placeholder="Background Image"
+                        isDisabled={isSubmitting}
+                        isInvalid={!!errors.backgroundImage}
+                        errorText={errors.backgroundImage?.message as string | undefined}
+                        {...register('backgroundImage')}
+                    />
                 )}
-                <Input
-                    id="reserveParts"
-                    type="text"
-                    placeholder="Reserved PARTs"
-                    infoText='Example: "1-10; 20-30; 40; 50"'
-                    isDisabled={isSubmitting}
-                    isInvalid={!!errors.reserveParts}
-                    errorText={errors.reserveParts?.message as string | undefined}
-                    {...register('reserveParts')}
-                />
+
                 <div className="col-span-2">
                     <Button isLoading={isUploading} isInvertedColor size="md" className="mt-10 " type="submit">
                         {isSubmitting ? 'CONFIRM' : 'CREATE'}
