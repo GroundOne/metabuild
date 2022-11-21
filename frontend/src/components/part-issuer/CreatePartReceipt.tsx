@@ -1,13 +1,13 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
 import { useState } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { env } from '../../constants';
 import { ContractVarsParsed } from '../../utils/near-interface';
 import Button from '../ui-components/Button';
 import Input from '../ui-components/Input';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { env } from '../../constants';
-import { renderToStaticMarkup } from 'react-dom/server';
 
 const emailSchema = yup.object({
     email: yup.string().label('Email address').email().required(),
@@ -83,6 +83,10 @@ const CreatePartReceipt: React.FC<{ contractVars: ContractVarsParsed; transactio
             </p>
             <p className="mt-4">
                 Any unsold PARTs will be sent to your address <b>{contractVars.projectAddress}</b>.
+            </p>
+            <p className="mt-4">
+                We recommend not using the same account that created the PART contract, in order to buy PARTs or choose
+                favourite properties. Not using a different account might lead to inaccurate results.
             </p>
             <p className="mt-4">
                 The transaction number is <b>{transactionHashes}</b>.
