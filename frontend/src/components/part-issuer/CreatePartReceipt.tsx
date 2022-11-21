@@ -42,6 +42,11 @@ const CreatePartReceipt: React.FC<{ contractVars: ContractVarsParsed; transactio
                 .
             </p>
             <p className="mt-4">
+                We recommend not using the same account that created the PART contract, in order to buy PARTs or choose
+                favourite properties. Not using a different account might lead to unexpected results, which have not
+                been thoroughly tested yet.
+            </p>
+            <p className="mt-4">
                 The transaction number is <b>{transactionHashes}</b>.
             </p>
             <div className="mt-3 text-center">
