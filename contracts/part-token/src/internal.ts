@@ -263,7 +263,7 @@ export function internalPayoutNear({
   )
 
   assert(
-    contract.isSaleDone(),
+    contract.isPresaleDone(),
     `Too early to payout near, wait for SALE phase, is currently ${contract.contractStatus}`
   )
 
