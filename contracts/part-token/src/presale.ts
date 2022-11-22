@@ -32,9 +32,9 @@ export function internalParticipatePresale({
     }`
   )
 
-  contract.presaleParticipants.push(near.signerAccountId())
+  contract.presaleParticipants.push(near.predecessorAccountId())
 
-  near.log(`Added ${near.signerAccountId()} to participants`)
+  near.log(`Added ${near.predecessorAccountId()} to participants`)
 }
 
 export function internalDistributeAfterPresale({
