@@ -9,7 +9,7 @@ Additionally, the corresponding frontend is also included. It's written in TypeS
 [Landing page](https://www.groundone.io/)  
 [GitBook of the project](https://documentation.groundone.io/)
 
-[Deployed Project App](https://metabuild-dev.vercel.app/)
+[Deployed Project App](https:/app.groundone.io/)
 
 ## Run
 
