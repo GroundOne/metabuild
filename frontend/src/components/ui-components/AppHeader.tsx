@@ -1,3 +1,4 @@
+import TopBanner from '../TopBanner';
 import ConnectWalletButton from './ConnectWalletButton';
 import HeaderMenu from './HeaderMenu';
 import Logo from './Logo';
@@ -8,16 +9,19 @@ const AppHeader: React.FC<{ buttons?: Array<{ name: string; url: string }>; conn
     connectButtonName,
 }) => {
     return (
-        <Section>
-            <div className="flex items-center justify-between  py-6 md:justify-start md:space-x-10">
-                <Logo />
-                {buttons && <HeaderMenu buttons={buttons} />}
+        <>
+            <TopBanner />
+            <Section>
+                <div className="flex items-center justify-between  py-6 md:justify-start md:space-x-10">
+                    <Logo />
+                    {buttons && <HeaderMenu buttons={buttons} />}
 
-                <div className="items-center justify-end md:flex md:flex-1 lg:w-0">
-                    <ConnectWalletButton buttonName={connectButtonName} />
+                    <div className="items-center justify-end md:flex md:flex-1 lg:w-0">
+                        <ConnectWalletButton buttonName={connectButtonName} />
+                    </div>
                 </div>
-            </div>
-        </Section>
+            </Section>
+        </>
     );
 };
 
