@@ -1,6 +1,6 @@
 # Ground One
 
-This is the frontend for the [Ground-One](https://www.groundone.io) project.
+This is the frontend for the [Ground-One](https://www.groundone.io/demo2022) project.
 
 [Dev Website](https://metabuild-dev.vercel.app/)
 [Prod Website](https://metabuild.vercel.app/)
