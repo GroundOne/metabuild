@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function Logo() {
     const isProduction = window?.location?.host === 'app.groundone.io';
-    const homepage = 'https://www.groundone.io';
+    const homepage = 'https://www.groundone.io/demo2022';
     const homeLink = isProduction ? homepage : '/';
 
     return (
